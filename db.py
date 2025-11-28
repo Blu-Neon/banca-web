@@ -18,6 +18,16 @@ def init_db():
     );
     """)
 
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS expenses (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        amount REAL NOT NULL,
+        category TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+    """)
+
     # controlla se l'utente esiste
     cur.execute("SELECT COUNT(*) AS c FROM users;")
     count = cur.fetchone()["c"]
@@ -39,3 +49,31 @@ def get_saldo(user_id: int) -> float:
     row = cur.fetchone()
     conn.close()
     return row["saldo"] if row else 0.0
+
+def add_expense(user_id: int, amount: float, category: str) -> None:
+    """Registra una spesa e aggiorna il saldo (saldo = saldo - amount)."""
+    conn = get_connection()
+    cur = conn.cursor()
+
+    #inserico la spesa 
+    cur.execute(
+        "INSERT INTO expenses (user_id, amount, category) VALUES (?, ?, ?);",
+        (user_id, amount, category)
+    )
+
+    #aggiorno il saldo 
+    cur.execute(
+        "UPDATE users SET saldo = saldo - ? WHERE id = ?;",
+        (amount, user_id)
+    )
+
+    conn.commit()
+    conn.close()
+
+
+
+
+
+
+
+
