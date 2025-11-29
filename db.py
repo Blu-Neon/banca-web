@@ -70,6 +70,16 @@ def add_expense(user_id: int, amount: float, category: str) -> None:
     conn.commit()
     conn.close()
 
+def add_income(user_id: int, amount: float) -> None:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE users SET saldo = saldo + ? WHERE id = ?;",
+        (amount, user_id)
+    )
+    conn.commit()
+    conn.close()
+
 
 
 
