@@ -140,18 +140,18 @@ def home():
 
         
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:40px; margin-top:50px; margin-left: 40px">
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('1')">1</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('2')">2</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('3')">3</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('4')">4</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('5')">5</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('6')">6</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('7')">7</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('8')">8</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('9')">9</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar(',')">,</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('0')">0</button>
-<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="backspace()">C</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('1')">1</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('2')">2</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('3')">3</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('4')">4</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('5')">5</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('6')">6</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('7')">7</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('8')">8</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('9')">9</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar(',')">,</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('0')">0</button>
+<button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="backspace()">C</button>
 <script>
 function addChar(ch) {
 const input = document.getElementById('amount-input');
@@ -334,18 +334,18 @@ def update_saldo():
         </form>
 
         <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:40px; margin-top:50px; margin-left: 40px">
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('1')">1</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('2')">2</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('3')">3</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('4')">4</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('5')">5</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('6')">6</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('7')">7</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('8')">8</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('9')">9</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar(',')">,</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="addChar('0')">0</button>
-          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="backspace()">C</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('1')">1</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('2')">2</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('3')">3</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('4')">4</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('5')">5</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('6')">6</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('7')">7</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('8')">8</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('9')">9</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar(',')">,</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="addChar('0')">0</button>
+          <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; color: black; font-size:25px; font-weight: bold" type="button" onclick="backspace()">C</button>
         </div>
 
 
