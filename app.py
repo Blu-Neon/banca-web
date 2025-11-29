@@ -348,11 +348,6 @@ def update_saldo():
           <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; font-weight: bold" type="button" onclick="backspace()">C</button>
         </div>
 
-        <form method="GET" action="/" style="margin-top:30px;">
-          <button style="padding:10px; width:100%; font-size:16px; background:#4682B4; border-radius:25px;">
-            Torna alla Home
-          </button>
-        </form>
 
         <script>
         function addChar(ch) {
