@@ -114,6 +114,7 @@
     </canvas>
 
     <script>
+      // Dati passati da Flask → Jinja → JS
       const labels = {{ labels | tojson }};
       const dataValues = {{ valori_saldo | tojson }};
 
@@ -143,6 +144,10 @@
         <small>{{ mov.date }}</small>
       </div>
     {% endfor %}
+
+    {% if not ultime_cinque %}
+      <p>Nessun movimento ancora registrato.</p>
+    {% endif %}
 
     <br>
   </body>

@@ -14,7 +14,9 @@ def init_db():
     cur.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
-        saldo REAL NOT NULL
+        username TEXT UNIQUE,
+        password_hash TEXT,
+        saldo REAL NOT NULL DEFAULT 0
     );
     """)
 
@@ -28,16 +30,21 @@ def init_db():
     );
     """)
 
-    # controlla se l'utente esiste
-    cur.execute("SELECT COUNT(*) AS c FROM users;")
-    count = cur.fetchone()["c"]
+    # 2) MIGRAZIONE: se la tabella users esisteva con schema vecchio,
+    #    aggiungo le colonne che mancano (senza cancellare nulla).
 
-    # se non c'è nessun utente, crea l'utente con saldo iniziale
-    if count == 0:
-        cur.execute(
-            "INSERT INTO users (id, saldo) VALUES (?, ?);",
-            (1, 1000.0)
-        )
+    cur.execute("PRAGMA table_info(users);")
+    cols = [row["name"] for row in cur.fetchall()]
+
+    if "username" not in cols:
+        cur.execute("ALTER TABLE users ADD COLUMN username TEXT;")
+
+    if "password_hash" not in cols:
+        cur.execute("ALTER TABLE users ADD COLUMN password_hash TEXT;")
+
+    if "saldo" not in cols:
+        # se veniva da uno schema senza saldo (non è il tuo caso, ma per sicurezza)
+        cur.execute("ALTER TABLE users ADD COLUMN saldo REAL NOT NULL DEFAULT 0;")
 
     conn.commit()
     conn.close()
