@@ -73,6 +73,14 @@ def add_expense(user_id: int, amount: float, category: str) -> None:
 def add_income(user_id: int, amount: float) -> None:
     conn = get_connection()
     cur = conn.cursor()
+
+    #salvo anche le entrate 
+
+    cur.execute(
+        "INSERT INTO expenses (user_id, amount, category) VALUES (?, ?, ?)",
+        (user_id, amount, "entrata")
+    )
+
     cur.execute(
         "UPDATE users SET saldo = saldo + ? WHERE id = ?;",
         (amount, user_id)
