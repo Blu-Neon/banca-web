@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Storico spese annuale</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 480px;
+            margin: auto;
+
+            background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            color: white;
+            text-shadow: 0 0 5px black;
+        }
+
+        #menu-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 30px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 10px;
+            padding: 5px 12px;
+            border: none;
+            cursor: pointer;
+            z-index: 9999;
+        }
+
+        #dropdown-menu {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+            z-index: 9998;
+        }
+
+        #dropdown-menu.open {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        .menu-btn {
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            width: 160px;
+        }
+
+        .box-bianca {
+            background: rgba(255,255,255,0.85);
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 20px;
+            color: #222;
+            text-shadow: none;
+        }
+
+        .riga-mese {
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <button id="menu-button">☰</button>
+
+    <div id="dropdown-menu">
+      <form method="GET" action="/">
+        <button class="menu-btn" style="background:#20B2AA;">Home</button>
+      </form>
+
+      <form method="GET" action="/update-saldo">
+        <button class="menu-btn" style="background:#CD5C5C;">Aggiorna saldo</button>
+      </form>
+
+      <form method="GET" action="/grafico">
+        <button class="menu-btn" style="background:#556B2F;">Grafico mese</button>
+      </form>
+
+      <form method="GET" action="/tipologia">
+        <button class="menu-btn" style="background:#8B4513;">Tipologia spese</button>
+      </form>
+
+      <form method="GET" action="/storico">
+        <button class="menu-btn" style="background:#1E90FF;">Storico annuale</button>
+      </form>
+    </div>
+
+    <script>
+      const menuBtn = document.getElementById("menu-button");
+      const drop = document.getElementById("dropdown-menu");
+
+      menuBtn.onclick = () => {
+        drop.classList.toggle("open");
+      };
+    </script>
+
+    <h2>Storico spese dell'anno</h2>
+
+    <div class="box-bianca">
+        {% if storico %}
+            {% for riga in storico %}
+                <div class="riga-mese">
+                    <strong>{{ riga.mese }}</strong>: {{ "%.2f"|format(riga.totale) }} €
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Nessuna spesa registrata quest'anno.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
+
