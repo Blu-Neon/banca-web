@@ -24,7 +24,7 @@ def init_db():
         user_id INTEGER NOT NULL,
         amount REAL NOT NULL,
         category TEXT NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        date TEXT DEFAULT CURRENT_TIMESTAMP
     );
     """)
 
