@@ -177,17 +177,17 @@ def grafico():
     cur.execute("""
         SELECT amount, category, type, created_at
         FROM transactions
-        WHERE user_id = ?
-          AND strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')
+        WHERE user_id = %s
+          AND date_trunc('month', created_at) = date_trunc('month', CURRENT_DATE)
         ORDER BY created_at ASC
     """, (user_id,))
     dati = cur.fetchall()
 
-    # Ultimi 5 movimenti in assoluto (spese + entrate)
+    # Ultimi 5 movimenti in assoluto (entrate + spese)
     cur.execute("""
         SELECT amount, category, type, created_at
         FROM transactions
-        WHERE user_id = ?
+        WHERE user_id = %s
         ORDER BY created_at DESC
         LIMIT 5
     """, (user_id,))
@@ -196,7 +196,15 @@ def grafico():
     conn.close()
 
     # Etichette (solo la data, senza orario)
-    labels = [row["created_at"].split(" ")[0] for row in dati]
+    labels = []
+    for row in dati:
+        # created_at è un datetime di Postgres
+        dt = row["created_at"]
+        try:
+            labels.append(dt.date().isoformat())
+        except AttributeError:
+            # nel dubbio, fallback a stringa
+            labels.append(str(dt).split(" ")[0])
 
     # Movimenti con il segno
     movimenti = []
@@ -220,11 +228,17 @@ def grafico():
     # Ultime 5 per il template
     ultime_cinque = []
     for row in ultime_cinque_rows:
+        dt = row["created_at"]
+        try:
+            data_str = dt.date().isoformat()
+        except AttributeError:
+            data_str = str(dt).split(" ")[0]
+
         ultime_cinque.append({
             "amount": float(row["amount"]),
             "category": row["category"],
             "type": row["type"],
-            "date": row["created_at"].split(" ")[0],
+            "date": data_str,
         })
 
     return render_template(
@@ -250,9 +264,9 @@ def tipologia():
     cur.execute("""
         SELECT category, SUM(amount) AS totale
         FROM transactions
-        WHERE user_id = ?
+        WHERE user_id = %s
           AND type = 'expense'
-          AND strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')
+          AND date_trunc('month', created_at) = date_trunc('month', CURRENT_DATE)
         GROUP BY category
         ORDER BY totale DESC
     """, (user_id,))
@@ -302,11 +316,11 @@ def storico():
 
     # Totale spese (solo type='expense') per ogni mese dell'anno corrente
     cur.execute("""
-        SELECT strftime('%Y-%m', created_at) AS ym,
+        SELECT to_char(created_at, 'YYYY-MM') AS ym,
                SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS totale
         FROM transactions
-        WHERE user_id = ?
-          AND strftime('%Y', created_at) = strftime('%Y', 'now')
+        WHERE user_id = %s
+          AND date_part('year', created_at) = date_part('year', CURRENT_DATE)
         GROUP BY ym
         ORDER BY ym ASC;
     """, (user_id,))
