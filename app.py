@@ -28,20 +28,28 @@ def register():
         password_hash = generate_password_hash(password)
 
         try:
+            # INSERT con RETURNING id (PostgreSQL)
             cur.execute(
-                "INSERT INTO users (username, password_hash) VALUES (?, ?)",
+                """
+                INSERT INTO users (username, password_hash)
+                VALUES (%s, %s)
+                RETURNING id;
+                """,
                 (username, password_hash)
             )
-            user_id = cur.lastrowid
-            
+            row = cur.fetchone()
+            user_id = row["id"]
+
+            # crea account collegato
             cur.execute(
-                "INSERT INTO accounts (user_id, saldo) VALUES (?, 0)",
+                "INSERT INTO accounts (user_id, saldo) VALUES (%s, 0);",
                 (user_id,)
-            )            
+            )
 
             conn.commit()
-        except Exception:
+        except Exception as e:
             conn.close()
+            print("ERRORE REGISTER:", e)
             flash("Username già esistente o altro errore, riprova", "error")
             return redirect(url_for("register"))
 
@@ -63,7 +71,7 @@ def login():
         conn = get_connection()
         cur = conn.cursor()
         cur.execute(
-            "SELECT id, password_hash FROM users WHERE username = ?",
+            "SELECT id, password_hash FROM users WHERE username = %s;",
             (username,)
         )
         row = cur.fetchone()
@@ -87,7 +95,6 @@ def login():
         return redirect(url_for("home"))
 
     return render_template("login.html")
-
 
 @app.route("/logout")
 def logout():
