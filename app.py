@@ -29,9 +29,16 @@ def register():
 
         try:
             cur.execute(
-                "INSERT INTO users (username, password_hash, saldo) VALUES (?, ?, ?)",
-                (username, password_hash, 0.0)
+                "INSERT INTO users (username, password_hash) VALUES (?, ?)",
+                (username, password_hash)
             )
+            user_id = cur.lastrowid
+            
+            cur.execute(
+                "INSERT INTO accounts (user_id, saldo) VALUES (?, 0)",
+                (user_id,)
+            )            
+
             conn.commit()
         except Exception:
             conn.close()
@@ -168,20 +175,20 @@ def grafico():
 
     # Movimenti del mese (entrate + spese), in ordine di data
     cur.execute("""
-        SELECT amount, category, date
-        FROM expenses
+        SELECT amount, category, type, created_at
+        FROM transactions
         WHERE user_id = ?
-          AND strftime('%Y-%m', date) = strftime('%Y-%m', 'now')
-        ORDER BY date ASC
+          AND strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')
+        ORDER BY created_at ASC
     """, (user_id,))
     dati = cur.fetchall()
 
     # Ultimi 5 movimenti in assoluto (spese + entrate)
     cur.execute("""
-        SELECT amount, category, date
-        FROM expenses
+        SELECT amount, category, type, created_at
+        FROM transactions
         WHERE user_id = ?
-        ORDER BY date DESC
+        ORDER BY created_at DESC
         LIMIT 5
     """, (user_id,))
     ultime_cinque_rows = cur.fetchall()
@@ -189,17 +196,17 @@ def grafico():
     conn.close()
 
     # Etichette (solo la data, senza orario)
-    labels = [row["date"].split(" ")[0] for row in dati]
+    labels = [row["created_at"].split(" ")[0] for row in dati]
 
     # Movimenti con il segno
     movimenti = []
     for row in dati:
         amount = float(row["amount"])
-        category = row["category"]
-        if category == "entrata":
-            movimenti.append(amount)     # entrata +
+        tipo = row["type"]
+        if tipo == "income":
+            movimenti.append(amount)      # entrata +
         else:
-            movimenti.append(-amount)    # spesa -
+            movimenti.append(-amount)     # spesa -
 
     saldo_attuale = get_saldo(user_id)
     saldo_inizio_mese = saldo_attuale - sum(movimenti) if movimenti else saldo_attuale
@@ -216,7 +223,8 @@ def grafico():
         ultime_cinque.append({
             "amount": float(row["amount"]),
             "category": row["category"],
-            "date": row["date"].split(" ")[0],
+            "type": row["type"],
+            "date": row["created_at"].split(" ")[0],
         })
 
     return render_template(
@@ -238,13 +246,13 @@ def tipologia():
     conn = get_connection()
     cur = conn.cursor()
 
-    # Totale spese per categoria del mese (no entrate)
+    # Totale spese per categoria del mese (solo type = 'expense')
     cur.execute("""
         SELECT category, SUM(amount) AS totale
-        FROM expenses
+        FROM transactions
         WHERE user_id = ?
-          AND category != 'entrata'
-          AND strftime('%Y-%m', date) = strftime('%Y-%m', 'now')
+          AND type = 'expense'
+          AND strftime('%Y-%m', created_at) = strftime('%Y-%m', 'now')
         GROUP BY category
         ORDER BY totale DESC
     """, (user_id,))
@@ -281,7 +289,6 @@ def tipologia():
         legenda=legenda
     )
 
-
 # ------------------ STORICO ------------------ #
 
 @app.route("/storico", methods=["GET"])
@@ -293,13 +300,13 @@ def storico():
     conn = get_connection()
     cur = conn.cursor()
 
-    # Totale spese (non entrate) per ogni mese dell'anno corrente
+    # Totale spese (solo type='expense') per ogni mese dell'anno corrente
     cur.execute("""
-        SELECT strftime('%Y-%m', date) AS ym,
-               SUM(CASE WHEN category != 'entrata' THEN amount ELSE 0 END) AS totale
-        FROM expenses
+        SELECT strftime('%Y-%m', created_at) AS ym,
+               SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS totale
+        FROM transactions
         WHERE user_id = ?
-          AND strftime('%Y', date) = strftime('%Y', 'now')
+          AND strftime('%Y', created_at) = strftime('%Y', 'now')
         GROUP BY ym
         ORDER BY ym ASC;
     """, (user_id,))
@@ -334,7 +341,6 @@ def storico():
         })
 
     return render_template("storico.html", storico=storico)
-
 
 if __name__ == "__main__":
     app.run()
