@@ -165,7 +165,6 @@ def update_saldo():
         return redirect(url_for("home"))
 
     saldo = f"{get_saldo(user_id):.2f}"
-    # assicurati che il template si chiami davvero "update_saldo.html"
     return render_template("expense.html", saldo=saldo)
 
 
@@ -280,19 +279,21 @@ def tipologia():
     righe = cur.fetchall()
     conn.close()
 
+    category_colors = {
+    "spesa":"#FF6384",
+    "altro":"#36A2EB",
+    "evitabile":"#FFCE56",
+    "eccezionale":"#4BC0C0",
+    "cibo":"#9966FF"
+    }
+
+
     labels = [r["category"] for r in righe]
     values = [float(r["totale"]) for r in righe]
 
-    base_colors = ["#FF6384", "#36A2EB", "#FFCE56",
-                   "#4BC0C0", "#9966FF", "#FF9F40"]
+    # ["#FF6384", "#36A2EB", "#FFCE56","#4BC0C0", "#9966FF", "#FF9F40"]
 
-    if len(labels) == 0:
-        colors = []
-    elif len(labels) <= len(base_colors):
-        colors = base_colors[:len(labels)]
-    else:
-        ripetizioni = (len(labels) // len(base_colors)) + 1
-        colors = (base_colors * ripetizioni)[:len(labels)]
+    colors = [category_colors[cat]] fro cat in labels
 
     legenda = []
     for cat, col, val in zip(labels, colors, values):
@@ -324,7 +325,8 @@ def storico():
     # Totale spese (solo type='expense') per ogni mese dell'anno corrente
     cur.execute("""
         SELECT to_char(created_at, 'YYYY-MM') AS ym,
-               SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS totale
+               SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) AS totale_spese,
+               SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) AS totale_entrate
         FROM transactions
         WHERE user_id = %s
           AND date_part('year', created_at) = date_part('year', CURRENT_DATE)
@@ -352,7 +354,10 @@ def storico():
     storico = []
     for row in righe:
         ym = row["ym"]          # tipo "2025-03"
-        totale = row["totale"] or 0.0
+
+        totale_spese = float(row["totale_spese"] or 0.0)
+        totale_entrate = float(row["totale_entrate"] or 0.0)
+        totale = round(totale_entrate - totale_spese)
         year, month_num = ym.split("-")
         nome_mese = nomi_mesi.get(month_num, month_num)
 
@@ -365,25 +370,6 @@ def storico():
 
 if __name__ == "__main__":
     app.run()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

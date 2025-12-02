@@ -148,4 +148,3 @@ def add_income(user_id: int, amount: float) -> None:
 
     conn.commit()
     conn.close()
-
