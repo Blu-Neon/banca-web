@@ -293,7 +293,7 @@ def tipologia():
 
     # ["#FF6384", "#36A2EB", "#FFCE56","#4BC0C0", "#9966FF", "#FF9F40"]
 
-    colors = [category_colors[cat]] fro cat in labels
+    colors = [category_colors[cat] for cat in labels]
 
     legenda = []
     for cat, col, val in zip(labels, colors, values):
