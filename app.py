@@ -357,7 +357,7 @@ def storico():
 
         totale_spese = float(row["totale_spese"] or 0.0)
         totale_entrate = float(row["totale_entrate"] or 0.0)
-        totale = round(totale_entrate - totale_spese)
+        totale = round(totale_entrate - totale_spese, 2)
         year, month_num = ym.split("-")
         nome_mese = nomi_mesi.get(month_num, month_num)
 
