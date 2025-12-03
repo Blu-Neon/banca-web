@@ -70,13 +70,20 @@
         <button class="categoria-btn btn-spesa"        name="category" value="spesa"      style="width:120px; height: 120px;">Spesa</button>
       </form>
     </body>
-    {% if session.user_id == 1 %}
-      <style>
-        body {
-          cursor: url("/static/cursor.png") 0 0, auto;
-        }
-      </style>
-    {% endif %}
+
+    {% if session.get('user_id') == 1 %}
+<style>
+  /* cursore di default per tutta la pagina */
+  * {
+    cursor: url("/static/cursor.png") 0 0, default !important;
+  }
+
+  /* anche per bottoni e elementi che normalmente hanno cursore "pointer" */
+  button, a, input, select, textarea, label {
+    cursor: url("/static/cursor.png") 0 0, pointer !important;
+  }
+</style>
+{% endif %}
 
   </div>
 </html>
