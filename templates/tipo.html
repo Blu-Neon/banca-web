@@ -21,9 +21,10 @@
       .categorie {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-        margin: 60px auto 0 auto;
-        max-width: 260px;
+        gap: 30px;
+        margin: 30px auto 0 auto;
+        max-width: 320px;
+        margin-left: 94px
       }
 
       .categoria-btn {
@@ -50,14 +51,14 @@
 
   <body>
     <form method="POST" action="/tipo" class="categorie">
-      <button class="categoria-btn btn-spesa"        name="category" value="spesa">Spesa</button>
-      <button class="categoria-btn btn-cibo"         name="category" value="ristorante">Ristorante</button>
-      <button class="categoria-btn btn-altro"        name="category" value="altro">Altro</button>
-      <button class="categoria-btn btn-evitabile"    name="category" value="evitabile">Evitabile</button>
-      <button class="categoria-btn btn-eccezionale"  name="category" value="vestiti">Vestiti</button>
-      <button class="categoria-btn btn-trasporti"    name="category" value="trasporti">Trasporti</button>
-      <button class="categoria-btn btn-bollette"     name="category" value="viaggio">Viaggio</button>
-      <button class="categoria-btn btn-divertimento" name="category" value="svago">Svago</button>
+      <button class="categoria-btn btn-spesa"        name="category" value="spesa" style="width:120px; height: 120px;">Spesa</button>
+      <button class="categoria-btn btn-cibo"         name="category"style="width:120px; height: 120px;" value="ristorante">Ristorante</button>
+      <button class="categoria-btn btn-altro"        name="category" value="altro" style="width:120px; height: 120px;">Altro</button>
+      <button class="categoria-btn btn-evitabile"    name="category" value="evitabile" style="width:120px; height: 120px;">Evitabile</button>
+      <button class="categoria-btn btn-eccezionale"  name="category" value="vestiti" style="width:120px; height: 120px;">Vestiti</button>
+      <button class="categoria-btn btn-trasporti"    name="category" value="trasporti" style="width:120px; height: 120px;">Trasporti</button>
+      <button class="categoria-btn btn-bollette"     name="category" value="viaggio" style="width:120px; height: 120px;">Viaggio</button>
+      <button class="categoria-btn btn-divertimento" name="category" value="svago" style="width:120px; height: 120px;">Svago</button>
     </form>
   </body>
 </html>
