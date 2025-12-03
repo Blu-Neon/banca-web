@@ -85,19 +85,23 @@
 
     <div id="dropdown-menu">
       <form method="GET" action="/">
-        <button class="menu-btn" style="background:#20B2AA;">Home</button>
+        <button class="menu-btn" style="background: #8B4513;">Home</button>
       </form>
 
       <form method="GET" action="/update-saldo">
-        <button class="menu-btn" style="background:#CD5C5C;">Aggiorna saldo</button>
+        <button class="menu-btn" style="background: #20B2AA;">Aggiorna saldo</button>
       </form>
 
       <form method="GET" action="/grafico">
-        <button class="menu-btn" style="background:#556B2F;">Grafico mese</button>
+        <button class="menu-btn" style="background: #CD5C5C;">Grafico mese</button>
       </form>
 
       <form method="GET" action="/storico">
-        <button class="menu-btn" style="background:#8B4513;">Storico</button>
+        <button class="menu-btn" style="background: #556B2F;">Storico</button>
+      </form>
+
+      <form method="GET" action="/logout">
+        <button class="menu-btn" style="background: #444;">Logout</button>
       </form>
     </div>
 
@@ -155,6 +159,13 @@
             </div>
         {% endfor %}
     </div>
+    {% if session.user_id == 1 %}
+      <style>
+        body {
+          cursor: url("/static/cursor.png") 0 0, auto;
+        }
+      </style>
+    {% endif %}
 
 </body>
 </html>

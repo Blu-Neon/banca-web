@@ -89,6 +89,11 @@
   <form method="GET" action="/storico">
     <button class="menu-btn" style="background:#556B2F;">Storico</button>
   </form>
+
+  <form method="GET" action="/logout">
+    <button class="menu-btn" style="background: #444;">Logout</button>
+  </form>
+
 </div>
 
 <script>
@@ -159,6 +164,13 @@
           input.value = input.value.slice(0, -1);
         }
         </script>
+    {% if session.user_id == 1 %}
+      <style>
+        body {
+          cursor: url("/static/cursor.png") 0 0, auto;
+        }
+      </style>
+    {% endif %}
 
       </body>
     </html>

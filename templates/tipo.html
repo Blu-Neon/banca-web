@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tipo</title>
+  
     <style>
       body {
         font-family: sans-serif;
@@ -24,7 +25,7 @@
         gap: 30px;
         margin: 30px auto 0 auto;
         max-width: 320px;
-        margin-left: 94px
+        
       }
 
       .categoria-btn {
@@ -38,27 +39,44 @@
         text-shadow: none;
       }
 
+      .container {
+        max-width: 480px;   
+        margin: auto;       
+        padding: 20px;
+      }
+
+
       .btn-spesa        { background: #FF6384; color: black; }
-      .btn-cibo         { background: #9966FF; color: black; }
-      .btn-altro        { background: #36A2EB; color: black; }
-      .btn-evitabile    { background: #FFCE56; color: black; }
-      .btn-eccezionale  { background: #4BC0C0; color: black; }
-      .btn-trasporti    { background: #FF9F40; color: black; }
-      .btn-bollette     { background: #2ecc71; color: black; }
-      .btn-divertimento { background: #e67e22; color: black; }
+      .btn-ristorante   { background: #9966FF; color: black; }
+      .btn-altro        { background: #595A5B; color: black; }
+      .btn-evitabile    { background: #ed0909; color: black; }
+      .btn-vestiti      { background: #3af083; color: black; }
+      .btn-trasporti    { background: #48C0C0; color: black; }
+      .btn-viaggio      { background: #6d0251; color: black; }
+      .btn-svago        { background: #36A2EF; color: black; }
     </style>
   </head>
 
-  <body>
-    <form method="POST" action="/tipo" class="categorie">
-      <button class="categoria-btn btn-spesa"        name="category" value="spesa" style="width:120px; height: 120px;">Spesa</button>
-      <button class="categoria-btn btn-cibo"         name="category"style="width:120px; height: 120px;" value="ristorante">Ristorante</button>
-      <button class="categoria-btn btn-altro"        name="category" value="altro" style="width:120px; height: 120px;">Altro</button>
-      <button class="categoria-btn btn-evitabile"    name="category" value="evitabile" style="width:120px; height: 120px;">Evitabile</button>
-      <button class="categoria-btn btn-eccezionale"  name="category" value="vestiti" style="width:120px; height: 120px;">Vestiti</button>
-      <button class="categoria-btn btn-trasporti"    name="category" value="trasporti" style="width:120px; height: 120px;">Trasporti</button>
-      <button class="categoria-btn btn-bollette"     name="category" value="viaggio" style="width:120px; height: 120px;">Viaggio</button>
-      <button class="categoria-btn btn-divertimento" name="category" value="svago" style="width:120px; height: 120px;">Svago</button>
-    </form>
-  </body>
+  <div class="container"></div>
+    <body>
+      <form method="POST" action="/tipo" class="categorie">
+        <button class="categoria-btn btn-ristorante"   name="category" value="ristorante" style="width:120px; height: 120px;">Ristorante</button>
+        <button class="categoria-btn btn-evitabile"    name="category" value="evitabile"  style="width:120px; height: 120px;">Evitabile</button>
+        <button class="categoria-btn btn-vestiti"      name="category" value="vestiti"    style="width:120px; height: 120px;">Vestiti</button>
+        <button class="categoria-btn btn-trasporti"    name="category" value="trasporti"  style="width:120px; height: 120px;">Trasporti</button>
+        <button class="categoria-btn btn-viaggio"      name="category" value="viaggio"    style="width:120px; height: 120px;">Viaggio</button>
+        <button class="categoria-btn btn-svago"        name="category" value="svago"      style="width:120px; height: 120px;">Svago</button>
+        <button class="categoria-btn btn-altro"        name="category" value="altro"      style="width:120px; height: 120px;">Altro</button>
+        <button class="categoria-btn btn-spesa"        name="category" value="spesa"      style="width:120px; height: 120px;">Spesa</button>
+      </form>
+    </body>
+    {% if session.user_id == 1 %}
+      <style>
+        body {
+          cursor: url("/static/cursor.png") 0 0, auto;
+        }
+      </style>
+    {% endif %}
+
+  </div>
 </html>

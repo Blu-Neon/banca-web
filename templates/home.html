@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -31,6 +33,7 @@
         padding: 5px 12px;
         border: none;
         cursor: pointer;
+        z-index: 9999;
       }
 
       #dropdown-menu {
@@ -50,6 +53,7 @@
 
         /* animazione */
         transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        z-indez: 9998;
       }
 
       #dropdown-menu.open {
@@ -66,29 +70,62 @@
         cursor: pointer;
         width: 160px;
       }
+
+      .container{
+        max-width: 480px;
+        margin: auto;
+        padding: 20px;
+      }
+      
+      .full-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 34px;
+    border-color: #F0FFF0;
+    color: white;
+    font-weight: bold;
+  }
+
+  .btn-red {
+    background-color: #CD5C5C;
+  }
+
+  .btn-dark {
+    background-color: #444;
+  }
+
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* distanza tra i bottoni */
+    margin-top: 15px;
+  }
     </style>
+
+<div class="container">
 
     <button id="menu-button">☰</button>
 
     <div id="dropdown-menu">
       <form method="GET" action="/update-saldo">
-        <button class="menu-btn" style="background:#20B2AA;">Aggiorna saldo</button>
+        <button class="menu-btn" style="background: #20B2AA;">Aggiorna saldo</button>
       </form>
 
       <form method="GET" action="/grafico">
-        <button class="menu-btn" style="background:#CD5C5C;">Grafico del mese</button>
+        <button class="menu-btn" style="background: #CD5C5C;">Grafico del mese</button>
       </form>
 
       <form method="GET" action="/tipologia">
-        <button class="menu-btn" style="background:#8B4513;">Spese per tipologia</button>
+        <button class="menu-btn" style="background: #8B4513;">Spese per tipologia</button>
       </form>
 
       <form method="GET" action="/storico">
-        <button class="menu-btn" style="background:#556B2F;">Storico</button>
+        <button class="menu-btn" style="background: #556B2F;">Storico</button>
       </form>
-<form method="GET" action="/logout">
-  <button class="menu-btn" style="background:#444;">Logout</button>
-</form>
+      <form method="GET" action="/logout">
+        <button class="menu-btn" style="background: #444;">Logout</button>
+      </form>
 
     </div>
 
@@ -102,8 +139,8 @@
     </script>
 
     <h1>
-      <span style="color:#F0FFF0">Saldo: </span>
-      <span style="color:#008000">{{ saldo }} €</span>
+      <span style="color: #F0FFF0">Saldo: </span>
+      <span style="color: #008000">{{ saldo }} €</span>
     </h1>
 
     <p>Inserisci una nuova spesa per {{ selected_category }}:</p>
@@ -113,19 +150,27 @@
         id="amount-input"
         name="amount"
         placeholder="Importo (es. 12,50)"
-        style="padding:10px; font-size:20px; font-family:Fantasy; color:#B22222; background-color:#F0FFF0; font-weight:bold"
+        style="padding:10px; font-size:20px; color: #B22222; background-color: #F0FFF0; font-weight:bold"
         required
         
       />
 
-      <button type="submit" style="padding:10px; font-size:16px; font-family:time; background-color: #CD5C5C; border-radius:34px; border-color:#F0FFF0">
+<div class="button-group">
+
+    <form method="POST" action="/add-expense">
+      <button type="submit" class="full-btn btn-red">
         Salva spesa
       </button>
     </form>
 
     <form method="GET" action="/tipo">
-      <button style="background:#444; width:480px;height :50px;margin-top:10px; font-size:16px; background-color: #CD5C6F; border-radius: 34px">Cambia categoria</button>
+      <button class="full-btn btn-dark">
+        Cambia categoria
+      </button>
     </form>
+
+</div>
+
 
     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:40px; margin-top:50px; margin-left: 40px">
       <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('1')">1</button>
@@ -163,6 +208,14 @@
         input.value = input.value.slice(0, -1);
       }
     </script>
-  </body>
-</html>
+        {% if session.user_id == 1 %}
+      <style>
+        body {
+          cursor: url("/static/cursor.png") 0 0, auto;
+        }
+      </style>
+    {% endif %}
 
+  </body>
+</div>
+</html>
