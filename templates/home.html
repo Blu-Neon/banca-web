@@ -213,12 +213,12 @@
 <style>
   /* cursore di default per tutta la pagina */
   * {
-    cursor: url("/static/cursor.png") 0 0, default !important;
+    cursor: url("{{ url_for('static', filename='franci.png')}}") 0 0, default !important;
   }
 
   /* anche per bottoni e elementi che normalmente hanno cursore "pointer" */
   button, a, input, select, textarea, label {
-    cursor: url("/static/cursor.png") 0 0, pointer !important;
+    cursor: url("{{ url_for('static', filename='franci.png')}}") 0 0, pointer !important;
   }
 </style>
 {% endif %}
