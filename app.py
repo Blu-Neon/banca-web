@@ -300,12 +300,12 @@ def tipologia():
     category_colors = {
     "spesa":"#FF6384",
     "altro":"#595A5B",
-    "evitabile":"#FFCE56",
+    "evitabile":"#ED0909",
     "trasporti":"#4BC0C0",
     "ristorante":"#9966FF",
     "svago":"#36A2EF",
-    "viaggio":"#FFA34E",
-    "vestiti":"#FF43FF"
+    "viaggio":"#6D0251",
+    "vestiti":"#3AF083"
     }
 
 
