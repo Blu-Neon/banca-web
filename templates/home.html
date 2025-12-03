@@ -106,7 +106,7 @@
       <span style="color:#008000">{{ saldo }} €</span>
     </h1>
 
-    <p>Inserisci una nuova spesa:</p>
+    <p>Inserisci una nuova spesa per {{ selected_category }}:</p>
     <form method="POST" action="/add-expense" style="display:flex; flex-direction:column; gap:10px;">
       <input
         type="text"
@@ -115,18 +115,16 @@
         placeholder="Importo (es. 12,50)"
         style="padding:10px; font-size:20px; font-family:Fantasy; color:#B22222; background-color:#F0FFF0; font-weight:bold"
         required
+        
       />
 
-      <select name="category" style="padding:10px; font-size:18px; background-color:#F0FFF0; font-family: time; border-radius:34px">
-        <option value="spesa">Spesa</option>
-        <option value="cibo">Cibo</option>
-        <option value="altro">Altro</option>
-        <option value="evitabile">Evitabile</option>
-        <option value="eccezionale">Eccezionale</option>
-      </select>
       <button type="submit" style="padding:10px; font-size:16px; font-family:time; background-color: #CD5C5C; border-radius:34px; border-color:#F0FFF0">
         Salva spesa
       </button>
+    </form>
+
+    <form method="GET" action="/tipo">
+      <button class="menu-btn" style="background:#444; width:480px; background-color: #CD5C5C; border-radius: 34px">Cambia categoria</button>
     </form>
 
     <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:40px; margin-top:50px; margin-left: 40px">

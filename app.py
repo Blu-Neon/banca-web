@@ -92,7 +92,7 @@ def login():
         session["user_id"] = user_id
         session["username"] = username
         flash("Login effettuato!", "success")
-        return redirect(url_for("home"))
+        return redirect(url_for("tipo"))
 
     return render_template("login.html")
 
@@ -102,6 +102,18 @@ def logout():
     flash("Logout effettuato.", "success")
     return redirect(url_for("login"))
 
+# ------------------ TIPO ------------------ #
+
+@app.route("/tipo", methods=["GET", "POST"])
+def tipo():
+    # se invia il form (ha scelto una categoria)
+    if request.method == "POST":
+        category = request.form.get("category")
+        session["selected_category"] = category   # la salvo in sessione
+        return redirect(url_for("home"))         # vado alla home per inserire l'importo
+
+    # se arriva in GET (prima volta dopo login)
+    return render_template("tipo.html")
 
 # ------------------ HOME ------------------ #
 
@@ -111,8 +123,9 @@ def home():
         return redirect(url_for("login"))
 
     user_id = session["user_id"]
+    selected_category = session.get("selected_category")
     saldo = f"{get_saldo(user_id):.2f}"
-    return render_template("home.html", saldo=saldo, username=session.get("username"))
+    return render_template("home.html", saldo=saldo, username=session.get("username"), selected_category=selected_category)
 
 
 # ------------------ AGGIUNTA SPESA ------------------ #
@@ -125,7 +138,11 @@ def add_expense_route():
     user_id = session["user_id"]
 
     amount_str = request.form.get("amount", "").replace(",", ".")
-    category = request.form.get("category", "altro")
+    category = session.get("selected_category")
+
+    if not category:
+        flash("Seleziona prima una categoria", "error")
+        return redirect(url_for("tipo"))
 
     try:
         amount = float(amount_str)
@@ -138,6 +155,7 @@ def add_expense_route():
         return redirect(url_for("home"))
 
     add_expense(user_id, amount, category)
+    session.pop("selected_category", None)
     return redirect(url_for("home"))
 
 
@@ -281,10 +299,13 @@ def tipologia():
 
     category_colors = {
     "spesa":"#FF6384",
-    "altro":"#36A2EB",
+    "altro":"#595A5B",
     "evitabile":"#FFCE56",
-    "eccezionale":"#4BC0C0",
-    "cibo":"#9966FF"
+    "trasporti":"#4BC0C0",
+    "ristorante":"#9966FF",
+    "svago":"#36A2EF",
+    "viaggio":"#FFA34E",
+    "vestiti":"#FF43FF"
     }
 
 

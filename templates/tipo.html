@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tipo</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+        max-width: 480px;
+        margin: auto;
+        background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: white;
+        text-shadow: 0 0 5px black;
+      }
+
+      .categorie {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin: 60px auto 0 auto;
+        max-width: 260px;
+      }
+
+      .categoria-btn {
+        padding: 14px;
+        font-size: 18px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: bold;
+        color: white;
+        text-shadow: none;
+      }
+
+      .btn-spesa        { background: #FF6384; color: black; }
+      .btn-cibo         { background: #9966FF; color: black; }
+      .btn-altro        { background: #36A2EB; color: black; }
+      .btn-evitabile    { background: #FFCE56; color: black; }
+      .btn-eccezionale  { background: #4BC0C0; color: black; }
+      .btn-trasporti    { background: #FF9F40; color: black; }
+      .btn-bollette     { background: #2ecc71; color: black; }
+      .btn-divertimento { background: #e67e22; color: black; }
+    </style>
+  </head>
+
+  <body>
+    <form method="POST" action="/tipo" class="categorie">
+      <button class="categoria-btn btn-spesa"        name="category" value="spesa">Spesa</button>
+      <button class="categoria-btn btn-cibo"         name="category" value="ristorante">Ristorante</button>
+      <button class="categoria-btn btn-altro"        name="category" value="altro">Altro</button>
+      <button class="categoria-btn btn-evitabile"    name="category" value="evitabile">Evitabile</button>
+      <button class="categoria-btn btn-eccezionale"  name="category" value="vestiti">Vestiti</button>
+      <button class="categoria-btn btn-trasporti"    name="category" value="trasporti">Trasporti</button>
+      <button class="categoria-btn btn-bollette"     name="category" value="viaggio">Viaggio</button>
+      <button class="categoria-btn btn-divertimento" name="category" value="svago">Svago</button>
+    </form>
+  </body>
+</html>
