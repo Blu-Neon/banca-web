@@ -160,9 +160,114 @@
     </style>
 </head>
 <body>
+        <!-- ====================== MENU UNIVERSALE ====================== -->
+
+<style>
+  #menu-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 10px;
+    padding: 5px 12px;
+    border: none;
+    cursor: pointer;
+    z-index: 9999;
+  }
+
+  #dropdown-menu {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background: rgba(255,255,255,0.9);
+    padding: 15px;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+
+    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    z-index: 9998;
+  }
+
+  #dropdown-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .menu-btn {
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    width: 160px;
+  }
+</style>
+
+<!-- Pulsante menu -->
+<button id="menu-button">☰</button>
+
+<!-- Menu contenitore -->
+<div id="dropdown-menu">
+  <form method="GET" action="/update-saldo">
+    <button class="menu-btn" style="background: #20B2AA;">Aggiorna saldo</button>
+  </form>
+
+  <form method="GET" action="/grafico">
+    <button class="menu-btn" style="background: #CD5C5C;">Grafico del mese</button>
+  </form>
+
+  <form method="GET" action="/tipologia">
+    <button class="menu-btn" style="background: #8B4513;">Spese per tipologia</button>
+  </form>
+
+  <form method="GET" action="/storico">
+    <button class="menu-btn" style="background: #556B2F;">Storico</button>
+  </form>
+
+  <form method="GET" action="/storico_viaggi">
+    <button class="menu-btn" style="background: #6A5ACD;">Storico viaggi</button>
+  </form>
+
+  <form method="GET" action="/logout">
+    <button class="menu-btn" style="background: #444;">Logout</button>
+  </form>
+
+    <form method="GET" action="/home">
+    <button class="menu-btn" style="background: #444;">Home</button>
+  </form>
+
+      <form method="GET" action="/viaggio">
+    <button class="menu-btn" style="background: #444;">Viaggio</button>
+  </form>
+
+</div>
+
+<script>
+  const menuBtn = document.getElementById("menu-button");
+  const drop = document.getElementById("dropdown-menu");
+
+  menuBtn.onclick = () => {
+    drop.classList.toggle("open");
+  };
+</script>
+
+<!-- ================== FINE MENU UNIVERSALE =================== -->
     <!-- RIASSUNTO VIAGGIO -->
     <div class="box">
         <h1>Viaggio attivo</h1>
+        <p style="text-align:center; margin-top:12px;">
+            <a href="{{ url_for('viaggio_spese') }}" style="text-decoration: underline; color:#007bff;">
+                Vedi storico spese del viaggio
+            </a>
+        </p>
 
         <div class="summary">
             <div class="summary-item">
@@ -238,6 +343,17 @@
                     <option value="Svago">Svago</option>
                     <option value="Shopping">Shopping</option>
                     <option value="Altro">Altro</option>
+                </select>
+            </div>
+
+            <div class="select-wrapper">
+                <label for="currency">Valuta</label>
+                <select id="currency" name="currency" required>
+                    <option value="EUR" selected>Euro (€)</option>
+                    <option value="USD">Dollaro USA (USD)</option>
+                    <option value="GBP">Sterlina (GBP)</option>
+                    <option value="CHF">Franco svizzero (CHF)</option>
+                    <option value="JPY">Yen (JPY)</option>
                 </select>
             </div>
 

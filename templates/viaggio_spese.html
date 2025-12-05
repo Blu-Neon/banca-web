@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Storico viaggi</title>
+    <title>Spese viaggio</title>
 
     <style>
         body {
@@ -11,7 +11,7 @@
             max-width: 480px;
             margin: auto;
 
-            background-image: url('https://images.unsplash.com/photo-1500534314211-0a24cd03f2c0?q=80&w=430&auto=format&fit=crop');
+            background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=430&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -35,38 +35,24 @@
             text-align: center;
         }
 
-        .trip-card {
-            border-bottom: 1px solid #ddd;
-            padding: 8px 0;
-        }
-
-        .trip-card:last-child {
-            border-bottom: none;
-        }
-
-        .trip-name {
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .trip-meta {
-            font-size: 13px;
-            color: #555;
-        }
-
-        .trip-values {
+        table {
+            width: 100%;
+            border-collapse: collapse;
             font-size: 14px;
-            margin-top: 4px;
         }
 
-        .saved {
-            color: #28a745;
+        th, td {
+            border-bottom: 1px solid #ddd;
+            padding: 6px 4px;
+        }
+
+        th {
+            text-align: left;
             font-weight: 600;
         }
 
-        .overspent {
-            color: #dc3545;
-            font-weight: 600;
+        td.right {
+            text-align: right;
         }
 
         .back-link {
@@ -81,7 +67,7 @@
     </style>
 </head>
 <body>
-        <!-- ====================== MENU UNIVERSALE ====================== -->
+    <!-- ====================== MENU UNIVERSALE ====================== -->
 
 <style>
   #menu-button {
@@ -181,38 +167,46 @@
 </script>
 
 <!-- ================== FINE MENU UNIVERSALE =================== -->
-    <div class="box">
-        <h1>Storico viaggi</h1>
 
-        {% if viaggi and viaggi|length > 0 %}
-            {% for v in viaggi %}
-                {% set diff = v.budget - v.total_spent %}
-                <div class="trip-card">
-                    <div class="trip-name">
-                        {{ v.name or "Viaggio senza nome" }}
-                    </div>
-                    <div class="trip-meta">
-                        Mese: {{ v.month }}<br>
-                        Dal: {{ v.created_at.strftime("%d/%m/%Y") if v.created_at }}<br>
-                        Al: {{ v.closed_at.strftime("%d/%m/%Y") if v.closed_at }}
-                    </div>
-                    <div class="trip-values">
-                        Budget: {{ "%.2f"|format(v.budget) }} €<br>
-                        Speso: {{ "%.2f"|format(v.total_spent) }} €<br>
-                        {% if diff >= 0 %}
-                            <span class="saved">Risparmiato: {{ "%.2f"|format(diff) }} €</span>
-                        {% else %}
-                            <span class="overspent">Sforato: {{ "%.2f"|format(-diff) }} €</span>
-                        {% endif %}
-                    </div>
-                </div>
-            {% endfor %}
+    <div class="box">
+        <h1>Spese del viaggio</h1>
+
+        {% if spese and spese|length > 0 %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Categoria</th>
+                        <th class="right">Importo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in spese %}
+                        <tr>
+                            <td>
+                                {{ row.created_at.strftime("%d/%m") if row.created_at }}
+                            </td>
+                            <td>{{ row.category }}</td>
+                            <td class="right">
+                                {# Se ho una valuta originale diversa da EUR, mostro "20 USD ≈ 18.40 €" #}
+                                {% if row.original_currency and row.original_currency != 'EUR' and row.original_amount is not none %}
+                                    {{ "%.2f"|format(row.original_amount) }} {{ row.original_currency }}
+                                    &nbsp;≈&nbsp;
+                                    {{ "%.2f"|format(row.amount) }} €
+                                {% else %}
+                                    {{ "%.2f"|format(row.amount) }} €
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         {% else %}
-            <p>Nessun viaggio chiuso al momento.</p>
+            <p>Nessuna spesa registrata per questo viaggio.</p>
         {% endif %}
 
         <div class="back-link">
-            <a href="{{ url_for('tipo') }}">Torna a tipi</a>
+            <a href="{{ url_for('viaggio') }}">Torna al viaggio</a>
         </div>
     </div>
 </body>

@@ -97,6 +97,14 @@ def init_db():
     ); 
     """)
 
+    # Aggiungo le colonne per ricordare la valuta originale (se non ci sono già)
+    cur.execute("""
+        ALTER TABLE travel_transactions
+        ADD COLUMN IF NOT EXISTS original_amount NUMERIC(10,2),
+        ADD COLUMN IF NOT EXISTS original_currency TEXT;
+    """)
+
+
     conn.commit()
     conn.close()
 
@@ -223,9 +231,16 @@ def start_travel(user_id: int, budget: float) -> int:
     return travel_id
 
 
-def add_travel_expense(user_id: int, amount: float, category: str) -> None:
+def add_travel_expense(
+    user_id: int,
+    amount_eur: float,
+    category: str,
+    original_amount=None,
+    original_currency=None,
+) -> None:
     """
     Aggiunge una spesa al viaggio attivo dell'utente.
+    amount_eur è già convertito in EUR.
     """
     conn = get_connection()
     cur = conn.cursor()
@@ -251,14 +266,16 @@ def add_travel_expense(user_id: int, amount: float, category: str) -> None:
     # Inserisco la spesa
     cur.execute(
         """
-        INSERT INTO travel_transactions (travel_id, user_id, amount, category)
-        VALUES (%s, %s, %s, %s);
+        INSERT INTO travel_transactions
+            (travel_id, user_id, amount, category, original_amount, original_currency)
+        VALUES (%s, %s, %s, %s, %s, %s);
         """,
-        (travel_id, user_id, amount, category),
+        (travel_id, user_id, amount_eur, category, original_amount, original_currency),
     )
 
     conn.commit()
     conn.close()
+
 
 def get_travel_summary(user_id: int):
     """

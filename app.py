@@ -2,12 +2,34 @@ from flask import Flask, request, redirect, url_for, render_template, session, f
 from db import init_db, get_saldo, add_expense, add_income, get_connection, start_travel, get_active_travel, add_travel_expense, get_travel_summary, close_active_travel,get_travel_history
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
+import requests
 
 app = Flask(__name__)
 # SECRET KEY (attenzione: è "secret_key", non "security_key")
 app.secret_key = "171dad4fceec506d4829140f5bb5de4fd96007236912e23267b05eafcdf7e6a7"
 
 init_db()
+
+def convert_to_eur_live(amount: float, currency: str) -> float:
+    currency = currency.upper()
+
+    if currency == "EUR":
+        return round(amount, 2)
+
+    try:
+        url = f"https://api.frankfurter.app/latest?amount={amount}&from={currency}&to=EUR"
+        r = requests.get(url, timeout=3)
+        data = r.json()
+
+        # La API ritorna sempre nella forma data["rates"]["EUR"]
+        rate_amount = data["rates"]["EUR"]
+        return round(rate_amount, 2)
+
+    except Exception as e:
+        print("ERRORE conversione:", e)
+        # fallback: non convertire
+        return amount
+
 
 
 # ------------------ REGISTRAZIONE ------------------ #
@@ -432,37 +454,51 @@ def viaggio():
         return redirect(url_for("login"))
     user_id = session["user_id"]
 
-    # Se non c'è viaggio attivo, manda a /budget
+    # Se non c'è viaggio attivo → vai a budget
     active_travel = get_active_travel(user_id)
     if not active_travel:
         return redirect(url_for("budget"))
 
+    # ---------- POST: REGISTRA SPESA ----------
     if request.method == "POST":
         amount_str = request.form.get("amount", "").replace(",", ".")
         category = request.form.get("category")
+        currency = request.form.get("currency", "EUR")
 
         if not category:
             flash("Seleziona prima una categoria", "error")
             return redirect(url_for("viaggio"))
 
+        # valida importo
         try:
-            amount = float(amount_str)
+            amount_foreign = float(amount_str)
         except ValueError:
             flash("Importo non valido", "error")
             return redirect(url_for("viaggio"))
 
-        if amount <= 0:
+        if amount_foreign <= 0:
             flash("L'importo deve essere positivo", "error")
             return redirect(url_for("viaggio"))
 
-        add_travel_expense(user_id, amount, category)
-        session.pop("selected_category", None)
+        # Conversione live in EUR
+        amount_eur = convert_to_eur_live(amount_foreign, currency)
+
+        # Salva spesa viaggio (EUR + valuta originale)
+        add_travel_expense(
+            user_id,
+            amount_eur,
+            category,
+            original_amount=amount_foreign,
+            original_currency=currency,
+        )
+
         return redirect(url_for("viaggio"))
 
-    # GET: mostra la pagina viaggio con riassunto
+    # ---------- GET: MOSTRA RIEPILOGO VIAGGIO ----------
     travel, total_spent, per_category = get_travel_summary(user_id)
+
+    # (Doppio check sicurezza)
     if not travel:
-        # per sicurezza, anche se sopra abbiamo già controllato
         return redirect(url_for("budget"))
 
     budget = float(travel["budget"])
@@ -475,6 +511,8 @@ def viaggio():
         remaining=f"{remaining:.2f}",
         per_category=per_category,
     )
+
+
 
 
 @app.route("/viaggio/chiudi", methods=["POST"])
@@ -510,6 +548,40 @@ def storico_viaggi():
 
     viaggi = get_travel_history(user_id)
     return render_template("storico_viaggi.html", viaggi=viaggi)
+
+@app.route("/viaggio/spese")
+def viaggio_spese():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    user_id = session["user_id"]
+
+    # viaggio attivo
+    active_travel = get_active_travel(user_id)
+    if not active_travel:
+        flash("Nessun viaggio attivo", "error")
+        return redirect(url_for("budget"))
+
+    travel_id = active_travel["id"]
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT
+            category,
+            amount,                -- in EUR
+            original_amount,
+            original_currency,
+            created_at
+        FROM travel_transactions
+        WHERE travel_id = %s
+        ORDER BY created_at DESC;
+        """,
+        (travel_id,),
+    )
+    rows = cur.fetchall()
+    conn.close()
+    return render_template("viaggio_spese.html", spese=rows)
 
 if __name__ == "__main__":
     app.run()
