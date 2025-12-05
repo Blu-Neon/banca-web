@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, url_for, render_template, session, flash
-from db import init_db, get_saldo, add_expense, add_income, get_connection
+from db import init_db, get_saldo, add_expense, add_income, get_connection, start_travel, get_active_travel, add_travel_expense, get_travel_summary, close_active_travel,get_travel_history
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -109,6 +109,11 @@ def tipo():
     # se invia il form (ha scelto una categoria)
     if request.method == "POST":
         category = request.form.get("category")
+        
+        #controllo se viaggio e reindirizzo
+        if category == "viaggio"
+            return redirect(url_for("viaggio"))
+
         session["selected_category"] = category   # la salvo in sessione
         return redirect(url_for("home"))         # vado alla home per inserire l'importo
 
@@ -388,6 +393,123 @@ def storico():
         })
 
     return render_template("storico.html", storico=storico)
+
+
+# ------------------ BUDGET ------------------ #
+
+@app.route("/budget", methods=["GET", "POST"])
+def budget():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    user_id = session["user_id"]
+
+    if request.method == "POST":
+        amount_str = request.form.get("amount", "").replace(",", ".")
+        try:
+            amount = float(amount_str)
+        except ValueError:
+            flash("Importo non valido", "error")
+            return redirect(url_for("budget"))
+
+        if amount <= 0:
+            flash("L'importo deve essere positivo", "error")
+            return redirect(url_for("budget"))
+
+        # Inizia un nuovo viaggio con questo budget
+        start_travel(user_id, amount)
+        return redirect(url_for("viaggio"))
+
+    # GET: se c'è già un viaggio attivo, potresti anche reindirizzare
+    active_travel = get_active_travel(user_id)
+    current_budget = f"{active_travel['budget']:.2f}" if active_travel else "0.00"
+    return render_template("budget.html", budget=current_budget)
+
+# ------------------ VIAGGIO -------------------#
+
+@app.route("/viaggio", methods=["GET", "POST"])
+def viaggio():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    user_id = session["user_id"]
+
+    # Se non c'è viaggio attivo, manda a /budget
+    active_travel = get_active_travel(user_id)
+    if not active_travel:
+        return redirect(url_for("budget"))
+
+    if request.method == "POST":
+        amount_str = request.form.get("amount", "").replace(",", ".")
+        category = request.form.get("category")
+
+        if not category:
+            flash("Seleziona prima una categoria", "error")
+            return redirect(url_for("viaggio"))
+
+        try:
+            amount = float(amount_str)
+        except ValueError:
+            flash("Importo non valido", "error")
+            return redirect(url_for("viaggio"))
+
+        if amount <= 0:
+            flash("L'importo deve essere positivo", "error")
+            return redirect(url_for("viaggio"))
+
+        add_travel_expense(user_id, amount, category)
+        session.pop("selected_category", None)
+        return redirect(url_for("viaggio"))
+
+    # GET: mostra la pagina viaggio con riassunto
+    travel, total_spent, per_category = get_travel_summary(user_id)
+    if not travel:
+        # per sicurezza, anche se sopra abbiamo già controllato
+        return redirect(url_for("budget"))
+
+    budget = float(travel["budget"])
+    remaining = budget - total_spent
+
+    return render_template(
+        "viaggio.html",
+        budget=f"{budget:.2f}",
+        total_spent=f"{total_spent:.2f}",
+        remaining=f"{remaining:.2f}",
+        per_category=per_category,
+    )
+
+
+@app.route("/viaggio/chiudi", methods=["POST"])
+def chiudi_viaggio():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    user_id = session["user_id"]
+
+    nome = request.form.get("nome_viaggio", "").strip() or None
+
+    travel, total_spent, remaining = close_active_travel(user_id, nome)
+
+    if not travel:
+        flash("Nessun viaggio attivo da chiudere", "error")
+        return redirect(url_for("viaggio"))
+
+    # Messaggino riassuntivo (remaining può essere + o -)
+    if remaining > 0:
+        flash(f"Hai risparmiato {remaining:.2f}€, aggiunti al saldo 🎉", "success")
+    elif remaining < 0:
+        flash(f"Hai sforato il budget di {-remaining:.2f}€, tolti dal saldo 😅", "error")
+    else:
+        flash("Hai speso esattamente il budget!", "info")
+
+    return redirect(url_for("storico_viaggi"))
+
+
+@app.route("/storico_viaggi")
+def storico_viaggi():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+    user_id = session["user_id"]
+
+    viaggi = get_travel_history(user_id)
+    return render_template("storico_viaggi.html", viaggi=viaggi)
 
 if __name__ == "__main__":
     app.run()

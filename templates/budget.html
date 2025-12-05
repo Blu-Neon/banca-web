@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Budget viaggio</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 480px;
+            margin: auto;
+
+            background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            color: white;
+            text-shadow: 0 0 5px black;
+        }
+
+        .box {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 16px;
+            color: #333;
+            margin-top: 10px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .current-budget {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .amount-display {
+            width: 100%;
+            text-align: right;
+            font-size: 32px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .keypad button {
+            padding: 12px;
+            font-size: 20px;
+            border-radius: 12px;
+            border: none;
+            background: #f1f1f1;
+        }
+
+        .keypad button:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 12px;
+            border: none;
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .back-link {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .back-link a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Budget viaggio</h1>
+
+        <div class="current-budget">
+            Budget attuale: <strong>{{ budget }} €</strong>
+        </div>
+
+        <form method="POST" action="{{ url_for('budget') }}">
+            <!-- Importo che verrà mandato al backend -->
+            <input type="text" id="amount-input" name="amount" class="amount-display" readonly value="0">
+
+            <div class="keypad">
+                <button type="button" onclick="addDigit('1')">1</button>
+                <button type="button" onclick="addDigit('2')">2</button>
+                <button type="button" onclick="addDigit('3')">3</button>
+                <button type="button" onclick="addDigit('4')">4</button>
+                <button type="button" onclick="addDigit('5')">5</button>
+                <button type="button" onclick="addDigit('6')">6</button>
+                <button type="button" onclick="addDigit('7')">7</button>
+                <button type="button" onclick="addDigit('8')">8</button>
+                <button type="button" onclick="addDigit('9')">9</button>
+                <button type="button" onclick="addDigit(',')">,</button>
+                <button type="button" onclick="addDigit('0')">0</button>
+                <button type="button" onclick="delDigit()">⌫</button>
+            </div>
+
+            <button type="submit" class="btn-primary">Imposta budget</button>
+        </form>
+
+        <div class="back-link">
+            <a href="{{ url_for('tipo') }}">Indietro</a>
+        </div>
+    </div>
+
+    <script>
+        const input = document.getElementById('amount-input');
+
+        function addDigit(d) {
+            if (input.value === '0' && d !== ',') {
+                input.value = d;
+            } else {
+                // evita doppia virgola
+                if (d === ',' && input.value.includes(',')) return;
+                input.value += d;
+            }
+        }
+
+        function delDigit() {
+            if (input.value.length <= 1) {
+                input.value = '0';
+            } else {
+                input.value = input.value.slice(0, -1);
+            }
+        }
+    </script>
+</body>
+</html>

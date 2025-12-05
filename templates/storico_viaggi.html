@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Storico viaggi</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            max-width: 480px;
+            margin: auto;
+
+            background-image: url('https://images.unsplash.com/photo-1500534314211-0a24cd03f2c0?q=80&w=430&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            color: white;
+            text-shadow: 0 0 5px black;
+        }
+
+        .box {
+            background: rgba(255,255,255,0.9);
+            padding: 20px;
+            border-radius: 16px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        .trip-card {
+            border-bottom: 1px solid #ddd;
+            padding: 8px 0;
+        }
+
+        .trip-card:last-child {
+            border-bottom: none;
+        }
+
+        .trip-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .trip-meta {
+            font-size: 13px;
+            color: #555;
+        }
+
+        .trip-values {
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .saved {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .overspent {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .back-link {
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .back-link a {
+            color: white;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>Storico viaggi</h1>
+
+        {% if viaggi and viaggi|length > 0 %}
+            {% for v in viaggi %}
+                {% set diff = v.budget - v.total_spent %}
+                <div class="trip-card">
+                    <div class="trip-name">
+                        {{ v.name or "Viaggio senza nome" }}
+                    </div>
+                    <div class="trip-meta">
+                        Mese: {{ v.month }}<br>
+                        Dal: {{ v.created_at.strftime("%d/%m/%Y") if v.created_at }}<br>
+                        Al: {{ v.closed_at.strftime("%d/%m/%Y") if v.closed_at }}
+                    </div>
+                    <div class="trip-values">
+                        Budget: {{ "%.2f"|format(v.budget) }} €<br>
+                        Speso: {{ "%.2f"|format(v.total_spent) }} €<br>
+                        {% if diff >= 0 %}
+                            <span class="saved">Risparmiato: {{ "%.2f"|format(diff) }} €</span>
+                        {% else %}
+                            <span class="overspent">Sforato: {{ "%.2f"|format(-diff) }} €</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Nessun viaggio chiuso al momento.</p>
+        {% endif %}
+
+        <div class="back-link">
+            <a href="{{ url_for('tipo') }}">Torna a tipi</a>
+        </div>
+    </div>
+</body>
+</html>
