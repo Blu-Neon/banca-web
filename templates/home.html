@@ -1,32 +1,68 @@
 
-
 <!DOCTYPE html>
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Banca</title>
-  </head>
-  <body style="
-    font-family: sans-serif;
-    padding: 20px;
-    max-width: 480px;
-    margin: auto;
-
-    background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-
-    color: white;
-    text-shadow: 0 0 5px black;
-  ">
 
     <style>
+      body {
+        font-family: sans-serif;
+        padding: 20px;
+        max-width: 480px;
+        margin: auto;
+
+        background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        color: white;
+        text-shadow: 0 0 5px black;
+      }
+
+      .container{
+        max-width: 480px;
+        margin: auto;
+        padding: 20px;
+      }
+      
+      .full-btn {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 34px;
+        border-color: #F0FFF0;
+        color: white;
+        font-weight: bold;
+        border: none;
+      }
+
+      .btn-dark {
+        background-color: #444;
+      }
+
+      .button-group {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 15px;
+      }
+  
+      .vertical-grad {
+        background: linear-gradient(to top, #ff4d4d, #daa520);
+        padding: 12px 20px;
+        color: white;
+        width: 100%;
+      }
+
+      /* ===== MENU UNIVERSALE ===== */
       #menu-button {
         position: fixed;
         top: 20px;
         right: 20px;
+        color: black;
         font-size: 30px;
         background: rgba(255,255,255,0.7);
         border-radius: 10px;
@@ -40,7 +76,7 @@
         position: fixed;
         top: 70px;
         right: 20px;
-        background: rgba(255,255,255,0.9);
+        background: rgba(255,255,255,0.7);
         padding: 15px;
         border-radius: 15px;
         display: flex;
@@ -51,9 +87,8 @@
         transform: translateY(-10px);
         pointer-events: none;
 
-        /* animazione */
         transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-        z-indez: 9998;
+        z-index: 9998;
       }
 
       #dropdown-menu.open {
@@ -65,70 +100,56 @@
       .menu-btn {
         padding: 10px;
         border-radius: 10px;
+        color: black;
         font-size: 16px;
         border: none;
         cursor: pointer;
         width: 160px;
       }
-
-      .container{
-        max-width: 480px;
-        margin: auto;
-        padding: 20px;
-      }
-      
-      .full-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 34px;
-    border-color: #F0FFF0;
-    color: white;
-    font-weight: bold;
-  }
-
-  .btn-red {
-    background-color: #CD5C5C;
-  }
-
-  .btn-dark {
-    background-color: #444;
-  }
-
-  .button-group {
-    display: flex;
-    flex-direction: column;
-    gap: 12px; /* distanza tra i bottoni */
-    margin-top: 15px;
-  }
+      /* ===== FINE MENU UNIVERSALE ===== */
     </style>
+  </head>
 
-<div class="container">
+  <body>
 
+    <!-- ====================== MENU UNIVERSALE ====================== -->
+
+    <!-- Pulsante menu -->
     <button id="menu-button">☰</button>
 
+    <!-- Menu contenitore -->
     <div id="dropdown-menu">
+
+      <form method="GET" action="/tipo">
+        <button class="menu-btn" style="background: linear-gradient(to top, #FF69B4, #FFFFF0);">Home</button>
+      </form>
+      
       <form method="GET" action="/update-saldo">
-        <button class="menu-btn" style="background: #20B2AA;">Aggiorna saldo</button>
+        <button class="menu-btn" style="background: linear-gradient(to top, #20B2AA, #FFFFF0);">Aggiorna saldo</button>
       </form>
 
       <form method="GET" action="/grafico">
-        <button class="menu-btn" style="background: #CD5C5C;">Grafico del mese</button>
+        <button class="menu-btn" style="background: linear-gradient(to top, #CD5C5C, #FFFFF0);">Grafico del mese</button>
       </form>
 
       <form method="GET" action="/tipologia">
-        <button class="menu-btn" style="background: #8B4513;">Spese per tipologia</button>
+        <button class="menu-btn" style="background: linear-gradient(to top, #CD853F, #FFFFF0);">Spese per tipologia</button>
       </form>
 
       <form method="GET" action="/storico">
-        <button class="menu-btn" style="background: #556B2F;">Storico</button>
+        <button class="menu-btn" style="background: linear-gradient(to top, #8FBC8F, #FFFFF0);">Storico</button>
       </form>
-      <form method="GET" action="/logout">
-        <button class="menu-btn" style="background: #444;">Logout</button>
+      
+      <form method="GET" action="/viaggio">
+        <button class="menu-btn" style="background: linear-gradient(to top, #ADD8E6, #FFFFF0);">Viaggio</button>
       </form>
 
-      <form method="GET" action="/viaggio">
-        <button class="menu-btn" style="background: #444;">Viaggio</button>
+      <form method="GET" action="/storico_viaggi">
+        <button class="menu-btn" style="background: linear-gradient(to top, #F0E68C, #FFFFF0);">Storico viaggi</button>
+      </form>
+
+      <form method="GET" action="/logout">
+        <button class="menu-btn" style="background:linear-gradient(to top, #696969, #FFFFF0);">Logout</button>
       </form>
 
     </div>
@@ -142,91 +163,94 @@
       };
     </script>
 
-    <h1>
-      <span style="color: #F0FFF0">Saldo: </span>
-      <span style="color: #008000">{{ saldo }} €</span>
-    </h1>
+    <!-- ================== FINE MENU UNIVERSALE =================== -->
 
-    <p>Inserisci una nuova spesa per {{ selected_category }}:</p>
-    <form method="POST" action="/add-expense" style="display:flex; flex-direction:column; gap:10px;">
-      <input
-        type="text"
-        id="amount-input"
-        name="amount"
-        placeholder="Importo (es. 12,50)"
-        style="padding:10px; font-size:20px; color: #B22222; background-color: #F0FFF0; font-weight:bold"
-        required
-        
-      />
+    <div class="container">
 
-<div class="button-group">
+      <h1>
+        <span style="color: #F0FFF0">Saldo: </span>
+        <span style="color: #008000">{{ saldo }} €</span>
+      </h1>
 
-    <form method="POST" action="/add-expense">
-      <button type="submit" class="full-btn btn-red">
-        Salva spesa
-      </button>
-    </form>
+      <p>Inserisci una nuova spesa per {{ selected_category }}:</p>
 
-    <form method="GET" action="/tipo">
-      <button class="full-btn btn-dark">
-        Cambia categoria
-      </button>
-    </form>
+      <!-- Form principale per aggiungere la spesa -->
+      <form method="POST" action="/add-expense" style="display:flex; flex-direction:column; gap:10px;">
+        <input
+          type="text"
+          id="amount-input"
+          name="amount"
+          placeholder="Importo (es. 12,50)"
+          style="padding:10px; font-size:20px; color: #B22222; background-color: #F0FFF0; font-weight:bold"
+          required
+        />
 
-</div>
+        <div class="button-group">
+          <button type="submit" class="full-btn vertical-grad">
+            Salva spesa
+          </button>
+        </div>
+      </form>
 
+      <!-- Bottone separato per cambiare categoria -->
+      <form method="GET" action="/tipo" style="margin-top: 10px;">
+        <button class="full-btn btn-dark">
+          Cambia categoria
+        </button>
+      </form>
 
-    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:40px; margin-top:50px; margin-left: 40px">
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('1')">1</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('2')">2</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('3')">3</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('4')">4</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('5')">5</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('6')">6</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('7')">7</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('8')">8</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('9')">9</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar(',')">,</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('0')">0</button>
-      <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="backspace()">C</button>
-    </div>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:40px; margin-top:50px; margin-left: 40px">
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('1')">1</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('2')">2</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('3')">3</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('4')">4</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('5')">5</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('6')">6</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('7')">7</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('8')">8</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('9')">9</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar(',')">,</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('0')">0</button>
+        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="backspace()">C</button>
+      </div>
 
-    <script>
-      function addChar(ch) {
-        const input = document.getElementById('amount-input');
-        if (ch === ',' && input.value.includes(',')) {
-          return; // evita due virgole
+      <script>
+        function addChar(ch) {
+          const input = document.getElementById('amount-input');
+          if (ch === ',' && input.value.includes(',')) {
+            return; // evita due virgole
+          }
+          if (input.value === '0' && ch !== ',') {
+            input.value = ch; // sostituisce lo zero iniziale
+          } else {
+            input.value = input.value + ch;
+          }
         }
-        if (input.value === '0' && ch !== ',') {
-          input.value = ch; // sostituisce lo zero iniziale
-        } else {
-          input.value = input.value + ch;
+        function clearInput() {
+          const input = document.getElementById('amount-input');
+          input.value = '';
         }
-      }
-      function clearInput() {
-        const input = document.getElementById('amount-input');
-        input.value = '';
-      }
-      function backspace() {
-        const input = document.getElementById('amount-input');
-        input.value = input.value.slice(0, -1);
-      }
-    </script>
+        function backspace() {
+          const input = document.getElementById('amount-input');
+          input.value = input.value.slice(0, -1);
+        }
+      </script>
 
-    {% if session.get('user_id') == 1 %}
-<style>
-  /* cursore di default per tutta la pagina */
-  * {
-    cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
-  }
+      {% if session.get('user_id') == 1 %}
+      <style>
+        /* cursore di default per tutta la pagina */
+        * {
+          cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
+        }
 
-  /* anche per bottoni e elementi che normalmente hanno cursore "pointer" */
-  button, a, input, select, textarea, label {
-    cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
-  }
-</style>
-{% endif %}
+        /* anche per bottoni e elementi che normalmente hanno cursore "pointer" */
+        button, a, input, select, textarea, label {
+          cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
+        }
+      </style>
+      {% endif %}
+
+    </div> <!-- fine .container -->
 
   </body>
-</div>
 </html>

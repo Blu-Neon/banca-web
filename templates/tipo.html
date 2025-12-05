@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Tipo</title>
   
@@ -10,11 +10,13 @@
         padding: 20px;
         max-width: 480px;
         margin: auto;
+
         background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: fixed;
+
         color: white;
         text-shadow: 0 0 5px black;
       }
@@ -25,7 +27,6 @@
         gap: 30px;
         margin: 30px auto 0 auto;
         max-width: 320px;
-        
       }
 
       .categoria-btn {
@@ -39,13 +40,6 @@
         text-shadow: none;
       }
 
-      .container {
-        max-width: 480px;   
-        margin: auto;       
-        padding: 20px;
-      }
-
-
       .btn-spesa        { background: #FF6384; color: black; }
       .btn-ristorante   { background: #9966FF; color: black; }
       .btn-altro        { background: #595A5B; color: black; }
@@ -54,97 +48,97 @@
       .btn-trasporti    { background: #48C0C0; color: black; }
       .btn-viaggio      { background: #6d0251; color: black; }
       .btn-svago        { background: #36A2EF; color: black; }
+
+      /* ====================== MENU UNIVERSALE ====================== */
+      #menu-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        font-size: 30px;
+        background: rgba(255,255,255,0.7);
+        border-radius: 10px;
+        padding: 5px 12px;
+        border: none;
+        cursor: pointer;
+        z-index: 9999;
+      }
+
+      #dropdown-menu {
+        position: fixed;
+        top: 70px;
+        right: 20px;
+        background: rgba(255,255,255,0.7);
+        padding: 15px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        opacity: 0;
+        transform: translateY(-10px);
+        pointer-events: none;
+
+        transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+        z-index: 9998;
+      }
+
+      #dropdown-menu.open {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .menu-btn {
+        padding: 10px;
+        border-radius: 10px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+        width: 160px;
+      }
+      /* ================== FINE MENU UNIVERSALE =================== */
+
     </style>
-  </head>
+</head>
 
-  <div class="container"></div>
-    <body>
-       <!-- ====================== MENU UNIVERSALE ====================== -->
+<body>
 
-<style>
-  #menu-button {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    font-size: 30px;
-    background: rgba(255,255,255,0.7);
-    border-radius: 10px;
-    padding: 5px 12px;
-    border: none;
-    cursor: pointer;
-    z-index: 9999;
-  }
+<!-- ====================== MENU UNIVERSALE ====================== -->
 
-  #dropdown-menu {
-    position: fixed;
-    top: 70px;
-    right: 20px;
-    background: rgba(255,255,255,0.9);
-    padding: 15px;
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-    z-index: 9998;
-  }
-
-  #dropdown-menu.open {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
-
-  .menu-btn {
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 16px;
-    border: none;
-    cursor: pointer;
-    width: 160px;
-  }
-</style>
-
-<!-- Pulsante menu -->
 <button id="menu-button">☰</button>
 
-<!-- Menu contenitore -->
 <div id="dropdown-menu">
+
+  <form method="GET" action="/tipo">
+    <button class="menu-btn" style="background: linear-gradient(to top, #FF69B4, #FFFFF0);">Home</button>
+  </form>
+
   <form method="GET" action="/update-saldo">
-    <button class="menu-btn" style="background: #20B2AA;">Aggiorna saldo</button>
+    <button class="menu-btn" style="background: linear-gradient(to top, #20B2AA, #FFFFF0);">Aggiorna saldo</button>
   </form>
 
   <form method="GET" action="/grafico">
-    <button class="menu-btn" style="background: #CD5C5C;">Grafico del mese</button>
+    <button class="menu-btn" style="background: linear-gradient(to top, #CD5C5C, #FFFFF0);">Grafico del mese</button>
   </form>
 
   <form method="GET" action="/tipologia">
-    <button class="menu-btn" style="background: #8B4513;">Spese per tipologia</button>
+    <button class="menu-btn" style="background: linear-gradient(to top, #CD853F, #FFFFF0);">Spese per tipologia</button>
   </form>
 
   <form method="GET" action="/storico">
-    <button class="menu-btn" style="background: #556B2F;">Storico</button>
+    <button class="menu-btn" style="background: linear-gradient(to top, #8FBC8F, #FFFFF0);">Storico</button>
+  </form>
+
+  <form method="GET" action="/viaggio">
+    <button class="menu-btn" style="background: linear-gradient(to top, #ADD8E6, #FFFFF0);">Viaggio</button>
   </form>
 
   <form method="GET" action="/storico_viaggi">
-    <button class="menu-btn" style="background: #6A5ACD;">Storico viaggi</button>
+    <button class="menu-btn" style="background: linear-gradient(to top, #F0E68C, #FFFFF0);">Storico viaggi</button>
   </form>
 
   <form method="GET" action="/logout">
-    <button class="menu-btn" style="background: #444;">Logout</button>
-  </form>
-
-    <form method="GET" action="/home">
-    <button class="menu-btn" style="background: #444;">Home</button>
-  </form>
-
-      <form method="GET" action="/viaggio">
-    <button class="menu-btn" style="background: #444;">Viaggio</button>
+    <button class="menu-btn" style="background:linear-gradient(to top, #696969, #FFFFF0);">Logout</button>
   </form>
 
 </div>
@@ -152,38 +146,32 @@
 <script>
   const menuBtn = document.getElementById("menu-button");
   const drop = document.getElementById("dropdown-menu");
-
-  menuBtn.onclick = () => {
-    drop.classList.toggle("open");
-  };
+  menuBtn.onclick = () => drop.classList.toggle("open");
 </script>
 
 <!-- ================== FINE MENU UNIVERSALE =================== -->
-      <form method="POST" action="/tipo" class="categorie">
-        <button class="categoria-btn btn-ristorante"   name="category" value="ristorante" style="width:120px; height: 120px;">Ristorante</button>
-        <button class="categoria-btn btn-evitabile"    name="category" value="evitabile"  style="width:120px; height: 120px;">Evitabile</button>
-        <button class="categoria-btn btn-vestiti"      name="category" value="vestiti"    style="width:120px; height: 120px;">Vestiti</button>
-        <button class="categoria-btn btn-trasporti"    name="category" value="trasporti"  style="width:120px; height: 120px;">Trasporti</button>
-        <button class="categoria-btn btn-viaggio"      name="category" value="viaggio"    style="width:120px; height: 120px;">Viaggio</button>
-        <button class="categoria-btn btn-svago"        name="category" value="svago"      style="width:120px; height: 120px;">Svago</button>
-        <button class="categoria-btn btn-altro"        name="category" value="altro"      style="width:120px; height: 120px;">Altro</button>
-        <button class="categoria-btn btn-spesa"        name="category" value="spesa"      style="width:120px; height: 120px;">Spesa</button>
-      </form>
-    </body>
 
-    {% if session.get('user_id') == 1 %}
+<form method="POST" action="/tipo" class="categorie">
+  <button class="categoria-btn btn-ristorante" name="category" value="ristorante" style="width:120px; height:120px;">Ristorante</button>
+  <button class="categoria-btn btn-evitabile"  name="category" value="evitabile"  style="width:120px; height:120px;">Evitabile</button>
+  <button class="categoria-btn btn-vestiti"    name="category" value="vestiti"    style="width:120px; height:120px;">Vestiti</button>
+  <button class="categoria-btn btn-trasporti"  name="category" value="trasporti"  style="width:120px; height:120px;">Trasporti</button>
+  <button class="categoria-btn btn-viaggio"    name="category" value="viaggio"    style="width:120px; height:120px;">Viaggio</button>
+  <button class="categoria-btn btn-svago"      name="category" value="svago"      style="width:120px; height:120px;">Svago</button>
+  <button class="categoria-btn btn-altro"      name="category" value="altro"      style="width:120px; height:120px;">Altro</button>
+  <button class="categoria-btn btn-spesa"      name="category" value="spesa"      style="width:120px; height:120px;">Spesa</button>
+</form>
+
+{% if session.get('user_id') == 1 %}
 <style>
-  /* cursore di default per tutta la pagina */
   * {
     cursor: url("/static/cursor.png") 0 0, default !important;
   }
-
-  /* anche per bottoni e elementi che normalmente hanno cursore "pointer" */
   button, a, input, select, textarea, label {
     cursor: url("/static/cursor.png") 0 0, pointer !important;
   }
 </style>
 {% endif %}
 
-  </div>
+</body>
 </html>
