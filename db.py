@@ -82,7 +82,8 @@ def init_db():
         budget NUMERIC(10,2) NOT NULL,           -- budget iniziale
         created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
         closed_at TIMESTAMP,                      -- quando lo chiudi
-        is_active BOOLEAN NOT NULL DEFAULT TRUE   -- viaggio attivo/sospeso);
+        is_active BOOLEAN NOT NULL DEFAULT TRUE   -- viaggio attivo/sospeso
+    );
     """)
 
     cur.execute(""" 
@@ -92,7 +93,8 @@ def init_db():
         user_id INTEGER NOT NULL REFERENCES accounts(user_id) ON DELETE CASCADE,
         amount NUMERIC(10,2) NOT NULL,
         category TEXT NOT NULL,
-        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP; 
+        created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ); 
     """)
 
     conn.commit()

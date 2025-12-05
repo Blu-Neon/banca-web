@@ -111,7 +111,7 @@ def tipo():
         category = request.form.get("category")
         
         #controllo se viaggio e reindirizzo
-        if category == "viaggio"
+        if category == "viaggio":
             return redirect(url_for("viaggio"))
 
         session["selected_category"] = category   # la salvo in sessione
