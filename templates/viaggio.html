@@ -280,9 +280,15 @@
             </div>
             <div class="summary-item">
                 <span>Rimanente:</span>
-                <span class="{% if remaining|float >= 0 %}remaining-positive{% else %}remaining-negative{% endif %}">
-                    <strong>{{ remaining }} €</strong>
-                </span>
+                    <span>Rimanente:</span>
+    <span class="{% if remaining|float >= 0 %}remaining-positive{% else %}remaining-negative{% endif %}">
+        <strong>{{ remaining }} €</strong>
+        {% if display_currency != 'EUR' %}
+            <span style="font-size: 13px; margin-left: 6px;">
+                (≈ {{ remaining_display }} {{ display_currency }})
+            </span>
+        {% endif %}
+    </span>
             </div>
         </div>
 

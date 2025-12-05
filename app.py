@@ -30,6 +30,20 @@ def convert_to_eur_live(amount: float, currency: str) -> float:
         # fallback: non convertire
         return amount
 
+def convert_from_eur_live(amount_eur: float, currency: str) -> float:
+    currency = (currency or "EUR").upper()
+    if currency == "EUR":
+        return round(amount_eur, 2)
+    try:
+        url = f"https://api.frankfurter.app/latest?amount={amount_eur}&from=EUR&to={currency}"
+        r = requests.get(url, timeout=3)
+        data = r.json()
+        value = data["rates"][currency]
+        return round(float(value), 2)
+    except Exception as e:
+        print("ERRORE conversione da EUR:", e)
+        return round(amount_eur, 2)
+
 
 
 # ------------------ REGISTRAZIONE ------------------ #
@@ -504,12 +518,17 @@ def viaggio():
     budget = float(travel["budget"])
     remaining = budget - total_spent
 
+    display_currency = request.args.get("display_currency", "EUR").upper()
+    remaining_display = convert_from_eur_live(remaining, display_currency)
+
     return render_template(
         "viaggio.html",
         budget=f"{budget:.2f}",
         total_spent=f"{total_spent:.2f}",
         remaining=f"{remaining:.2f}",
         per_category=per_category,
+        display_currency=display_currency,
+        remaining_display=f"{remaining_display:.2f}"
     )
 
 
