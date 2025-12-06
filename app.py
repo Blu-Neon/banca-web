@@ -314,7 +314,7 @@ def profile():
 
     # GET → carica dati utente
     cur.execute(
-        "SELECT username, email, created_at FROM users WHERE id = %s;",
+        "SELECT username, email FROM users WHERE id = %s;",
         (user_id,)
     )
     user = cur.fetchone()
