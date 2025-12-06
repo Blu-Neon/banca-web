@@ -3,10 +3,11 @@ from db import init_db, get_saldo, add_expense, add_income, get_connection, star
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
+import os
 
 app = Flask(__name__)
 # SECRET KEY (attenzione: è "secret_key", non "security_key")
-app.secret_key = "171dad4fceec506d4829140f5bb5de4fd96007236912e23267b05eafcdf7e6a7"
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
 
 init_db()
 
