@@ -5,23 +5,16 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import requests
 import os
 import re 
-import smtplib
-from email.mime.text import MIMEText
 import secrets
 from datetime import datetime, timedelta
+
+# 475QZHTGNEQEEDJNXLYU7MRH
+# Chiave APIqy3DnhIAHkvPQRB4
 
 app = Flask(__name__)
 # SECRET KEY (attenzione: è "secret_key", non "security_key")
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
 EMAIL_REGEX = re.compile(r"^[^@]+@[^@]+\.[^@]+$")
-
-#reset su email
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 465
-app.config["MAIL_USE_SSL"] = True
-app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")  # meglio env
-app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
-app.config["MAIL_FROM"] = "Budget App <tuaccount@gmail.com>"
 
 
 init_db()
@@ -60,39 +53,46 @@ def convert_from_eur_live(amount_eur: float, currency: str) -> float:
         print("ERRORE conversione da EUR:", e)
         return round(amount_eur, 2)
 
+
 def send_reset_email(to_email, reset_link):
-    subject = "Reset della password - Budget App"
+    api_key = os.environ.get("BREVO_API_KEY")
+    sender = os.environ.get("MAIL_FROM")
 
-    body = f"""
-Ciao!
+    if not api_key or not sender:
+        print("[BREVO] Non configurato. Invierei a:", to_email)
+        print("[BREVO] LINK RESET:", reset_link)
+        return
 
-Hai richiesto di reimpostare la password del tuo account.
-Per scegliere una nuova password, clicca sul link qui sotto (valido per 1 ora):
+    url = "https://api.brevo.com/v3/smtp/email"
 
-{reset_link}
+    data = {
+        "sender": {"email": sender},
+        "to": [{"email": to_email}],
+        "subject": "Reset della password - Banca Utopia",
+        "textContent": (
+            "Ciao!\n\n"
+            "Hai richiesto di reimpostare la password del tuo account.\n"
+            f"Clicca qui per reimpostarla:\n{reset_link}\n\n"
+            "Se non l'hai richiesta tu, ignora questa email."
+        )
+    }
 
-Se non hai richiesto tu il reset, ignora questa mail.
-
-A presto!
-"""
-
-    msg = MIMEText(body, "plain", "utf-8")
-    msg["Subject"] = subject
-    msg["From"] = app.config["MAIL_FROM"]
-    msg["To"] = to_email
+    headers = {
+        "accept": "application/json",
+        "api-key": api_key,
+        "content-type": "application/json",
+    }
 
     try:
-        if app.config.get("MAIL_USE_SSL", False):
-            server = smtplib.SMTP_SSL(app.config["MAIL_SERVER"], app.config["MAIL_PORT"])
+        resp = requests.post(url, json=data, headers=headers, timeout=10)
+        if resp.status_code >= 300:
+            print("[BREVO ERRORE]", resp.status_code, resp.text)
         else:
-            server = smtplib.SMTP(app.config["MAIL_SERVER"], app.config["MAIL_PORT"])
-
-        server.login(app.config["MAIL_USERNAME"], app.config["MAIL_PASSWORD"])
-        server.send_message(msg)
-        server.quit()
-        print("Email di reset inviata a", to_email)
+            print("[BREVO] Email inviata a", to_email)
     except Exception as e:
-        print("ERRORE INVIO EMAIL RESET:", e)
+        print("[BREVO EXCEPTION]", e)
+        print("[BREVO] LINK RESET (fallback):", reset_link)
+
 
 
 
