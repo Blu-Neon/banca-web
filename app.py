@@ -4,10 +4,25 @@ import json
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
 import os
+import re 
+import smtplib
+from email.mime.text import MIMEText
+import secrets
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 # SECRET KEY (attenzione: è "secret_key", non "security_key")
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret")
+EMAIL_REGEX = re.compile(r"^[^@]+@[^@]+\.[^@]+$")
+
+#reset su email
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USERNAME"] = os.environ.get("MAIL_USERNAME")  # meglio env
+app.config["MAIL_PASSWORD"] = os.environ.get("MAIL_PASSWORD")
+app.config["MAIL_FROM"] = "Budget App <tuaccount@gmail.com>"
+
 
 init_db()
 
@@ -45,6 +60,40 @@ def convert_from_eur_live(amount_eur: float, currency: str) -> float:
         print("ERRORE conversione da EUR:", e)
         return round(amount_eur, 2)
 
+def send_reset_email(to_email, reset_link):
+    subject = "Reset della password - Budget App"
+
+    body = f"""
+Ciao!
+
+Hai richiesto di reimpostare la password del tuo account.
+Per scegliere una nuova password, clicca sul link qui sotto (valido per 1 ora):
+
+{reset_link}
+
+Se non hai richiesto tu il reset, ignora questa mail.
+
+A presto!
+"""
+
+    msg = MIMEText(body, "plain", "utf-8")
+    msg["Subject"] = subject
+    msg["From"] = app.config["MAIL_FROM"]
+    msg["To"] = to_email
+
+    try:
+        if app.config.get("MAIL_USE_SSL", False):
+            server = smtplib.SMTP_SSL(app.config["MAIL_SERVER"], app.config["MAIL_PORT"])
+        else:
+            server = smtplib.SMTP(app.config["MAIL_SERVER"], app.config["MAIL_PORT"])
+
+        server.login(app.config["MAIL_USERNAME"], app.config["MAIL_PASSWORD"])
+        server.send_message(msg)
+        server.quit()
+        print("Email di reset inviata a", to_email)
+    except Exception as e:
+        print("ERRORE INVIO EMAIL RESET:", e)
+
 
 
 # ------------------ REGISTRAZIONE ------------------ #
@@ -54,9 +103,15 @@ def register():
     if request.method == "POST":
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "").strip()
+        email = request.form.get("email", "").strip()
 
-        if not username or not password:
+        if not username or not password or not email:
             flash("Compila tutti i campi", "error")
+            return redirect(url_for("register"))
+
+        # controllo base formato email
+        if not EMAIL_REGEX.match(email):
+            flash("Inserisci un'email valida.", "error")
             return redirect(url_for("register"))
 
         conn = get_connection()
@@ -68,11 +123,11 @@ def register():
             # INSERT con RETURNING id (PostgreSQL)
             cur.execute(
                 """
-                INSERT INTO users (username, password_hash)
-                VALUES (%s, %s)
+                INSERT INTO users (username, password_hash, email)
+                VALUES (%s, %s, %s)
                 RETURNING id;
                 """,
-                (username, password_hash)
+                (username, password_hash, email)
             )
             row = cur.fetchone()
             user_id = row["id"]
@@ -138,6 +193,321 @@ def logout():
     session.clear()
     flash("Logout effettuato.", "success")
     return redirect(url_for("login"))
+
+# ------------------ UTENTE -------------------#
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Devi effettuare il login.", "error")
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    if request.method == "POST":
+        action = request.form.get("action")
+
+        # 1) Aggiornamento email
+        if action == "update_email":
+            new_email = request.form.get("email", "").strip()
+
+            if not new_email:
+                conn.close()
+                flash("Inserisci una email valida.", "error")
+                return redirect(url_for("profile"))
+
+            # controlla che non sia di un altro utente
+            cur.execute(
+                "SELECT id FROM users WHERE email = %s AND id != %s;",
+                (new_email, user_id)
+            )
+            if cur.fetchone():
+                conn.close()
+                flash("Questa email è già usata da un altro account.", "error")
+                return redirect(url_for("profile"))
+
+            cur.execute(
+                "UPDATE users SET email = %s WHERE id = %s;",
+                (new_email, user_id)
+            )
+            conn.commit()
+            conn.close()
+            flash("Email aggiornata con successo.", "success")
+            return redirect(url_for("profile"))
+
+        # 2) Aggiornamento username
+        elif action == "update_username":
+            new_username = request.form.get("username", "").strip()
+
+            if not new_username:
+                conn.close()
+                flash("Inserisci uno username valido.", "error")
+                return redirect(url_for("profile"))
+
+            # controlla che non sia di un altro
+            cur.execute(
+                "SELECT id FROM users WHERE username = %s AND id != %s;",
+                (new_username, user_id)
+            )
+            if cur.fetchone():
+                conn.close()
+                flash("Questo username è già usato da un altro account.", "error")
+                return redirect(url_for("profile"))
+
+            cur.execute(
+                "UPDATE users SET username = %s WHERE id = %s;",
+                (new_username, user_id)
+            )
+            conn.commit()
+            conn.close()
+            flash("Username aggiornato con successo.", "success")
+            return redirect(url_for("profile"))
+
+        # 3) Cambio password
+        elif action == "change_password":
+            current_password = request.form.get("current_password", "").strip()
+            new_password = request.form.get("new_password", "").strip()
+            confirm_password = request.form.get("confirm_password", "").strip()
+
+            if not current_password or not new_password or not confirm_password:
+                conn.close()
+                flash("Compila tutti i campi per cambiare password.", "error")
+                return redirect(url_for("profile"))
+
+            # prendo l'hash attuale
+            cur.execute(
+                "SELECT password_hash FROM users WHERE id = %s;",
+                (user_id,)
+            )
+            row = cur.fetchone()
+            if not row:
+                conn.close()
+                flash("Utente non trovato.", "error")
+                return redirect(url_for("login"))
+
+            if not check_password_hash(row["password_hash"], current_password):
+                conn.close()
+                flash("La password attuale non è corretta.", "error")
+                return redirect(url_for("profile"))
+
+            if new_password != confirm_password:
+                conn.close()
+                flash("Le nuove password non coincidono.", "error")
+                return redirect(url_for("profile"))
+
+            new_hash = generate_password_hash(new_password)
+            cur.execute(
+                "UPDATE users SET password_hash = %s WHERE id = %s;",
+                (new_hash, user_id)
+            )
+            conn.commit()
+            conn.close()
+            flash("Password cambiata con successo.", "success")
+            return redirect(url_for("profile"))
+
+        # fallback
+        conn.close()
+        flash("Azione non valida.", "error")
+        return redirect(url_for("profile"))
+
+    # GET → carica dati utente
+    cur.execute(
+        "SELECT username, email, created_at FROM users WHERE id = %s;",
+        (user_id,)
+    )
+    user = cur.fetchone()
+    conn.close()
+
+    return render_template("profile.html", user=user)
+
+# -------------------- ELIMINA ------------------#
+
+@app.route("/delete_account", methods=["POST"])
+def delete_account():
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Devi effettuare il login.", "error")
+        return redirect(url_for("login"))
+
+    confirm = request.form.get("confirm", "").strip()
+
+    # per sicurezza facciamo scrivere ELIMINA
+    if confirm != "ELIMINA":
+        flash("Per eliminare l'account digita esattamente ELIMINA.", "error")
+        return redirect(url_for("profile"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        # cancello l'utente; ON DELETE CASCADE pulirà accounts, travels, ecc.
+        cur.execute("DELETE FROM users WHERE id = %s;", (user_id,))
+        conn.commit()
+        conn.close()
+
+        # svuoto la sessione
+        session.clear()
+
+        flash("Account eliminato correttamente. Ci dispiace vederti andare 😢", "success")
+        return redirect(url_for("register"))
+
+    except Exception as e:
+        print("ERRORE DELETE_ACCOUNT:", e)
+        conn.rollback()
+        conn.close()
+        flash("Errore durante l'eliminazione dell'account. Riprova.", "error")
+        return redirect(url_for("profile"))
+
+
+
+# ----------------- DIMENTICATA ---------------- #
+
+@app.route("/forgot_password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+
+        if not email:
+            flash("Inserisci una email.", "error")
+            return redirect(url_for("forgot_password"))
+
+        conn = get_connection()
+        cur = conn.cursor()
+
+        try:
+            # cerco l'utente con questa email
+            cur.execute("SELECT id FROM users WHERE email = %s;", (email,))
+            row = cur.fetchone()
+
+            if row:
+                user_id = row["id"]
+
+                # genero token e scadenza
+                token = secrets.token_urlsafe(32)
+                expires_at = datetime.utcnow() + timedelta(hours=1)
+
+                cur.execute(
+                    """
+                    UPDATE users
+                    SET reset_token = %s,
+                        reset_token_expires_at = %s
+                    WHERE id = %s;
+                    """,
+                    (token, expires_at, user_id)
+                )
+                conn.commit()
+
+                # link assoluto tipo https://tuo-sito/reset_password?token=...
+                reset_link = url_for("reset_password", token=token, _external=True)
+
+                # invio email
+                send_reset_email(email, reset_link)
+
+            # NB: se l'email non esiste, non diciamo niente di diverso
+            conn.close()
+
+            flash("Se l'email è registrata, ti abbiamo inviato un link per il reset.", "success")
+            return redirect(url_for("forgot_password"))
+
+        except Exception as e:
+            print("ERRORE FORGOT_PASSWORD:", e)
+            conn.rollback()
+            conn.close()
+            flash("Errore durante la richiesta di reset. Riprova.", "error")
+            return redirect(url_for("forgot_password"))
+
+    # GET
+    return render_template("forgot_password.html")
+
+# ----------------- RESET ------------------#
+
+@app.route("/reset_password", methods=["GET", "POST"])
+def reset_password():
+    # prendo il token dalla query (GET) o dal form (POST)
+    if request.method == "GET":
+        token = request.args.get("token", "").strip()
+    else:
+        token = request.form.get("token", "").strip()
+
+    if not token:
+        flash("Link di reset non valido.", "error")
+        return redirect(url_for("login"))
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute(
+            """
+            SELECT id, reset_token_expires_at
+            FROM users
+            WHERE reset_token = %s;
+            """,
+            (token,)
+        )
+        row = cur.fetchone()
+
+        if not row:
+            conn.close()
+            flash("Link di reset non valido o già usato.", "error")
+            return redirect(url_for("login"))
+
+        user_id = row["id"]
+        expires_at = row["reset_token_expires_at"]
+
+        # controllo scadenza
+        if not expires_at or expires_at < datetime.utcnow():
+            conn.close()
+            flash("Link di reset scaduto. Richiedine uno nuovo.", "error")
+            return redirect(url_for("forgot_password"))
+
+        # GET → mostro form nuova password
+        if request.method == "GET":
+            conn.close()
+            return render_template("reset_password.html", token=token)
+
+        # POST → salvo nuova password
+        new_password = request.form.get("password", "").strip()
+        confirm = request.form.get("confirm_password", "").strip()
+
+        if not new_password or not confirm:
+            conn.close()
+            flash("Compila tutti i campi.", "error")
+            return redirect(url_for("reset_password", token=token))
+
+        if new_password != confirm:
+            conn.close()
+            flash("Le password non coincidono.", "error")
+            return redirect(url_for("reset_password", token=token))
+
+        new_hash = generate_password_hash(new_password)
+
+        cur.execute(
+            """
+            UPDATE users
+            SET password_hash = %s,
+                reset_token = NULL,
+                reset_token_expires_at = NULL
+            WHERE id = %s;
+            """,
+            (new_hash, user_id)
+        )
+        conn.commit()
+        conn.close()
+
+        flash("Password aggiornata con successo! Ora puoi fare il login.", "success")
+        return redirect(url_for("login"))
+
+    except Exception as e:
+        print("ERRORE RESET_PASSWORD:", e)
+        conn.rollback()
+        conn.close()
+        flash("Errore durante il reset della password. Riprova.", "error")
+        return redirect(url_for("forgot_password"))
+
+
 
 # ------------------ TIPO ------------------ #
 

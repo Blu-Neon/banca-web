@@ -98,7 +98,8 @@
       }
 
       input[type="text"],
-      input[type="password"] {
+      input[type="password"],
+      input[type="email"] {
         padding: 11px 12px;
         font-size: 15px;
         width: 100%;
@@ -234,6 +235,7 @@
             type="text"
             name="username"
             placeholder="Scegli un username"
+            value="{{ request.form.get('username', '') }}"
             required
           />
         </div>
@@ -245,6 +247,18 @@
             type="password"
             name="password"
             placeholder="Scegli una password"
+            value="{{ request.form.get('email', '') }}"
+            required
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            placeholder="Inserisci la tua email"
             required
           />
         </div>

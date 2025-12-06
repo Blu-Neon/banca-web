@@ -42,6 +42,19 @@ def init_db():
     );
     """)
 
+    cur.execute("""
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS email TEXT UNIQUE;
+    """)
+    cur.execute("""
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS reset_token TEXT;
+    """)
+    cur.execute("""
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS reset_token_expires_at TIMESTAMP;
+    """)
+
     # accounts: saldo per utente
     cur.execute("""
     CREATE TABLE IF NOT EXISTS accounts (
