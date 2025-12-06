@@ -3,77 +3,184 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Storico spese annuale</title>
+
     <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-            max-width: 480px;
-            margin: auto;
+      :root {
+        --radius-lg: 18px;
+        --radius-xl: 22px;
+        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
+      }
 
-            background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+      * {
+        box-sizing: border-box;
+      }
 
-            color: white;
-            text-shadow: 0 0 5px black;
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        padding: 20px;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        color: white;
+        text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      }
+
+      /* overlay per contrasto, coerente con le altre pagine */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
+                    linear-gradient(160deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
+        z-index: -1;
+      }
+
+      .page-container {
+        width: 100%;
+        max-width: 480px;
+        margin-top: 70px; /* spazio per il menu */
+      }
+
+      .card {
+        background: rgba(10,18,40,0.55);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 22px 18px 18px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 12px;
+      }
+
+      .card-title {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.03em;
+      }
+
+      .card-subtitle {
+        font-size: 13px;
+        opacity: 0.8;
+      }
+
+      .year-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(15,23,42,0.85);
+        border: 1px solid rgba(148,163,184,0.7);
+        font-size: 12px;
+        width: fit-content;
+      }
+
+      .storico-list {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .riga-mese {
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(15,23,42,0.8);
+        border: 1px solid rgba(30,64,175,0.4);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+      }
+
+      .mese-label {
+        font-weight: 500;
+      }
+
+      .mese-importo {
+        font-weight: 600;
+        color: #fbbf24;
+      }
+
+      .empty-state {
+        font-size: 13px;
+        opacity: 0.85;
+        margin-top: 10px;
+      }
+
+      @media (max-width: 380px) {
+        .card {
+          padding: 18px 14px 16px;
         }
 
-        .menu-btn {
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            width: 160px;
-        }
-
-        .box-bianca {
-            background: rgba(255,255,255,0.85);
-            border-radius: 20px;
-            padding: 15px;
-            margin-top: 20px;
-            color: #222;
-            text-shadow: none;
+        .card-title {
+          font-size: 18px;
         }
 
         .riga-mese {
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
+          font-size: 13px;
         }
-
+      }
     </style>
 </head>
 <body>
 
-    {% include "menu.html" %}
+  {% include "menu.html" %}
 
+  <div class="page-container">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Storico spese annuale</h2>
+        <p class="card-subtitle">
+          Riepilogo delle spese mese per mese nell'anno corrente.
+        </p>
+        <div class="year-pill">
+          <span>Anno:</span>
+          <span>{{ current_year if current_year is defined else "corrente" }}</span>
+        </div>
+      </div>
 
-    <h2>Storico spese dell'anno</h2>
-
-    <div class="box-bianca">
-        {% if storico %}
-            {% for riga in storico %}
-                <div class="riga-mese">
-                    <strong>{{ riga.mese }}</strong>: {{ "%.2f"|format(riga.totale) }} €
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>Nessuna spesa registrata quest'anno.</p>
-        {% endif %}
+      {% if storico %}
+        <div class="storico-list">
+          {% for riga in storico %}
+            <div class="riga-mese">
+              <span class="mese-label">{{ riga.mese }}</span>
+              <span class="mese-importo">{{ "%.2f"|format(riga.totale) }} €</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="empty-state">Nessuna spesa registrata quest'anno.</p>
+      {% endif %}
     </div>
+  </div>
 
-    {% if session.get('user_id') == 1 %}
-<style>
-  * {
-    cursor: url("/static/cursor.png") 0 0, default !important;
-  }
-  button, a, input, select, textarea, label {
-    cursor: url("/static/cursor.png") 0 0, pointer !important;
-  }
-</style>
-{% endif %}
+  {% if session.get('user_id') == 1 %}
+  <style>
+    * {
+      cursor: url("/static/cursor.png") 0 0, default !important;
+    }
+    button, a, input, select, textarea, label {
+      cursor: url("/static/cursor.png") 0 0, pointer !important;
+    }
+  </style>
+  {% endif %}
 
 </body>
 </html>

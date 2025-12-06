@@ -6,93 +6,237 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-            max-width: 480px;
-            margin: auto;
+      :root {
+        --radius-lg: 18px;
+        --radius-xl: 22px;
+        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
+      }
 
-            background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+      * {
+        box-sizing: border-box;
+      }
 
-            color: white;
-            text-shadow: 0 0 5px black;
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        padding: 20px;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        color: white;
+        text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      }
+
+      /* overlay per contrasto, coerente con le altre pagine */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
+                    linear-gradient(160deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
+        z-index: -1;
+      }
+
+      .page-container {
+        width: 100%;
+        max-width: 480px;
+        margin-top: 70px; /* spazio per il menu */
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .card {
+        background: rgba(10,18,40,0.55);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 22px 18px 18px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 12px;
+      }
+
+      .card-title {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.03em;
+      }
+
+      .card-subtitle {
+        font-size: 13px;
+        opacity: 0.8;
+      }
+
+      /* contenitore grafico */
+      .chart-wrapper {
+        background: rgba(2, 8, 25, 0.9);
+        border-radius: 16px;
+        padding: 10px;
+        border: 1px solid rgba(148,163,184,0.4);
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5);
+      }
+
+      .chart-inner {
+        position: relative;
+        width: 100%;
+        height: 250px;
+      }
+
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+      }
+
+      /* legenda */
+      .legend-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 4px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: 12px;
+        background: rgba(15,23,42,0.85);
+        border: 1px solid rgba(30,64,175,0.5);
+        font-size: 13px;
+      }
+
+      .legend-left {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .legend-color {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
+        flex-shrink: 0;
+      }
+
+      .legend-category {
+        opacity: 0.9;
+      }
+
+      .legend-value {
+        font-weight: 600;
+        color: #fbbf24;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 380px) {
+        .card {
+          padding: 18px 14px 16px;
         }
 
-        .box-bianca {
-            background: rgba(255,255,255,0.85);
-            border-radius: 20px;
-            padding: 15px;
-            margin-top: 20px;
-            color: #222;
-            text-shadow: none;
+        .card-title {
+          font-size: 18px;
         }
 
-        .menu-btn {
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            width: 160px;
+        .chart-inner {
+          height: 220px;
         }
 
-       
+        .legend-item {
+          font-size: 12px;
+        }
+      }
     </style>
 </head>
 <body>
+
 {% include "menu.html" %}
 
-    <h2>Tipologia spese del mese</h2>
-
-    <div class="box-bianca">
-        <canvas id="torta" style="max-width:100%;"></canvas>
+<div class="page-container">
+  <!-- Card grafico torta -->
+  <div class="card">
+    <div class="card-header">
+      <h2 class="card-title">Tipologia spese del mese</h2>
+      <p class="card-subtitle">Distribuzione delle spese per categoria nel mese corrente.</p>
     </div>
 
-    <script>
-        const labels = {{ labels | tojson }};
-        const dataValues = {{ values | tojson }};
-        const colors = {{ colors | tojson }};
+    <div class="chart-wrapper">
+      <div class="chart-inner">
+        <canvas id="torta"></canvas>
+      </div>
+    </div>
+  </div>
 
-        const ctx = document.getElementById('torta');
-        new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: dataValues,
-                    backgroundColor: colors
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false }
-                }
-            }
-        });
-    </script>
-
-    <h3 style="margin-top:25px;">Legenda</h3>
-    <div class="box-bianca">
-        {% for item in legenda %}
-            <div style="display:flex; align-items:center; margin-bottom:6px;">
-                <span style="
-                    display:inline-block;
-                    width:16px; height:16px;
-                    border-radius:4px;
-                    margin-right:8px;
-                    background-color:{{ item.color }};
-                "></span>
-                <span>{{ item.category }}: {{ "%.2f"|format(item.value) }} €</span>
-            </div>
-        {% endfor %}
+  <!-- Card legenda -->
+  <div class="card">
+    <div class="card-header">
+      <h3 class="card-title">Legenda</h3>
+      <p class="card-subtitle">Categorie e importi corrispondenti.</p>
     </div>
 
-    {% if session.get('user_id') == 1 %}
+    <div class="legend-list">
+      {% for item in legenda %}
+        <div class="legend-item">
+          <div class="legend-left">
+            <span
+              class="legend-color"
+              style="background-color: {{ item.color }};"
+            ></span>
+            <span class="legend-category">{{ item.category }}</span>
+          </div>
+          <span class="legend-value">{{ "%.2f"|format(item.value) }} €</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script>
+  const labels = {{ labels | tojson }};
+  const dataValues = {{ values | tojson }};
+  const colors = {{ colors | tojson }};
+
+  const ctx = document.getElementById('torta');
+
+  new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: dataValues,
+        backgroundColor: colors,
+        borderColor: 'rgba(15,23,42,1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+</script>
+
+{% if session.get('user_id') == 1 %}
 <style>
   * {
     cursor: url("/static/cursor.png") 0 0, default !important;

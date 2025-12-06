@@ -5,124 +5,257 @@
     <title>Spese viaggio</title>
 
     <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-            max-width: 480px;
-            margin: auto;
+      :root {
+        --radius-xl: 22px;
+        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
+      }
 
-            background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=430&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+      * {
+        box-sizing: border-box;
+      }
 
-            color: white;
-            text-shadow: 0 0 5px black;
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        padding: 20px;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=430&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        color: white;
+        text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      }
+
+      /* overlay per contrasto, uguale alla pagina Viaggio */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top, rgba(0,0,80,0.6), transparent 45%),
+                    linear-gradient(160deg, rgba(0,0,0,0.78), rgba(0,0,0,0.4));
+        z-index: -1;
+      }
+
+      .page-container {
+        width: 100%;
+        max-width: 480px;
+        margin-top: 70px; /* spazio per il menu */
+      }
+
+      .card {
+        background: rgba(10,18,40,0.55);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 20px 16px 16px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 12px;
+        text-align: center;
+      }
+
+      .card-title {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.03em;
+      }
+
+      .card-subtitle {
+        font-size: 13px;
+        opacity: 0.8;
+      }
+
+      /* tabella spese */
+      .table-wrapper {
+        margin-top: 6px;
+        border-radius: 16px;
+        background: rgba(2, 8, 25, 0.9);
+        border: 1px solid rgba(148,163,184,0.4);
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      thead {
+        background: rgba(15,23,42,0.95);
+      }
+
+      th, td {
+        padding: 7px 8px;
+        border-bottom: 1px solid rgba(30,64,175,0.4);
+      }
+
+      th {
+        text-align: left;
+        font-weight: 600;
+        font-size: 12px;
+        opacity: 0.9;
+      }
+
+      td {
+        color: #e5e7eb;
+      }
+
+      td.right {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .amount-original {
+        font-size: 11px;
+        opacity: 0.8;
+        display: block;
+      }
+
+      .amount-eur {
+        font-weight: 600;
+      }
+
+      .empty-state {
+        font-size: 13px;
+        opacity: 0.9;
+        margin-top: 6px;
+        text-align: center;
+      }
+
+      .back-link {
+        text-align: center;
+        margin-top: 12px;
+      }
+
+      .back-link a {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        text-decoration: none;
+        color: #e5e7eb;
+        background: rgba(15,23,42,0.7);
+        border: 1px solid rgba(148,163,184,0.7);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+        transition: background 0.12s ease-out, transform 0.12s ease-out, box-shadow 0.12s ease-out;
+      }
+
+      .back-link a:hover {
+        background: rgba(15,23,42,0.9);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+      }
+
+      .back-link a:active {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 380px) {
+        .card {
+          padding: 18px 12px 14px;
         }
 
-        .box {
-            background: rgba(255,255,255,0.9);
-            padding: 20px;
-            border-radius: 16px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-
-        h1 {
-            margin-top: 0;
-            font-size: 24px;
-            text-align: center;
+        .card-title {
+          font-size: 18px;
         }
 
         table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 14px;
+          font-size: 12px;
         }
 
         th, td {
-            border-bottom: 1px solid #ddd;
-            padding: 6px 4px;
+          padding: 6px 6px;
         }
-
-        th {
-            text-align: left;
-            font-weight: 600;
-        }
-
-        td.right {
-            text-align: right;
-        }
-
-        .back-link {
-            text-align: center;
-            margin-top: 8px;
-        }
-
-        .back-link a {
-            color: white;
-            text-decoration: underline;
-        }
-
-        .menu-btn {
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
-            width: 160px;
-        }
-
-        
+      }
     </style>
 </head>
 <body>
 
-   {% include "menu.html" %}
+{% include "menu.html" %}
 
-
-    <div class="box">
-        <h1>Spese del viaggio</h1>
-
-        {% if spese and spese|length > 0 %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Categoria</th>
-                        <th class="right">Importo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for row in spese %}
-                        <tr>
-                            <td>
-                                {{ row.created_at.strftime("%d/%m") if row.created_at }}
-                            </td>
-                            <td>{{ row.category }}</td>
-                            <td class="right">
-                                {# Se ho una valuta originale diversa da EUR, mostro "20 USD ≈ 18.40 €" #}
-                                {% if row.original_currency and row.original_currency != 'EUR' and row.original_amount is not none %}
-                                    {{ "%.2f"|format(row.original_amount) }} {{ row.original_currency }}
-                                    &nbsp;≈&nbsp;
-                                    {{ "%.2f"|format(row.amount) }} €
-                                {% else %}
-                                    {{ "%.2f"|format(row.amount) }} €
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Nessuna spesa registrata per questo viaggio.</p>
-        {% endif %}
-
-        <div class="back-link">
-            <a href="{{ url_for('viaggio') }}">Torna al viaggio</a>
-        </div>
+<div class="page-container">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Spese del viaggio</h1>
+      <p class="card-subtitle">Elenco delle spese registrate per il viaggio in corso.</p>
     </div>
+
+    {% if spese and spese|length > 0 %}
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Categoria</th>
+              <th class="right">Importo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in spese %}
+              <tr>
+                <td>
+                  {{ row.created_at.strftime("%d/%m") if row.created_at }}
+                </td>
+                <td>{{ row.category }}</td>
+                <td class="right">
+                  {% if row.original_currency and row.original_currency != 'EUR' and row.original_amount is not none %}
+                    <span class="amount-original">
+                      {{ "%.2f"|format(row.original_amount) }} {{ row.original_currency }} ≈
+                    </span>
+                    <span class="amount-eur">
+                      {{ "%.2f"|format(row.amount) }} €
+                    </span>
+                  {% else %}
+                    <span class="amount-eur">
+                      {{ "%.2f"|format(row.amount) }} €
+                    </span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="empty-state">Nessuna spesa registrata per questo viaggio.</p>
+    {% endif %}
+
+    <div class="back-link">
+      <a href="{{ url_for('viaggio') }}">⟵ Torna al viaggio</a>
+    </div>
+  </div>
+</div>
+
+{% if session.get('user_id') == 1 %}
+<style>
+  * {
+    cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
+  }
+  button, a, input, select, textarea, label {
+    cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
+  }
+</style>
+{% endif %}
+
 </body>
 </html>
-

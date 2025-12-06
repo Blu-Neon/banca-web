@@ -1,98 +1,236 @@
 <style>
-    #menu-button {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      color: black;
-      font-size: 30px;
-      background: rgba(255,255,255,0.7);
-      border-radius: 10px;
-      padding: 5px 12px;
-      border: none;
-      cursor: pointer;
-      z-index: 9999;
-    }
+  :root {
+    --menu-radius: 18px;
+    --menu-shadow: 0 12px 30px rgba(0,0,0,0.45);
+  }
 
+  #menu-button {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 44px;
+    height: 44px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #e5e7eb;
+    font-size: 22px;
+    font-weight: 600;
+
+    background: radial-gradient(circle at top, rgba(255,255,255,0.18), rgba(15,23,42,0.95));
+    border-radius: 999px;
+    border: 1px solid rgba(148,163,184,0.75);
+
+    box-shadow: var(--menu-shadow);
+    cursor: pointer;
+    z-index: 9999;
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    transition:
+      transform 0.12s ease-out,
+      box-shadow 0.12s ease-out,
+      background 0.12s ease-out,
+      opacity 0.12s ease-out;
+  }
+
+  #menu-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 36px rgba(0,0,0,0.55);
+    background: radial-gradient(circle at top, rgba(255,255,255,0.25), rgba(15,23,42,0.95));
+  }
+
+  #menu-button:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 9px 20px rgba(0,0,0,0.45);
+  }
+
+  /* Contenitore menu */
+  #dropdown-menu {
+    position: fixed;
+    top: 68px;
+    right: 16px;
+
+    width: 220px;
+    padding: 14px 12px;
+
+    background: rgba(10,18,40,0.9);
+    border-radius: var(--menu-radius);
+    border: 1px solid rgba(148,163,184,0.7);
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+    pointer-events: none;
+
+    box-shadow: var(--menu-shadow);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    transition:
+      opacity 0.18s ease-out,
+      transform 0.18s ease-out;
+    z-index: 9998;
+  }
+
+  #dropdown-menu.open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  /* Titolo mini in alto al menu (opzionale) */
+  .menu-header {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    opacity: 0.75;
+    margin-bottom: 3px;
+    padding: 0 4px;
+  }
+
+  .menu-btn {
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+
+    border: none;
+    cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    color: #f9fafb;
+    background: linear-gradient(135deg, #4fd1c5, #3182ce);
+    box-shadow: 0 8px 18px rgba(15,118,110,0.55);
+
+    transition:
+      transform 0.12s ease-out,
+      box-shadow 0.12s ease-out,
+      filter 0.12s ease-out;
+  }
+
+  .menu-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 26px rgba(15,118,110,0.7);
+    filter: brightness(1.03);
+  }
+
+  .menu-btn:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 6px 14px rgba(15,118,110,0.55);
+  }
+
+  .menu-btn.logout {
+    background: linear-gradient(135deg, #f97373, #f97316);
+    box-shadow: 0 8px 18px rgba(220,38,38,0.55);
+  }
+
+  .menu-btn.logout:hover {
+    box-shadow: 0 12px 26px rgba(220,38,38,0.75);
+  }
+
+  .menu-divider {
+    height: 1px;
+    margin: 4px 4px 2px;
+    background: radial-gradient(circle, rgba(148,163,184,0.7), transparent);
+    opacity: 0.6;
+  }
+
+  /* Per evitare che il body scroll sotto intercetti il click */
+  body.menu-open {
+    overflow-x: hidden;
+  }
+
+  @media (max-width: 480px) {
     #dropdown-menu {
-      position: fixed;
-      top: 70px;
-      right: 20px;
-      background: rgba(255,255,255,0.7);
-      padding: 15px;
-      border-radius: 15px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-
-      opacity: 0;
-      transform: translateY(-10px);
-      pointer-events: none;
-
-      transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-      z-index: 9998;
+      right: 12px;
+      width: 210px;
     }
 
-    #dropdown-menu.open {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
+    #menu-button {
+      right: 12px;
+      top: 14px;
     }
-
-    .menu-btn {
-        padding: 10px;
-        border-radius: 10px;
-        font-size: 16px;
-        color: white;
-        border: none;
-        cursor: pointer;
-        width: 160px;
-    }
+  }
 </style>
 
 <!-- ====================== MENU UNIVERSALE ====================== -->
 
 <!-- Pulsante menu -->
-<button id="menu-button">☰</button>
+<button id="menu-button" aria-label="Apri il menu di navigazione">☰</button>
 
 <!-- Menu contenitore -->
 <div id="dropdown-menu">
+  <div class="menu-header">Navigazione</div>
 
   <form method="GET" action="/tipo">
-    <button class="menu-btn" style="background: linear-gradient(to top, #7d00fb, #FFFFF0);">Home</button>
+    <button class="menu-btn" type="submit">Home</button>
   </form>
   
   <form method="GET" action="/update-saldo">
-    <button class="menu-btn" style="background: linear-gradient(to top, #00008B, #FFFFF0);">Aggiorna saldo</button>
+    <button class="menu-btn" type="submit">Aggiorna saldo</button>
   </form>
 
   <form method="GET" action="/grafico">
-    <button class="menu-btn" style="background: linear-gradient(to top, #483D8B, #FFFFF0);">Grafico del mese</button>
+    <button class="menu-btn" type="submit">Grafico del mese</button>
   </form>
 
   <form method="GET" action="/tipologia">
-    <button class="menu-btn" style="background: linear-gradient(to top, #2F4F4F, #FFFFF0);">Spese per tipologia</button>
+    <button class="menu-btn" type="submit">Spese per tipologia</button>
   </form>
 
   <form method="GET" action="/storico">
-    <button class="menu-btn" style="background: linear-gradient(to top, #191970, #FFFFF0);">Storico</button>
+    <button class="menu-btn" type="submit">Storico</button>
   </form>
   
   <form method="GET" action="/viaggio">
-    <button class="menu-btn" style="background: linear-gradient(to top, #1e2460, #FFFFF0);">Viaggio</button>
+    <button class="menu-btn" type="submit">Viaggio</button>
   </form>
 
   <form method="GET" action="/storico_viaggi">
-    <button class="menu-btn" style="background: linear-gradient(to top, #310062, #FFFFF0);">Storico viaggi</button>
+    <button class="menu-btn" type="submit">Storico viaggi</button>
   </form>
+
+  <div class="menu-divider"></div>
 
   <form method="GET" action="/logout">
-    <button class="menu-btn" style="background:linear-gradient(to top, #3b8f00, #FFFFF0);">Logout</button>
+    <button class="menu-btn logout" type="submit">Logout</button>
   </form>
-
 </div>
 
 <script>
   const menuBtn = document.getElementById("menu-button");
   const drop = document.getElementById("dropdown-menu");
-  menuBtn.onclick = () => drop.classList.toggle("open");
+
+  function toggleMenu() {
+    drop.classList.toggle("open");
+    document.body.classList.toggle("menu-open", drop.classList.contains("open"));
+  }
+
+  menuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleMenu();
+  });
+
+  // Chiudi cliccando fuori dal menu
+  document.addEventListener("click", (e) => {
+    if (!drop.classList.contains("open")) return;
+
+    const clickInsideMenu = drop.contains(e.target) || menuBtn.contains(e.target);
+    if (!clickInsideMenu) {
+      drop.classList.remove("open");
+      document.body.classList.remove("menu-open");
+    }
+  });
 </script>

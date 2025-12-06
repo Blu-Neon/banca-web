@@ -5,155 +5,336 @@
     <title>Budget viaggio</title>
 
     <style>
-        body {
-            font-family: sans-serif;
-            padding: 20px;
-            max-width: 480px;
-            margin: auto;
+      :root {
+        --radius-lg: 18px;
+        --radius-xl: 22px;
+        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
+        --accent: #4fd1c5;
+      }
 
-            background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
+      * {
+        box-sizing: border-box;
+      }
 
-            color: white;
-            text-shadow: 0 0 5px black;
-        }
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        padding: 20px;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
+        background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+
+        color: white;
+        text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      }
+
+      /* overlay per migliorare il contrasto */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
+                    linear-gradient(160deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
+        z-index: -1;
+      }
+
+      .page-container {
+        width: 100%;
+        max-width: 480px;
+        margin-top: 70px; /* spazio per il menu in alto */
+      }
+
+      .box {
+        background: rgba(10,18,40,0.55);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 22px 18px 18px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: 22px;
+        text-align: center;
+        letter-spacing: 0.03em;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-size: 13px;
+        opacity: 0.8;
+        margin-bottom: 16px;
+      }
+
+      .current-budget {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,0.2);
+        background: radial-gradient(circle at top left, rgba(79,209,197,0.35), transparent);
+        font-size: 13px;
+        margin: 0 auto 14px;
+        text-align: center;
+      }
+
+      .current-budget strong {
+        font-size: 15px;
+      }
+
+      .current-budget-wrapper {
+        display: flex;
+        justify-content: center;
+      }
+
+      .amount-display-wrapper {
+        margin-top: 4px;
+        margin-bottom: 16px;
+        background: rgba(2, 8, 25, 0.9);
+        border-radius: 16px;
+        padding: 10px 12px;
+        border: 1px solid rgba(255,255,255,0.16);
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
+      }
+
+      .amount-label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        opacity: 0.7;
+        margin-bottom: 4px;
+      }
+
+      .amount-display {
+        width: 100%;
+        text-align: right;
+        font-size: 30px;
+        padding: 0;
+        border-radius: 0;
+        border: none;
+        background: transparent;
+        color: #fdfdfd;
+        outline: none;
+      }
+
+      .amount-display::selection {
+        background: rgba(79,209,197,0.3);
+      }
+
+      .currency-tag {
+        font-size: 13px;
+        opacity: 0.85;
+      }
+
+      .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .keypad button {
+        padding: 14px 0;
+        font-size: 20px;
+        border-radius: 16px;
+        border: none;
+        background: radial-gradient(circle at top, rgba(255,255,255,0.16), rgba(18,30,60,0.9));
+        color: #fdfdfd;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+        cursor: pointer;
+        transition:
+          transform 0.12s ease-out,
+          box-shadow 0.12s ease-out,
+          filter 0.12s ease-out,
+          background 0.12s ease-out;
+      }
+
+      .keypad button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+        filter: brightness(1.05);
+      }
+
+      .keypad button:active {
+        transform: translateY(0) scale(0.97);
+        box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        filter: brightness(0.96);
+      }
+
+      .keypad .btn-special {
+        font-size: 18px;
+        opacity: 0.9;
+      }
+
+      .btn-primary {
+        width: 100%;
+        padding: 13px;
+        font-size: 17px;
+        border-radius: 999px;
+        border: none;
+        background: linear-gradient(135deg, #4fd1c5, #3182ce);
+        color: #020617;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 10px 26px rgba(15, 118, 110, 0.55);
+        letter-spacing: 0.02em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        margin-bottom: 8px;
+        transition:
+          transform 0.12s ease-out,
+          box-shadow 0.12s ease-out,
+          filter 0.12s ease-out;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px rgba(15, 118, 110, 0.7);
+        filter: brightness(1.03);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 7px 16px rgba(15, 118, 110, 0.55);
+      }
+
+      .back-link {
+        margin-top: 4px;
+        text-align: center;
+      }
+
+      .back-link a {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 13px;
+        text-decoration: none;
+        color: #e5e7eb;
+        background: rgba(15,23,42,0.45);
+        border: 1px solid rgba(148,163,184,0.4);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+        transition: background 0.12s ease-out, transform 0.12s ease-out, box-shadow 0.12s ease-out;
+      }
+
+      .back-link a:hover {
+        background: rgba(15,23,42,0.8);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+      }
+
+      .back-link a:active {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 380px) {
         .box {
-            background: rgba(255,255,255,0.9);
-            padding: 20px;
-            border-radius: 16px;
-            color: #333;
-            margin-top: 10px;
+          padding: 18px 14px 16px;
         }
 
         h1 {
-            margin-top: 0;
-            font-size: 24px;
-            text-align: center;
-        }
-
-        .current-budget {
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 18px;
+          font-size: 20px;
         }
 
         .amount-display {
-            width: 100%;
-            text-align: right;
-            font-size: 32px;
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid #ccc;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-        }
-
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 15px;
+          font-size: 26px;
         }
 
         .keypad button {
-            padding: 12px;
-            font-size: 20px;
-            border-radius: 12px;
-            border: none;
-            background: #f1f1f1;
+          padding: 12px 0;
+          font-size: 18px;
         }
-
-        .keypad button:active {
-            transform: scale(0.96);
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 12px;
-            font-size: 18px;
-            border-radius: 12px;
-            border: none;
-            background: #007bff;
-            color: white;
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        .back-link {
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .back-link a {
-            color: white;
-            text-decoration: underline;
-        }
+      }
     </style>
 </head>
 <body>
 
 {% include "menu.html" %}
 
-    <div class="box">
-        <h1>Budget viaggio</h1>
+<div class="page-container">
+  <div class="box">
+    <h1>Budget viaggio</h1>
+    <p class="subtitle">Imposta il tetto massimo da non superare durante il viaggio</p>
 
-        <div class="current-budget">
-            Budget attuale: <strong>{{ budget }} €</strong>
-        </div>
-
-        <form method="POST" action="{{ url_for('budget') }}">
-            <!-- Importo che verrà mandato al backend -->
-            <input type="text" id="amount-input" name="amount" class="amount-display" readonly value="0">
-
-            <div class="keypad">
-                <button type="button" onclick="addDigit('1')">1</button>
-                <button type="button" onclick="addDigit('2')">2</button>
-                <button type="button" onclick="addDigit('3')">3</button>
-                <button type="button" onclick="addDigit('4')">4</button>
-                <button type="button" onclick="addDigit('5')">5</button>
-                <button type="button" onclick="addDigit('6')">6</button>
-                <button type="button" onclick="addDigit('7')">7</button>
-                <button type="button" onclick="addDigit('8')">8</button>
-                <button type="button" onclick="addDigit('9')">9</button>
-                <button type="button" onclick="addDigit(',')">,</button>
-                <button type="button" onclick="addDigit('0')">0</button>
-                <button type="button" onclick="delDigit()">⌫</button>
-            </div>
-
-            <button type="submit" class="btn-primary">Imposta budget</button>
-        </form>
-
-        <div class="back-link">
-            <a href="{{ url_for('tipo') }}">Indietro</a>
-        </div>
+    <div class="current-budget-wrapper">
+      <div class="current-budget">
+        <span>Budget attuale</span>
+        <strong>{{ budget }} €</strong>
+      </div>
     </div>
 
-    <script>
-        const input = document.getElementById('amount-input');
+    <form method="POST" action="{{ url_for('budget') }}">
+      <div class="amount-display-wrapper">
+        <div class="amount-label-row">
+          <span>Nuovo budget</span>
+          <span class="currency-tag">EUR €</span>
+        </div>
+        <!-- Importo che verrà mandato al backend -->
+        <input type="text" id="amount-input" name="amount" class="amount-display" readonly value="0">
+      </div>
 
-        function addDigit(d) {
-            if (input.value === '0' && d !== ',') {
-                input.value = d;
-            } else {
-                // evita doppia virgola
-                if (d === ',' && input.value.includes(',')) return;
-                input.value += d;
-            }
-        }
+      <div class="keypad">
+        <button type="button" onclick="addDigit('1')">1</button>
+        <button type="button" onclick="addDigit('2')">2</button>
+        <button type="button" onclick="addDigit('3')">3</button>
+        <button type="button" onclick="addDigit('4')">4</button>
+        <button type="button" onclick="addDigit('5')">5</button>
+        <button type="button" onclick="addDigit('6')">6</button>
+        <button type="button" onclick="addDigit('7')">7</button>
+        <button type="button" onclick="addDigit('8')">8</button>
+        <button type="button" onclick="addDigit('9')">9</button>
+        <button type="button" class="btn-special" onclick="addDigit(',')">,</button>
+        <button type="button" onclick="addDigit('0')">0</button>
+        <button type="button" class="btn-special" onclick="delDigit()">⌫</button>
+      </div>
 
-        function delDigit() {
-            if (input.value.length <= 1) {
-                input.value = '0';
-            } else {
-                input.value = input.value.slice(0, -1);
-            }
-        }
-    </script>
+      <button type="submit" class="btn-primary">
+        Imposta budget
+        <span>✓</span>
+      </button>
+    </form>
+
+    <div class="back-link">
+      <a href="{{ url_for('tipo') }}">⟵ Indietro</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('amount-input');
+
+  function addDigit(d) {
+      if (input.value === '0' && d !== ',') {
+          input.value = d;
+      } else {
+          // evita doppia virgola
+          if (d === ',' && input.value.includes(',')) return;
+          input.value += d;
+      }
+  }
+
+  function delDigit() {
+      if (input.value.length <= 1) {
+          input.value = '0';
+      } else {
+          input.value = input.value.slice(0, -1);
+      }
+  }
+</script>
+
 </body>
 </html>

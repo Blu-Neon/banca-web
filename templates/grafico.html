@@ -4,12 +4,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Grafico saldo</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
+      :root {
+        --radius-lg: 18px;
+        --radius-xl: 22px;
+        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
+        --accent: #4fd1c5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         padding: 20px;
-        max-width: 480px;
-        margin: auto;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
         background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         background-size: cover;
@@ -18,28 +33,183 @@
         background-attachment: fixed;
 
         color: white;
-        text-shadow: 0 0 5px black;
+        text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      }
+
+      /* overlay per contrasto, come le altre pagine */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
+                    linear-gradient(160deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
+        z-index: -1;
+      }
+
+      .page-container {
+        width: 100%;
+        max-width: 480px;
+        margin-top: 70px; /* spazio per il menu */
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .card {
+        background: rgba(10,18,40,0.55);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 20px 16px 18px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .card-header {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-bottom: 14px;
+      }
+
+      .card-title {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: 0.03em;
+      }
+
+      .card-subtitle {
+        font-size: 13px;
+        opacity: 0.8;
+      }
+
+      /* contenitore grafico */
+      .chart-wrapper {
+        background: rgba(2, 8, 25, 0.9);
+        border-radius: 16px;
+        padding: 10px 10px 6px;
+        border: 1px solid rgba(148,163,184,0.4);
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5);
+      }
+
+      .chart-inner {
+        position: relative;
+        width: 100%;
+        height: 240px;
+      }
+
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+      }
+
+      /* lista ultime spese */
+      .spese-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 4px;
       }
 
       .spesa {
-        padding: 10px;
-        margin: 8px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.4);
+        padding: 10px 10px 8px;
+        border-radius: 12px;
+        background: rgba(15,23,42,0.75);
+        border: 1px solid rgba(30,64,175,0.6);
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .spesa-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+      }
+
+      .spesa-amount {
+        font-weight: 700;
+        color: #fbbf24;
+      }
+
+      .spesa-category {
+        font-size: 13px;
+        opacity: 0.9;
+        text-transform: capitalize;
+      }
+
+      .spesa-date {
+        font-size: 11px;
+        opacity: 0.7;
+      }
+
+      .empty-state {
+        font-size: 13px;
+        opacity: 0.8;
+        margin-top: 6px;
+      }
+
+      @media (max-width: 380px) {
+        .card {
+          padding: 18px 12px 16px;
+        }
+
+        .card-title {
+          font-size: 18px;
+        }
+
+        .chart-inner {
+          height: 210px;
+        }
       }
     </style>
   </head>
+
   <body>
 
-   {% include "menu.html" %}
+    {% include "menu.html" %}
 
+    <div class="page-container">
+      <!-- Card grafico saldo -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Andamento del saldo</h2>
+          <p class="card-subtitle">Vedi come è cambiato il saldo nel corso del mese</p>
+        </div>
 
-    <h2>Andamento del saldo del mese</h2>
+        <div class="chart-wrapper">
+          <div class="chart-inner">
+            <canvas id="mioGrafico"></canvas>
+          </div>
+        </div>
+      </div>
 
-    <canvas id="mioGrafico"
-      style="max-width:100%; background:rgba(0,0,0,0.3); background-color: white;
-             border-radius:10px; padding:15px; width:430px; height:300px;
-             margin-left:2px; opacity: 0.8;">
-    </canvas>
+      <!-- Card ultime spese -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">Ultime 5 spese</h2>
+          <p class="card-subtitle">Riepilogo degli ultimi movimenti registrati</p>
+        </div>
+
+        {% if ultime_cinque %}
+          <div class="spese-list">
+            {% for mov in ultime_cinque %}
+              <div class="spesa">
+                <div class="spesa-header">
+                  <span class="spesa-amount">{{ "%.2f"|format(mov.amount) }} €</span>
+                  <span class="spesa-category">{{ mov.category }}</span>
+                </div>
+                <span class="spesa-date">{{ mov.date }}</span>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="empty-state">Nessun movimento ancora registrato.</p>
+        {% endif %}
+      </div>
+    </div>
 
     <script>
       // Dati passati da Flask → Jinja → JS
@@ -47,6 +217,7 @@
       const dataValues = {{ valori_saldo | tojson }};
 
       const ctx = document.getElementById('mioGrafico');
+
       new Chart(ctx, {
         type: 'line',
         data: {
@@ -54,39 +225,54 @@
           datasets: [{
             label: 'Saldo',
             data: dataValues,
-            fill: false,
-            borderWidth: 2
+            fill: true,
+            borderWidth: 2,
+            borderColor: 'rgba(79, 209, 197, 1)',
+            backgroundColor: 'rgba(79, 209, 197, 0.15)',
+            pointRadius: 3.5,
+            pointBackgroundColor: 'rgba(248, 250, 252, 1)',
+            pointBorderColor: 'rgba(15,23,42,1)',
+            tension: 0.3
           }]
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: 'rgba(226,232,240,0.9)',
+                maxRotation: 0,
+                autoSkip: true
+              },
+              grid: {
+                display: false
+              }
+            },
+            y: {
+              ticks: {
+                color: 'rgba(203,213,225,0.9)'
+              },
+              grid: {
+                color: 'rgba(30,64,175,0.3)'
+              }
+            }
+          }
         }
       });
     </script>
 
-    <h2>Ultime 5 spese</h2>
-
-    {% for mov in ultime_cinque %}
-      <div class="spesa">
-        <strong>{{ "%.2f"|format(mov.amount) }} €</strong> — {{ mov.category }}<br>
-        <small>{{ mov.date }}</small>
-      </div>
-    {% endfor %}
-
-    {% if not ultime_cinque %}
-      <p>Nessun movimento ancora registrato.</p>
-    {% endif %}
-
-    <br>
-
     {% if session.get('user_id') == 1 %}
     <style>
-      /* cursore di default per tutta la pagina */
       * {
         cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
       }
 
-      /* anche per bottoni e elementi che normalmente hanno cursore "pointer" */
       button, a, input, select, textarea, label {
         cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
       }

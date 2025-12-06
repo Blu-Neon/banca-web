@@ -5,11 +5,25 @@
     <title>Tipo</title>
   
     <style>
+      :root {
+        --radius-lg: 18px;
+        --radius-xl: 22px;
+        --shadow-soft: 0 12px 30px rgba(0,0,0,0.25);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         padding: 20px;
-        max-width: 480px;
-        margin: auto;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
 
         background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         background-size: cover;
@@ -18,39 +32,155 @@
         background-attachment: fixed;
 
         color: white;
-        text-shadow: 0 0 5px black;
+        text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      }
+
+      /* leggero overlay per contrasto */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(
+          160deg,
+          rgba(0,0,40,0.75),
+          rgba(0,0,0,0.4)
+        );
+        z-index: -1;
+      }
+
+      .page-container {
+        width: 100%;
+        max-width: 480px;
+        margin-top: 70px; /* spazio sotto il menu fixed */
+      }
+
+      .card {
+        background: rgba(255,255,255,0.10);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255,255,255,0.18);
+        box-shadow: var(--shadow-soft);
+        padding: 22px 20px 24px;
+      }
+
+      .card-header {
+        text-align: center;
+        margin-bottom: 18px;
+      }
+
+      .card-title {
+        font-size: 22px;
+        margin: 0 0 4px;
+        letter-spacing: 0.03em;
+      }
+
+      .card-subtitle {
+        font-size: 14px;
+        opacity: 0.85;
       }
 
       .categorie {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
-        margin: 30px auto 0 auto;
-        max-width: 320px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin: 10px auto 0 auto;
       }
 
       .categoria-btn {
-        padding: 14px;
-        font-size: 18px;
+        position: relative;
+        padding: 14px 10px;
+        font-size: 15px;
+        border-radius: var(--radius-lg);
         border: none;
-        border-radius: 12px;
         cursor: pointer;
-        font-weight: bold;
-        color: white;
+        font-weight: 600;
+        color: #0b1020;
         text-shadow: none;
+        width: 100%;
+        height: 90px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+
+        box-shadow: 0 8px 18px rgba(0,0,0,0.22);
+        transition:
+          transform 0.15s ease-out,
+          box-shadow 0.15s ease-out,
+          filter 0.15s ease-out;
       }
 
-      .btn-spesa        { background: #FF6384; color: black; }
-      .btn-ristorante   { background: #9966FF; color: black; }
-      .btn-altro        { background: #595A5B; color: black; }
-      .btn-evitabile    { background: #ed0909; color: black; }
-      .btn-vestiti      { background: #3af083; color: black; }
-      .btn-trasporti    { background: #48C0C0; color: black; }
-      .btn-viaggio      { background: #6d0251; color: black; }
-      .btn-svago        { background: #36A2EF; color: black; }
+      .categoria-btn span {
+        display: block;
+      }
 
-      
+      .categoria-label {
+        font-size: 16px;
+        margin-bottom: 4px;
+      }
 
+      .categoria-tag {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        opacity: 0.85;
+      }
+
+      .categoria-btn:hover {
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 12px 26px rgba(0,0,0,0.30);
+        filter: brightness(1.05);
+      }
+
+      .categoria-btn:active {
+        transform: translateY(0) scale(0.99);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.22);
+      }
+
+      /* Colori (leggermente sfumati) */
+      .btn-spesa {
+        background: linear-gradient(135deg, #FF9EA8, #FF6384);
+      }
+      .btn-ristorante {
+        background: linear-gradient(135deg, #C4A4FF, #9966FF);
+      }
+      .btn-altro {
+        background: linear-gradient(135deg, #8B8C8D, #595A5B);
+        color: #f7f7f7;
+      }
+      .btn-evitabile {
+        background: linear-gradient(135deg, #ff6b6b, #ed0909);
+      }
+      .btn-vestiti {
+        background: linear-gradient(135deg, #6AF9AA, #3af083);
+      }
+      .btn-trasporti {
+        background: linear-gradient(135deg, #7CE8E8, #48C0C0);
+      }
+      .btn-viaggio {
+        background: linear-gradient(135deg, #ff7ac4, #6d0251);
+        color: #fdfdfd;
+      }
+      .btn-svago {
+        background: linear-gradient(135deg, #8AD0FF, #36A2EF);
+      }
+
+      @media (max-width: 380px) {
+        .card {
+          padding: 18px 14px 20px;
+        }
+
+        .categorie {
+          gap: 10px;
+        }
+
+        .categoria-btn {
+          height: 80px;
+          font-size: 14px;
+        }
+      }
     </style>
 </head>
 
@@ -58,17 +188,56 @@
 
 {% include "menu.html" %}
 
+<div class="page-container">
+  <div class="card">
+    <div class="card-header">
+      <h1 class="card-title">Scegli la categoria</h1>
+      <p class="card-subtitle">Classifica la spesa in modo veloce e chiaro</p>
+    </div>
 
-<form method="POST" action="/tipo" class="categorie">
-  <button class="categoria-btn btn-ristorante" name="category" value="ristorante" style="width:120px; height:120px;">Ristorante</button>
-  <button class="categoria-btn btn-evitabile"  name="category" value="evitabile"  style="width:120px; height:120px;">Evitabile</button>
-  <button class="categoria-btn btn-vestiti"    name="category" value="vestiti"    style="width:120px; height:120px;">Vestiti</button>
-  <button class="categoria-btn btn-trasporti"  name="category" value="trasporti"  style="width:120px; height:120px;">Trasporti</button>
-  <button class="categoria-btn btn-viaggio"    name="category" value="viaggio"    style="width:120px; height:120px;">Viaggio</button>
-  <button class="categoria-btn btn-svago"      name="category" value="svago"      style="width:120px; height:120px;">Svago</button>
-  <button class="categoria-btn btn-altro"      name="category" value="altro"      style="width:120px; height:120px;">Altro</button>
-  <button class="categoria-btn btn-spesa"      name="category" value="spesa"      style="width:120px; height:120px;">Spesa</button>
-</form>
+    <form method="POST" action="/tipo" class="categorie">
+      <button class="categoria-btn btn-ristorante" name="category" value="ristorante">
+        <span class="categoria-label">Ristorante 🍽️</span>
+        <span class="categoria-tag">Cibo fuori casa</span>
+      </button>
+
+      <button class="categoria-btn btn-evitabile" name="category" value="evitabile">
+        <span class="categoria-label">Evitabile ⚠️</span>
+        <span class="categoria-tag">Spesa non essenziale</span>
+      </button>
+
+      <button class="categoria-btn btn-vestiti" name="category" value="vestiti">
+        <span class="categoria-label">Vestiti 👕</span>
+        <span class="categoria-tag">Abbigliamento & accessori</span>
+      </button>
+
+      <button class="categoria-btn btn-trasporti" name="category" value="trasporti">
+        <span class="categoria-label">Trasporti 🚆</span>
+        <span class="categoria-tag">Mezzi, carburante, ecc.</span>
+      </button>
+
+      <button class="categoria-btn btn-viaggio" name="category" value="viaggio">
+        <span class="categoria-label">Viaggio ✈️</span>
+        <span class="categoria-tag">Spostamenti e vacanze</span>
+      </button>
+
+      <button class="categoria-btn btn-svago" name="category" value="svago">
+        <span class="categoria-label">Svago 🎮</span>
+        <span class="categoria-tag">Tempo libero & hobby</span>
+      </button>
+
+      <button class="categoria-btn btn-altro" name="category" value="altro">
+        <span class="categoria-label">Altro 🧩</span>
+        <span class="categoria-tag">Tutto il resto</span>
+      </button>
+
+      <button class="categoria-btn btn-spesa" name="category" value="spesa">
+        <span class="categoria-label">Spesa 🛒</span>
+        <span class="categoria-tag">Supermercato & casa</span>
+      </button>
+    </form>
+  </div>
+</div>
 
 {% if session.get('user_id') == 1 %}
 <style>

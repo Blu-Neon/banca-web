@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -6,11 +5,25 @@
     <title>Banca</title>
 
     <style>
+      :root {
+        --radius-lg: 18px;
+        --radius-xl: 22px;
+        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
+        --accent: #4fd1c5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: sans-serif;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         padding: 20px;
-        max-width: 480px;
-        margin: auto;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
 
         background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
         background-size: cover;
@@ -19,138 +32,364 @@
         background-attachment: fixed;
 
         color: white;
-        text-shadow: 0 0 5px black;
+        text-shadow: 0 0 5px rgba(0,0,0,0.7);
       }
 
-      .container{
-        max-width: 480px;
-        margin: auto;
-        padding: 20px;
+      /* overlay per contrasto, coerente con le altre pagine */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
+                    linear-gradient(160deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
+        z-index: -1;
       }
-      
-      .full-btn {
+
+      .page-container {
         width: 100%;
-        padding: 12px;
-        font-size: 16px;
-        border-radius: 34px;
-        border-color: #F0FFF0;
-        color: white;
-        font-weight: bold;
-        border: none;
+        max-width: 480px;
+        margin-top: 70px; /* spazio per il menu */
       }
 
-      .btn-dark {
-        background-color: #444;
+      .box {
+        background: rgba(10,18,40,0.55);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border-radius: var(--radius-xl);
+        border: 1px solid rgba(255,255,255,0.18);
+        padding: 22px 18px 20px;
+        box-shadow: var(--shadow-soft);
       }
 
-      .button-group {
+      .header-row {
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        margin-top: 15px;
-      }
-  
-      .vertical-grad {
-        background: linear-gradient(to top, #ff4d4d, #daa520);
-        padding: 12px 20px;
-        color: white;
-        width: 100%;
+        gap: 4px;
+        margin-bottom: 14px;
       }
 
+      .saldo-label {
+        font-size: 13px;
+        opacity: 0.85;
+      }
+
+      .saldo-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #4fd1c5;
+      }
+
+      .categoria-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(15,23,42,0.85);
+        border: 1px solid rgba(148,163,184,0.6);
+        font-size: 13px;
+        width: fit-content;
+      }
+
+      .categoria-pill span {
+        text-transform: capitalize;
+      }
+
+      .subtitle {
+        font-size: 13px;
+        opacity: 0.8;
+        margin: 10px 0 12px;
+      }
+
+      .amount-display-wrapper {
+        margin-top: 4px;
+        margin-bottom: 16px;
+        background: rgba(2, 8, 25, 0.9);
+        border-radius: 16px;
+        padding: 10px 12px;
+        border: 1px solid rgba(255,255,255,0.16);
+        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
+      }
+
+      .amount-label-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        opacity: 0.7;
+        margin-bottom: 4px;
+      }
+
+      .currency-tag {
+        font-size: 13px;
+        opacity: 0.85;
+      }
+
+      #amount-input {
+        width: 100%;
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 28px;
+        color: #fecaca;
+        font-weight: 600;
+        text-align: right;
+      }
+
+      #amount-input::placeholder {
+        color: rgba(248, 113, 113, 0.9);
+        font-weight: 400;
+      }
+
+      #amount-input::selection {
+        background: rgba(248, 113, 113, 0.35);
+      }
+
+      form {
+        margin: 0;
+      }
+
+      .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+        margin-bottom: 18px;
+      }
+
+      .keypad button {
+        padding: 14px 0;
+        font-size: 20px;
+        border-radius: 16px;
+        border: none;
+        background: radial-gradient(circle at top, rgba(255,255,255,0.16), rgba(18,30,60,0.9));
+        color: #fdfdfd;
+        box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+        cursor: pointer;
+        transition:
+          transform 0.12s ease-out,
+          box-shadow 0.12s ease-out,
+          filter 0.12s ease-out;
+      }
+
+      .keypad button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px rgba(0,0,0,0.4);
+        filter: brightness(1.05);
+      }
+
+      .keypad button:active {
+        transform: translateY(0) scale(0.97);
+        box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        filter: brightness(0.96);
+      }
+
+      .keypad .btn-special {
+        font-size: 18px;
+        opacity: 0.9;
+      }
+
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 4px;
+      }
+
+      .btn-primary {
+        width: 100%;
+        padding: 13px;
+        font-size: 17px;
+        border-radius: 999px;
+        border: none;
+        background: linear-gradient(135deg, #f97373, #f97316);
+        color: #020617;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 10px 26px rgba(220, 38, 38, 0.55);
+        letter-spacing: 0.02em;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        transition:
+          transform 0.12s ease-out,
+          box-shadow 0.12s ease-out,
+          filter 0.12s ease-out;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px rgba(220, 38, 38, 0.7);
+        filter: brightness(1.03);
+      }
+
+      .btn-primary:active {
+        transform: translateY(0) scale(0.98);
+        box-shadow: 0 7px 16px rgba(220, 38, 38, 0.55);
+      }
+
+      .btn-secondary {
+        width: 100%;
+        padding: 11px;
+        font-size: 14px;
+        border-radius: 999px;
+        border: 1px solid rgba(148,163,184,0.7);
+        background: rgba(15,23,42,0.7);
+        color: #e5e7eb;
+        font-weight: 500;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+        transition:
+          transform 0.12s ease-out,
+          box-shadow 0.12s ease-out,
+          background 0.12s ease-out;
+      }
+
+      .btn-secondary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.45);
+        background: rgba(15,23,42,0.9);
+      }
+
+      .btn-secondary:active {
+        transform: translateY(0);
+      }
+
+      @media (max-width: 380px) {
+        .box {
+          padding: 18px 14px 18px;
+        }
+
+        .saldo-value {
+          font-size: 22px;
+        }
+
+        #amount-input {
+          font-size: 24px;
+        }
+
+        .keypad button {
+          padding: 12px 0;
+          font-size: 18px;
+        }
+      }
     </style>
   </head>
 
   <body>
 
-   {% include "menu.html" %}
+    {% include "menu.html" %}
 
+    <div class="page-container">
+      <div class="box">
+        <div class="header-row">
+          <div>
+            <div class="saldo-label">Saldo disponibile</div>
+            <div class="saldo-value">{{ saldo }} €</div>
+          </div>
 
-    <div class="container">
-
-      <h1>
-        <span style="color: #F0FFF0">Saldo: </span>
-        <span style="color: #008000">{{ saldo }} €</span>
-      </h1>
-
-      <p>Inserisci una nuova spesa per {{ selected_category }}:</p>
-
-      <!-- Form principale per aggiungere la spesa -->
-      <form method="POST" action="/add-expense" style="display:flex; flex-direction:column; gap:10px;">
-        <input
-          type="text"
-          id="amount-input"
-          name="amount"
-          placeholder="Importo (es. 12,50)"
-          style="padding:10px; font-size:20px; color: #B22222; background-color: #F0FFF0; font-weight:bold"
-          required
-        />
-
-        <div class="button-group">
-          <button type="submit" class="full-btn vertical-grad">
-            Salva spesa
-          </button>
+          <div class="categoria-pill">
+            <span>Categoria:</span>
+            <span>{{ selected_category }}</span>
+          </div>
         </div>
-      </form>
 
-      <!-- Bottone separato per cambiare categoria -->
-      <form method="GET" action="/tipo" style="margin-top: 10px;">
-        <button class="full-btn btn-dark">
-          Cambia categoria
-        </button>
-      </form>
+        <p class="subtitle">Inserisci una nuova spesa per questa categoria.</p>
 
-      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:40px; margin-top:50px; margin-left: 40px">
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('1')">1</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('2')">2</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('3')">3</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('4')">4</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('5')">5</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('6')">6</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('7')">7</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('8')">8</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('9')">9</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar(',')">,</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="addChar('0')">0</button>
-        <button style=" background-color:#F0FFF0; width:60px; height:60px; border-radius:999px; font-size:25px; color:black; font-weight: bold" type="button" onclick="backspace()">C</button>
+        <!-- Form principale per aggiungere la spesa -->
+        <form method="POST" action="/add-expense">
+          <div class="amount-display-wrapper">
+            <div class="amount-label-row">
+              <span>Importo spesa</span>
+              <span class="currency-tag">EUR €</span>
+            </div>
+            <input
+              type="text"
+              id="amount-input"
+              name="amount"
+              placeholder="0,00"
+              required
+            />
+          </div>
+
+          <div class="keypad">
+            <button type="button" onclick="addChar('1')">1</button>
+            <button type="button" onclick="addChar('2')">2</button>
+            <button type="button" onclick="addChar('3')">3</button>
+            <button type="button" onclick="addChar('4')">4</button>
+            <button type="button" onclick="addChar('5')">5</button>
+            <button type="button" onclick="addChar('6')">6</button>
+            <button type="button" onclick="addChar('7')">7</button>
+            <button type="button" onclick="addChar('8')">8</button>
+            <button type="button" onclick="addChar('9')">9</button>
+            <button type="button" class="btn-special" onclick="addChar(',')">,</button>
+            <button type="button" onclick="addChar('0')">0</button>
+            <button type="button" class="btn-special" onclick="backspace()">⌫</button>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn-primary">
+              Salva spesa
+              <span>💸</span>
+            </button>
+          </div>
+        </form>
+
+        <!-- Bottone separato per cambiare categoria -->
+        <form method="GET" action="/tipo">
+          <button class="btn-secondary" type="submit" style="margin-top: 10px">
+            Cambia categoria
+          </button>
+        </form>
       </div>
+    </div>
 
-      <script>
-        function addChar(ch) {
-          const input = document.getElementById('amount-input');
-          if (ch === ',' && input.value.includes(',')) {
-            return; // evita due virgole
-          }
-          if (input.value === '0' && ch !== ',') {
-            input.value = ch; // sostituisce lo zero iniziale
+    <script>
+      function addChar(ch) {
+        const input = document.getElementById('amount-input');
+        // evita doppia virgola
+        if (ch === ',' && input.value.includes(',')) {
+          return;
+        }
+        if (!input.value || input.value === '0') {
+          if (ch === ',') {
+            input.value = '0,';
           } else {
-            input.value = input.value + ch;
+            input.value = ch;
           }
+        } else {
+          input.value = input.value + ch;
         }
-        function clearInput() {
-          const input = document.getElementById('amount-input');
-          input.value = '';
-        }
-        function backspace() {
-          const input = document.getElementById('amount-input');
-          input.value = input.value.slice(0, -1);
-        }
-      </script>
+      }
 
-      {% if session.get('user_id') == 1 %}
-      <style>
-        /* cursore di default per tutta la pagina */
-        * {
-          cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
-        }
+      function clearInput() {
+        const input = document.getElementById('amount-input');
+        input.value = '';
+      }
 
-        /* anche per bottoni e elementi che normalmente hanno cursore "pointer" */
-        button, a, input, select, textarea, label {
-          cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
-        }
-      </style>
-      {% endif %}
+      function backspace() {
+        const input = document.getElementById('amount-input');
+        input.value = input.value.slice(0, -1);
+      }
+    </script>
 
-    </div> <!-- fine .container -->
+    {% if session.get('user_id') == 1 %}
+    <style>
+      * {
+        cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
+      }
+
+      button, a, input, select, textarea, label {
+        cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
+      }
+    </style>
+    {% endif %}
 
   </body>
 </html>
