@@ -113,6 +113,7 @@ from routes.viaggio import *
 from routes.chiudi_viaggio import *
 from routes.storico_viaggi import *
 from routes.viaggio_spese import *
+from routes.abbonamenti import *
 
 
 if __name__ == "__main__":
