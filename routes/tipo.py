@@ -1,5 +1,5 @@
 from flask import request, redirect, url_for, render_template, session, flash
-from db import get_connection, get_saldo, add_expense, add_income
+from db import get_connection, get_saldo, add_expense, add_income, applica_abbonamenti
 from app import app
 
 
