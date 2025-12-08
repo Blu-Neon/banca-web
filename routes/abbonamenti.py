@@ -49,6 +49,8 @@ def abbonamenti():
     totale_mensile = sum(float(a["amount"]) for a in abbonamenti_list if a["tipo"] == "mensile")
     totale_annuale = sum(float(a["amount"]) for a in abbonamenti_list if a["tipo"] == "annuale")
 
+    spesa_media_mensile = totale_mensile + (totale_annuale / 12.0)
+
     return render_template(
         "abbonamenti.html",
         abbonamenti=abbonamenti_list,

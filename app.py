@@ -1,5 +1,9 @@
 from flask import Flask, request, redirect, url_for, render_template, session, flash
-from db import init_db, get_saldo, add_expense, add_income, get_connection, start_travel, get_active_travel, add_travel_expense, get_travel_summary, close_active_travel,get_travel_history, add_abbonamento, get_abbonamenti, applica_abbonamenti
+from db import (init_db, get_saldo, add_expense, 
+add_income, get_connection, start_travel, get_active_travel, 
+add_travel_expense, get_travel_summary, close_active_travel,
+get_travel_history, add_abbonamento, get_abbonamenti, 
+applica_abbonamenti)
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
@@ -93,6 +97,7 @@ def send_reset_email(to_email, reset_link):
         print("[BREVO EXCEPTION]", e)
         print("[BREVO] LINK RESET (fallback):", reset_link)
 
+applica_abbonamenti(user_id) #faccio il check di abbonamenti a ogni accesso 
 
 from routes.register import *
 from routes.login import *
