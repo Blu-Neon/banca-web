@@ -506,11 +506,13 @@ def check_abbonamenti_oggi(user_id: int):
         session["last_abb_check"] = today_str
 
 
+from datetime import date
+
 def applica_abbonamenti(user_id: int) -> None:
     """
     Scala dal saldo gli abbonamenti dovuti "oggi" e aggiorna last_charge_date.
-    - mensile: ogni 1° del mese
-    - annuale: una volta all'anno nel giorno/mese di created_at
+    - mensile: una volta al mese
+    - annuale: una volta all'anno nel mese di created_at
     """
     oggi = date.today()
     conn = get_connection()
@@ -524,25 +526,31 @@ def applica_abbonamenti(user_id: int) -> None:
         """,
         (user_id,),
     )
-    rows = cur.fetchall()
+    rows = cur.fetchall()   # rows = lista di dict
 
-    for abb_id, name, amount, tipo, created_at, last_charge in rows:
+    for row in rows:
+        abb_id = row["abb_id"]
+        name = row["name"]
+        amount = float(row["amount"])
+        tipo = row["tipo"]
+        created_at = row["created_at"]
+        last_charge = row["last_charge_date"]
+
         deve_addebitare = False
 
         if tipo == "mensile":
             # mai addebitato oppure mese diverso dall'ultimo addebito
-            if (last_charge is None or
-                last_charge.year != oggi.year or
-                last_charge.month != oggi.month):
-
-
+            if (
+                last_charge is None
+                or last_charge.year != oggi.year
+                or last_charge.month != oggi.month
+            ):
                 deve_addebitare = True
 
         elif tipo == "annuale":
             # mai addebitato oppure anno diverso
-            if (last_charge is None or last_charge.year != oggi.year):
-
-                # stessa data (giorno e mese) di quando è stato creato
+            if last_charge is None or last_charge.year != oggi.year:
+                # stesso mese di quando è stato creato
                 if oggi.month == created_at.month:
                     deve_addebitare = True
 
@@ -570,3 +578,4 @@ def applica_abbonamenti(user_id: int) -> None:
 
     conn.commit()
     conn.close()
+
