@@ -97,8 +97,6 @@ def send_reset_email(to_email, reset_link):
         print("[BREVO EXCEPTION]", e)
         print("[BREVO] LINK RESET (fallback):", reset_link)
 
-applica_abbonamenti(user_id) #faccio il check di abbonamenti a ogni accesso 
-
 from routes.register import *
 from routes.login import *
 from routes.logout import *

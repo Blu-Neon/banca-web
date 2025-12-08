@@ -8,6 +8,7 @@ def home():
         return redirect(url_for("login"))
 
     user_id = session["user_id"]
+    applica_abbonamenti(user_id)
     selected_category = session.get("selected_category")
     saldo = f"{get_saldo(user_id):.2f}"
     return render_template("home.html", saldo=saldo, username=session.get("username"), selected_category=selected_category)

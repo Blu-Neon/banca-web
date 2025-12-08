@@ -5,6 +5,11 @@ from app import app
 
 @app.route("/tipo", methods=["GET", "POST"])
 def tipo():
+    if "user_id" not in session:
+        return redirect(url_for("login"))
+
+    user_id = session["user_id"]
+    applica_abbonamenti(user_id)
     # se invia il form (ha scelto una categoria)
     if request.method == "POST":
         category = request.form.get("category")
