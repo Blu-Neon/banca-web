@@ -51,7 +51,7 @@ def abbonamenti():
             created_at = date.today()
 
 
-        add_abbonamento(user_id, name, amount, tipo)
+        add_abbonamento(user_id, name, amount, tipo, created_at)
         flash("Abbonamento salvato.", "success")
         return redirect(url_for("abbonamenti"))
 

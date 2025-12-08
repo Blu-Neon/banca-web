@@ -495,6 +495,15 @@ def get_abbonamenti(user_id: int):
     conn.close()
     return rows
 
+def check_abbonamenti_oggi(user_id: int):
+    today_str = date.today().isoformat()
+    last_check = session.get("last_abb_check")
+
+    if last_check != today_str:
+        # primo accesso di oggi → applico abbonamenti
+        applica_abbonamenti(user_id)
+        session["last_abb_check"] = today_str
+
 
 def applica_abbonamenti(user_id: int) -> None:
     """
