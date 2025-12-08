@@ -461,15 +461,15 @@ def get_travel_history(user_id: int):
 
 
 # Abbonamenti 
-def add_abbonamento(user_id: int, name: str, amount: float, tipo: str) -> None:
+def add_abbonamento(user_id: int, name: str, amount: float, tipo: str, created_at: date) -> None:
     conn = get_connection()
     cur = conn.cursor()
     cur.execute(
         """
-        INSERT INTO abbonamenti (user_id, name, amount, tipo)
-        VALUES (%s, %s, %s, %s);
+        INSERT INTO abbonamenti (user_id, name, amount, tipo, created_at)
+        VALUES (%s, %s, %s, %s, %s);
         """,
-        (user_id, name, amount, tipo),
+        (user_id, name, amount, tipo, created_at),
     )
     conn.commit()
     conn.close()

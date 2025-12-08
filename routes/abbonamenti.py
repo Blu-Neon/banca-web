@@ -5,6 +5,7 @@ from db import (
     get_abbonamenti,
     applica_abbonamenti,
 )
+from datetime import date, datetime
 
 @app.route("/abbonamenti", methods=["GET", "POST"])
 def abbonamenti():
@@ -20,6 +21,7 @@ def abbonamenti():
         name = request.form.get("name", "").strip()
         amount_str = request.form.get("amount", "").replace(",", ".")
         tipo = request.form.get("tipo")
+        created_at_str = request.form.get("created_at", "").strip()
 
         if not name or not amount_str or not tipo:
             flash("Compila tutti i campi e scegli mensile/annuale.", "error")
@@ -38,6 +40,16 @@ def abbonamenti():
         if amount <= 0:
             flash("L'importo deve essere positivo", "error")
             return redirect(url_for("abbonamenti"))
+        
+        if created_at_str:
+            try:
+                created_at = datetime.strptime(created_at_str, "%Y-%m-%d").date()
+            except ValueError:
+                flash("Data di inizio non valida.", "error")
+                return redirect(url_for("abbonamenti"))
+        else:
+            created_at = date.today()
+
 
         add_abbonamento(user_id, name, amount, tipo)
         flash("Abbonamento salvato.", "success")
