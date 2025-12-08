@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, url_for, render_template, session, flash
-from db import init_db, get_saldo, add_expense, add_income, get_connection, start_travel, get_active_travel, add_travel_expense, get_travel_summary, close_active_travel,get_travel_history
+from db import init_db, get_saldo, add_expense, add_income, get_connection, start_travel, get_active_travel, add_travel_expense, get_travel_summary, close_active_travel,get_travel_history, add_abbonamento, get_abbonamenti, applica_abbonamenti
 import json
 from werkzeug.security import generate_password_hash, check_password_hash
 import requests
