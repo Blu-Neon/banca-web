@@ -56,6 +56,7 @@ def abbonamenti():
         abbonamenti=abbonamenti_list,
         totale_mensile=totale_mensile,
         totale_annuale=totale_annuale,
+        spesa_media_mensile = spesa_media_mensile,
     )
 
 
