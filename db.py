@@ -2,6 +2,7 @@ import os
 import psycopg2
 import psycopg2.extras
 from datetime import date
+from flask import session
 
 # Prende la stringa di connessione dall'env (Render)
 DATABASE_URL = os.environ.get("DATABASE_URL")
