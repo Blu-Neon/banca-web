@@ -1,6 +1,7 @@
 import os
 import psycopg2
 import psycopg2.extras
+from datetime import date
 
 # Prende la stringa di connessione dall'env (Render)
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -117,6 +118,20 @@ def init_db():
         ADD COLUMN IF NOT EXISTS original_currency TEXT;
     """)
 
+    #abbonamenti 
+
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS abbonamenti(
+        abb_id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        created_at DATE NOT NULL DEFAULT CURRENT_DATE,
+        name TEXT NOT NULL,
+        amount NUMERIC(12,2) NOT NULL,
+        tipo TEXT NOT NULL CHECK (tipo IN ('mensile','annuale')),
+        last_charge_date DATE
+    );
+    """)
+
 
     conn.commit()
     conn.close()
@@ -162,6 +177,7 @@ def add_expense(user_id: int, amount: float, category: str) -> None:
 
     conn.commit()
     conn.close()
+
 
 
 def add_income(user_id: int, amount: float) -> None:
@@ -444,3 +460,103 @@ def get_travel_history(user_id: int):
     return rows
 
 
+# Abbonamenti 
+def add_abbonamento(user_id: int, name: str, amount: float, tipo: str) -> None:
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        INSERT INTO abbonamenti (user_id, name, amount, tipo)
+        VALUES (%s, %s, %s, %s);
+        """,
+        (user_id, name, amount, tipo),
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_abbonamenti(user_id: int):
+    """
+    Ritorna una lista di dict:
+    [{ 'abb_id': ..., 'name': ..., 'amount': ..., 'tipo': ..., 'created_at': ..., 'last_charge_date': ...}, ...]
+    """
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute(
+        """
+        SELECT abb_id, name, amount, tipo, created_at, last_charge_date
+        FROM abbonamenti
+        WHERE user_id = %s
+        ORDER BY created_at;
+        """,
+        (user_id,),
+    )
+    rows = cur.fetchall()
+    conn.close()
+    return rows
+
+
+def applica_abbonamenti(user_id: int) -> None:
+    """
+    Scala dal saldo gli abbonamenti dovuti "oggi" e aggiorna last_charge_date.
+    - mensile: ogni 1° del mese
+    - annuale: una volta all'anno nel giorno/mese di created_at
+    """
+    oggi = date.today()
+    conn = get_connection()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT abb_id, name, amount, tipo, created_at, last_charge_date
+        FROM abbonamenti
+        WHERE user_id = %s;
+        """,
+        (user_id,),
+    )
+    rows = cur.fetchall()
+
+    for abb_id, name, amount, tipo, created_at, last_charge in rows:
+        deve_addebitare = False
+
+        if tipo == "mensile":
+            # mai addebitato oppure mese diverso dall'ultimo addebito
+            if (last_charge is None or
+                last_charge.year != oggi.year or
+                last_charge.month != oggi.month):
+
+
+                deve_addebitare = True
+
+        elif tipo == "annuale":
+            # mai addebitato oppure anno diverso
+            if (last_charge is None or last_charge.year != oggi.year):
+
+                # stessa data (giorno e mese) di quando è stato creato
+                if oggi.month == created_at.month:
+                    deve_addebitare = True
+
+        if deve_addebitare:
+            # scala dal saldo
+            cur.execute(
+                """
+                UPDATE accounts
+                SET saldo = saldo - %s,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = %s;
+                """,
+                (amount, user_id),
+            )
+
+            # aggiorna la data dell'ultimo addebito
+            cur.execute(
+                """
+                UPDATE abbonamenti
+                SET last_charge_date = %s
+                WHERE abb_id = %s;
+                """,
+                (oggi, abb_id),
+            )
+
+    conn.commit()
+    conn.close()
