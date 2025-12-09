@@ -1,94 +1,247 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Profilo</title>
 
   <style>
     :root {
-      --radius-xl: 22px;
-      --shadow-soft: 0 18px 40px rgba(0,0,0,0.5);
+      --bg: #02040a;
+      --bg-soft: #050815;
+      --card: #050815;
+      --card-soft: #070a18;
+      --gold: #f4c97a;
+      --gold-soft: rgba(244, 201, 122, 0.16);
+      --gold-strong: #ffd992;
+      --text-main: #f9fafb;
+      --text-soft: #a1a1aa;
+      --border-soft: rgba(148, 163, 184, 0.3);
+      --radius-xl: 26px;
+      --radius-md: 18px;
+      --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      font-family: system-ui, sans-serif;
-      padding: 20px;
-      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       min-height: 100vh;
-
+      margin: 0;
+      background: radial-gradient(circle at top, #0b1024 0, #02040a 45%, #000 100%);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
-
-      background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-
-      color: white;
-      text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      padding: 20px 14px;
     }
 
-    body::before {
+    .app-shell {
+      width: 100%;
+      max-width: 520px;
+      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.04), rgba(15, 23, 42, 0.98));
+      border-radius: 32px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 16px 22px;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      margin-top: 80px; /* spazio per il menu flottante */
+    }
+
+    .app-shell::before {
       content: "";
-      position: fixed;
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(244, 201, 122, 0.10), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(148, 163, 184, 0.11), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      animation: glowFloat 18s ease-in-out infinite alternate;
+    }
+
+    .app-shell::after {
+      content: "";
+      position: absolute;
       inset: 0;
-      background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
-                  linear-gradient(160deg, rgba(0,0,0,0.8), rgba(0,0,0,0.45));
-      z-index: -1;
+      border-radius: inherit;
+      border: 1px solid rgba(244, 201, 122, 0.08);
+      pointer-events: none;
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.8),
+        0 0 40px rgba(0, 0, 0, 0.9);
+    }
+
+    @keyframes glowFloat {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translate3d(0, 12px, 0) scale(1.03);
+        opacity: 1;
+      }
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      .app-shell {
+        padding: 24px 24px 24px;
+        margin-top: 90px;
+      }
     }
 
     .page-container {
       width: 100%;
-      max-width: 460px;
     }
+
+    /* HEADER */
 
     .logo-title {
       text-align: center;
+      margin-bottom: 14px;
     }
 
     .logo-title h1 {
       margin: 0;
-      font-size: 26px;
+      font-size: 1.4rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-title h1::before {
+      content: "";
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid var(--gold);
+      box-shadow: 0 0 16px rgba(244, 201, 122, 0.9);
     }
 
     .logo-title p {
-      margin: 4px 0 0;
-      opacity: 0.8;
-      font-size: 13px;
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--text-soft);
     }
 
+    .page-meta-line {
+      margin: 10px auto 0;
+      width: 72px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 999px;
+    }
+
+    /* FLASH MESSAGES */
+
+    .flash-container {
+      margin: 14px 0 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .flash-message {
+      padding: 9px 12px;
+      border-radius: 999px;
+      color: #f9fafb;
+      font-size: 0.85rem;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .flash-message::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .flash-error {
+      background: radial-gradient(circle at top, rgba(248, 113, 113, 0.24), rgba(24, 24, 27, 0.96));
+      color: #fecaca;
+      border-color: rgba(127, 29, 29, 0.9);
+    }
+
+    .flash-success {
+      background: radial-gradient(circle at top, rgba(74, 222, 128, 0.22), rgba(24, 24, 27, 0.96));
+      color: #bbf7d0;
+      border-color: rgba(21, 128, 61, 0.9);
+    }
+
+    /* CARD PROFILO */
+
     .box {
-      background: rgba(10,18,40,0.8);
-      backdrop-filter: blur(18px);
-      padding: 20px 16px 18px;
+      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.05), var(--card));
       border-radius: var(--radius-xl);
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: var(--shadow-soft);
-      margin-top: 16px;
-      color: #e5e7eb;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      padding: 18px 16px 16px;
+      color: var(--text-main);
       text-shadow: none;
+      margin-top: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(244, 201, 122, 0.04);
+      pointer-events: none;
+    }
+
+    .section {
+      margin-bottom: 16px;
     }
 
     .section-title {
-      font-size: 14px;
+      font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 0.09em;
-      opacity: 0.85;
-      margin-bottom: 8px;
+      letter-spacing: 0.16em;
+      opacity: 0.8;
+      margin-bottom: 6px;
+      color: var(--text-soft);
     }
 
     .info-row {
-      font-size: 14px;
+      font-size: 0.9rem;
       margin-bottom: 4px;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
     }
 
     .info-row span.label {
-      opacity: 0.7;
+      opacity: 0.72;
+      color: var(--text-soft);
+    }
+
+    .info-row strong {
+      color: var(--text-main);
     }
 
     form {
@@ -96,244 +249,297 @@
       flex-direction: column;
       gap: 10px;
       margin-top: 6px;
-      margin-bottom: 12px;
     }
 
     label {
-      font-size: 13px;
-      opacity: 0.9;
-      margin-bottom: 2px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
     }
 
     input[type="email"],
     input[type="text"],
     input[type="password"] {
       padding: 10px 11px;
-      font-size: 14px;
+      font-size: 0.95rem;
       width: 100%;
-      border-radius: 12px;
-      border: 1px solid rgba(148,163,184,0.8);
-      background: rgba(15,23,42,0.9);
+      border-radius: 999px;
+      border: 1px solid rgba(51, 65, 85, 0.9);
+      background: rgba(15, 23, 42, 0.96);
       color: #e5e7eb;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.45);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+      outline: none;
+      transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        background 0.15s ease,
+        transform 0.08s ease;
+    }
+
+    input::placeholder {
+      color: rgba(148, 163, 184, 0.9);
     }
 
     input:focus {
-      border-color: rgba(96,165,250,1);
-      box-shadow: 0 0 0 1px rgba(96,165,250,0.7);
-      outline: none;
+      border-color: var(--gold);
+      box-shadow:
+        0 0 0 1px rgba(244, 201, 122, 0.6),
+        0 12px 28px rgba(0, 0, 0, 0.85);
+      background: rgba(15, 23, 42, 1);
+      transform: translateY(-0.5px);
     }
 
+    /* BUTTONS */
+
     .btn-primary {
-      padding: 10px;
-      font-size: 14px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
       border: none;
       border-radius: 999px;
       cursor: pointer;
-      background: linear-gradient(135deg, #4fd1c5, #3182ce);
-      color: #020617;
+      background: radial-gradient(circle at top, var(--gold-strong), var(--gold));
+      color: #18181b;
       font-weight: 600;
-      box-shadow: 0 10px 22px rgba(15,118,110,0.6);
-      transition: 0.12s ease-out;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.85);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
       width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
     }
 
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(15,118,110,0.8);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95);
+      filter: brightness(1.02);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.85);
     }
 
     .btn-danger {
-      padding: 10px;
-      font-size: 14px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
       border-radius: 999px;
-      border: 1px solid rgba(248,113,113,0.9);
-      background: linear-gradient(135deg, #b91c1c, #7f1d1d);
-      color: #fee2e2;
+      border: 1px solid rgba(248, 113, 113, 0.85);
+      background: radial-gradient(circle at top, #fed7d7, #f97373);
+      color: #111827;
       cursor: pointer;
       width: 100%;
-      box-shadow: 0 10px 22px rgba(127,29,29,0.8);
-      transition: 0.12s ease-out;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.9);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
     }
 
     .btn-danger:hover {
       transform: translateY(-1px);
-      box-shadow: 0 14px 30px rgba(127,29,29,0.9);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 1);
+      filter: brightness(1.02);
     }
 
-    .flash-container {
-      margin-top: 14px;
+    .btn-danger:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.9);
     }
-
-    .flash-message {
-      padding: 10px 12px;
-      border-radius: 12px;
-      margin-bottom: 8px;
-      color: #f9fafb;
-      font-size: 13px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.5);
-    }
-
-    .flash-error   { background: linear-gradient(135deg, #f97373, #b91c1c); }
-    .flash-success { background: linear-gradient(135deg, #4ade80, #15803d); }
-
-    .back-link {
-      text-align: center;
-      margin-top: 14px;
-      font-size: 13px;
-    }
-
-    .back-link a {
-      color: #93c5fd;
-      text-decoration: none;
-    }
-
-    .back-link a:hover { text-decoration: underline; }
 
     .danger-box {
-      margin-top: 8px;
+      margin-top: 6px;
       padding-top: 10px;
-      border-top: 1px dashed rgba(248,113,113,0.7);
+      border-top: 1px dashed rgba(248, 113, 113, 0.7);
     }
 
     .danger-text {
-      font-size: 12px;
-      opacity: 0.8;
+      font-size: 0.78rem;
+      color: var(--text-soft);
       margin-bottom: 6px;
+    }
+
+    .back-link {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.8rem;
+    }
+
+    .back-link a {
+      color: var(--gold-strong);
+      text-decoration: none;
+    }
+
+    .back-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 380px) {
+      .app-shell {
+        padding: 18px 14px 20px;
+      }
+
+      .box {
+        padding: 16px 14px 14px;
+      }
+
+      .logo-title h1 {
+        font-size: 1.25rem;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="page-container">
-    <div class="logo-title">
-      <h1>Il tuo profilo</h1>
-      <p>Gestisci le impostazioni del tuo account.</p>
-    </div>
+  {% include "menu.html" %}
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="flash-container">
-          {% for category, msg in messages %}
-            <div class="flash-message {% if category=='error' %}flash-error{% else %}flash-success{% endif %}">
-              {{ msg }}
+  <div class="app-shell">
+    <div class="app-inner">
+      <div class="page-container">
+
+        <div class="logo-title">
+          <h1>Il tuo profilo</h1>
+          <p>Gestisci le impostazioni del tuo account.</p>
+          <div class="page-meta-line"></div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-container">
+              {% for category, msg in messages %}
+                <div class="flash-message {% if category=='error' %}flash-error{% else %}flash-success{% endif %}">
+                  {{ msg }}
+                </div>
+              {% endfor %}
             </div>
-          {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="box">
+          <!-- INFO BASE -->
+          <div class="section">
+            <div class="section-title">Dati account</div>
+            <div class="info-row">
+              <span class="label">Username:</span>
+              <strong>{{ user.username }}</strong>
+            </div>
+            <div class="info-row">
+              <span class="label">Email:</span>
+              <strong>{{ user.email or "Non impostata" }}</strong>
+            </div>
+          </div>
+
+          <!-- CAMBIA EMAIL -->
+          <div class="section">
+            <div class="section-title">Email</div>
+            <form method="POST" action="{{ url_for('profile') }}">
+              <input type="hidden" name="action" value="update_email" />
+              <label for="email">Nuova email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value="{{ user.email or '' }}"
+                placeholder="Inserisci la tua email"
+                required
+              />
+              <button class="btn-primary" type="submit">Aggiorna email</button>
+            </form>
+          </div>
+
+          <!-- CAMBIA USERNAME -->
+          <div class="section">
+            <div class="section-title">Username</div>
+            <form method="POST" action="{{ url_for('profile') }}">
+              <input type="hidden" name="action" value="update_username" />
+              <label for="username">Nuovo username</label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value="{{ user.username }}"
+                placeholder="Scegli un nuovo username"
+                required
+              />
+              <button class="btn-primary" type="submit">Aggiorna username</button>
+            </form>
+          </div>
+
+          <!-- CAMBIA PASSWORD -->
+          <div class="section">
+            <div class="section-title">Password</div>
+            <form method="POST" action="{{ url_for('profile') }}">
+              <input type="hidden" name="action" value="change_password" />
+
+              <label for="current_password">Password attuale</label>
+              <input
+                type="password"
+                id="current_password"
+                name="current_password"
+                placeholder="Inserisci la password attuale"
+                required
+              />
+
+              <label for="new_password">Nuova password</label>
+              <input
+                type="password"
+                id="new_password"
+                name="new_password"
+                placeholder="Inserisci la nuova password"
+                required
+              />
+
+              <label for="confirm_password">Conferma nuova password</label>
+              <input
+                type="password"
+                id="confirm_password"
+                name="confirm_password"
+                placeholder="Ripeti la nuova password"
+                required
+              />
+
+              <button class="btn-primary" type="submit">Cambia password</button>
+            </form>
+          </div>
+
+          <!-- ELIMINA ACCOUNT -->
+          <div class="section danger-box">
+            <div class="section-title">Zona pericolosa</div>
+            <p class="danger-text">
+              Eliminare l'account cancellerà tutti i tuoi dati (saldo, spese, viaggi).
+              Questa azione è irreversibile.
+            </p>
+            <form method="POST" action="{{ url_for('delete_account') }}">
+              <label for="confirm">Digita <strong>ELIMINA</strong> per confermare</label>
+              <input
+                type="text"
+                id="confirm"
+                name="confirm"
+                placeholder="ELIMINA"
+              />
+              <button class="btn-danger" type="submit">Elimina account</button>
+            </form>
+          </div>
+
+          <div class="back-link">
+            <a href="{{ url_for('home') }}">⬅ Torna alla dashboard</a>
+          </div>
         </div>
-      {% endif %}
-    {% endwith %}
 
-    <div class="box">
-      <!-- INFO BASE -->
-      <div class="section">
-        <div class="section-title">Dati account</div>
-        <div class="info-row">
-          <span class="label">Username:</span>
-          <strong>{{ user.username }}</strong>
-        </div>
-        <div class="info-row">
-          <span class="label">Email:</span>
-          <strong>{{ user.email or "Non impostata" }}</strong>
-        </div>
-      </div>
-
-      <!-- CAMBIA EMAIL -->
-      <div class="section">
-        <div class="section-title">Email</div>
-        <form method="POST" action="{{ url_for('profile') }}">
-          <input type="hidden" name="action" value="update_email" />
-          <label for="email">Nuova email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value="{{ user.email or '' }}"
-            placeholder="Inserisci la tua email"
-            required
-          />
-          <button class="btn-primary" type="submit">Aggiorna email</button>
-        </form>
-      </div>
-
-      <!-- CAMBIA USERNAME -->
-      <div class="section">
-        <div class="section-title">Username</div>
-        <form method="POST" action="{{ url_for('profile') }}">
-          <input type="hidden" name="action" value="update_username" />
-          <label for="username">Nuovo username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value="{{ user.username }}"
-            placeholder="Scegli un nuovo username"
-            required
-          />
-          <button class="btn-primary" type="submit">Aggiorna username</button>
-        </form>
-      </div>
-
-      <!-- CAMBIA PASSWORD -->
-      <div class="section">
-        <div class="section-title">Password</div>
-        <form method="POST" action="{{ url_for('profile') }}">
-          <input type="hidden" name="action" value="change_password" />
-
-          <label for="current_password">Password attuale</label>
-          <input
-            type="password"
-            id="current_password"
-            name="current_password"
-            placeholder="Inserisci la password attuale"
-            required
-          />
-
-          <label for="new_password">Nuova password</label>
-          <input
-            type="password"
-            id="new_password"
-            name="new_password"
-            placeholder="Inserisci la nuova password"
-            required
-          />
-
-          <label for="confirm_password">Conferma nuova password</label>
-          <input
-            type="password"
-            id="confirm_password"
-            name="confirm_password"
-            placeholder="Ripeti la nuova password"
-            required
-          />
-
-          <button class="btn-primary" type="submit">Cambia password</button>
-        </form>
-      </div>
-
-      <!-- ELIMINA ACCOUNT -->
-      <div class="section danger-box">
-        <div class="section-title">Zona pericolosa</div>
-        <p class="danger-text">
-          Eliminare l'account cancellerà tutti i tuoi dati (saldo, spese, viaggi).  
-          Questa azione è irreversibile.
-        </p>
-        <form method="POST" action="{{ url_for('delete_account') }}">
-          <label for="confirm">Digita <strong>ELIMINA</strong> per confermare</label>
-          <input
-            type="text"
-            id="confirm"
-            name="confirm"
-            placeholder="ELIMINA"
-          />
-          <button class="btn-danger" type="submit">Elimina account</button>
-        </form>
-      </div>
-
-      <div class="back-link">
-        <a href="{{ url_for('home') }}">⬅ Torna alla dashboard</a>
       </div>
     </div>
-
   </div>
+
 </body>
 </html>

@@ -1,65 +1,89 @@
 <style>
   :root {
-    --menu-radius: 18px;
-    --menu-shadow: 0 12px 30px rgba(0,0,0,0.45);
+    --menu-radius: 20px;
+    --menu-shadow: 0 18px 40px rgba(0,0,0,0.85);
+    --menu-gold: #f4c97a;
+    --menu-gold-strong: #ffd992;
+    --menu-text: #f9fafb;
+    --menu-soft: #a1a1aa;
   }
 
+  /* Pulsante floating in alto a destra */
   #menu-button {
     position: fixed;
     top: 16px;
     right: 16px;
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
 
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    color: #e5e7eb;
+    color: var(--menu-gold-strong);
     font-size: 22px;
     font-weight: 600;
 
-    background: radial-gradient(circle at top, rgba(255,255,255,0.18), rgba(15,23,42,0.95));
+    background:
+      radial-gradient(circle at top,
+        rgba(244, 201, 122, 0.22),
+        rgba(5, 8, 21, 0.98)
+      );
     border-radius: 999px;
-    border: 1px solid rgba(148,163,184,0.75);
+    border: 1px solid rgba(244, 201, 122, 0.7);
 
-    box-shadow: var(--menu-shadow);
+    box-shadow:
+      0 0 0 1px rgba(15,23,42,0.9),
+      var(--menu-shadow);
     cursor: pointer;
     z-index: 9999;
 
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 
     transition:
       transform 0.12s ease-out,
       box-shadow 0.12s ease-out,
       background 0.12s ease-out,
-      opacity 0.12s ease-out;
+      opacity 0.12s ease-out,
+      border-color 0.12s ease-out;
   }
 
   #menu-button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 16px 36px rgba(0,0,0,0.55);
-    background: radial-gradient(circle at top, rgba(255,255,255,0.25), rgba(15,23,42,0.95));
+    box-shadow:
+      0 0 0 1px rgba(244, 201, 122, 0.7),
+      0 20px 46px rgba(0,0,0,0.95);
+    background:
+      radial-gradient(circle at top,
+        rgba(244, 201, 122, 0.3),
+        rgba(5, 8, 21, 1)
+      );
   }
 
   #menu-button:active {
-    transform: translateY(0) scale(0.97);
-    box-shadow: 0 9px 20px rgba(0,0,0,0.45);
+    transform: translateY(0) scale(0.96);
+    box-shadow:
+      0 0 0 1px rgba(244, 201, 122, 0.6),
+      0 12px 28px rgba(0,0,0,0.8);
   }
 
   /* Contenitore menu */
   #dropdown-menu {
     position: fixed;
-    top: 68px;
+    top: 70px;
     right: 16px;
 
-    width: 220px;
-    padding: 14px 12px;
+    width: 230px;
+    padding: 14px 12px 12px;
 
-    background: rgba(10,18,40,0.9);
+    background:
+      radial-gradient(circle at top left,
+        rgba(244, 201, 122, 0.06),
+        rgba(5, 8, 21, 0.98)
+      );
     border-radius: var(--menu-radius);
-    border: 1px solid rgba(148,163,184,0.7);
+    border: 1px solid rgba(148,163,184,0.8);
 
     display: flex;
     flex-direction: column;
@@ -70,8 +94,8 @@
     pointer-events: none;
 
     box-shadow: var(--menu-shadow);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 
     transition:
       opacity 0.18s ease-out,
@@ -85,16 +109,18 @@
     pointer-events: auto;
   }
 
-  /* Titolo mini in alto al menu (opzionale) */
+  /* Titolo mini in alto al menu */
   .menu-header {
     font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
-    opacity: 0.75;
-    margin-bottom: 3px;
+    letter-spacing: 0.16em;
+    opacity: 0.78;
+    margin-bottom: 4px;
     padding: 0 4px;
+    color: var(--menu-soft);
   }
 
+  /* Bottoni di navigazione */
   .menu-btn {
     width: 100%;
     padding: 9px 10px;
@@ -110,44 +136,75 @@
     justify-content: center;
     gap: 6px;
 
-    color: #f9fafb;
-    background: linear-gradient(135deg, #4fd1c5, #3182ce);
-    box-shadow: 0 8px 18px rgba(15,118,110,0.55);
+    color: var(--menu-text);
+    background:
+      radial-gradient(circle at top,
+        var(--menu-gold-strong),
+        var(--menu-gold)
+      );
+    box-shadow:
+      0 0 0 1px rgba(24,24,27,0.9),
+      0 12px 26px rgba(0,0,0,0.9);
+
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
 
     transition:
       transform 0.12s ease-out,
       box-shadow 0.12s ease-out,
-      filter 0.12s ease-out;
+      filter 0.12s ease-out,
+      background 0.12s ease-out;
   }
 
   .menu-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 12px 26px rgba(15,118,110,0.7);
+    box-shadow:
+      0 0 0 1px rgba(244, 201, 122, 0.7),
+      0 16px 34px rgba(0,0,0,1);
     filter: brightness(1.03);
   }
 
   .menu-btn:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: 0 6px 14px rgba(15,118,110,0.55);
+    transform: translateY(0) scale(0.97);
+    box-shadow:
+      0 0 0 1px rgba(244, 201, 122, 0.6),
+      0 10px 22px rgba(0,0,0,0.9);
   }
 
+  /* Variante “secondaria” visiva per qualche voce, se vuoi usarla in futuro
+  .menu-btn.secondary {
+    background: rgba(15,23,42,0.96);
+    color: var(--menu-soft);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+  }
+  */
+
   .menu-btn.logout {
-    background: linear-gradient(135deg, #f97373, #f97316);
-    box-shadow: 0 8px 18px rgba(220,38,38,0.55);
+    background:
+      radial-gradient(circle at top,
+        #fed7d7,
+        #f97373
+      );
+    color: #111827;
+    box-shadow:
+      0 0 0 1px rgba(24,24,27,0.95),
+      0 12px 26px rgba(0,0,0,1);
   }
 
   .menu-btn.logout:hover {
-    box-shadow: 0 12px 26px rgba(220,38,38,0.75);
+    box-shadow:
+      0 0 0 1px rgba(252,165,165,0.9),
+      0 18px 36px rgba(0,0,0,1);
   }
 
   .menu-divider {
     height: 1px;
-    margin: 4px 4px 2px;
-    background: radial-gradient(circle, rgba(148,163,184,0.7), transparent);
-    opacity: 0.6;
+    margin: 6px 4px 4px;
+    background: radial-gradient(circle, rgba(148,163,184,0.9), transparent);
+    opacity: 0.7;
   }
 
-  /* Per evitare che il body scroll sotto intercetti il click */
+  /* Anti scroll-click sotto al menu */
   body.menu-open {
     overflow-x: hidden;
   }
@@ -155,7 +212,7 @@
   @media (max-width: 480px) {
     #dropdown-menu {
       right: 12px;
-      width: 210px;
+      width: 215px;
     }
 
     #menu-button {

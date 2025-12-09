@@ -1,251 +1,294 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tipologia spese</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tipologia spese</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-      :root {
-        --radius-lg: 18px;
-        --radius-xl: 22px;
-        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
-      }
+  <style>
+    :root {
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow-soft: 0 22px 50px rgba(0,0,0,0.85);
+      --gold: #f4c97a;
+      --gold-soft: rgba(244, 201, 122, 0.18);
+      --gold-strong: #ffd992;
+      --text-main: #f9fafb;
+      --text-soft: #a1a1aa;
+    }
 
-      * {
-        box-sizing: border-box;
-      }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-      body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        padding: 20px;
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      padding: 20px;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
-        background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
+      background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
 
-        color: white;
-        text-shadow: 0 0 5px rgba(0,0,0,0.7);
-      }
+      color: var(--text-main);
+      text-shadow: 0 0 5px rgba(0,0,0,0.7);
+    }
 
-      /* overlay per contrasto, coerente con le altre pagine */
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
-                    linear-gradient(160deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
-        z-index: -1;
-      }
+    /* overlay premium per contrasto */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at top, rgba(15,23,42,0.9), transparent 55%),
+        linear-gradient(160deg, rgba(0,0,0,0.92), rgba(3,7,18,0.7)),
+        radial-gradient(circle at bottom, rgba(244,201,122,0.08), transparent 60%);
+      z-index: -1;
+    }
 
-      .page-container {
-        width: 100%;
-        max-width: 480px;
-        margin-top: 70px; /* spazio per il menu */
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-      }
+    .page-container {
+      width: 100%;
+      max-width: 500px;
+      margin-top: 70px; /* spazio per il menu */
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
+    .card {
+      background: radial-gradient(circle at top left, rgba(244,201,122,0.05), rgba(5,8,22,0.96));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--radius-xl);
+      border: 1px solid rgba(148,163,184,0.7);
+      padding: 20px 16px 16px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(244,201,122,0.05);
+      pointer-events: none;
+    }
+
+    .card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-soft);
+      max-width: 280px;
+    }
+
+    .card-header-line {
+      margin-top: 8px;
+      width: 70px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 999px;
+    }
+
+    /* Card grafico */
+    .chart-card {
+      padding-bottom: 18px;
+    }
+
+    .chart-wrapper {
+      margin-top: 8px;
+      background: rgba(9,9,15,0.96);
+      border-radius: 18px;
+      padding: 10px 10px 8px;
+      border: 1px solid rgba(55,65,81,0.9);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.8);
+    }
+
+    .chart-inner {
+      position: relative;
+      width: 100%;
+      height: 260px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
+    /* Card legenda */
+    .legend-card {
+      padding-top: 18px;
+    }
+
+    .legend-title {
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .legend-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 1px rgba(15,23,42,0.9),
+                  0 4px 8px rgba(0,0,0,0.7);
+    }
+
+    .legend-label {
+      opacity: 0.95;
+    }
+
+    @media (max-width: 380px) {
       .card {
-        background: rgba(10,18,40,0.55);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border-radius: var(--radius-xl);
-        border: 1px solid rgba(255,255,255,0.18);
-        padding: 22px 18px 18px;
-        box-shadow: var(--shadow-soft);
-      }
-
-      .card-header {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        margin-bottom: 12px;
+        padding: 18px 12px 14px;
       }
 
       .card-title {
-        margin: 0;
-        font-size: 20px;
-        letter-spacing: 0.03em;
-      }
-
-      .card-subtitle {
-        font-size: 13px;
-        opacity: 0.8;
-      }
-
-      /* contenitore grafico */
-      .chart-wrapper {
-        background: rgba(2, 8, 25, 0.9);
-        border-radius: 16px;
-        padding: 10px;
-        border: 1px solid rgba(148,163,184,0.4);
-        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5);
+        font-size: 17px;
       }
 
       .chart-inner {
-        position: relative;
-        width: 100%;
-        height: 250px;
-      }
-
-      canvas {
-        width: 100% !important;
-        height: 100% !important;
-        display: block;
-      }
-
-      /* legenda */
-      .legend-list {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 4px;
+        height: 230px;
       }
 
       .legend-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
-        padding: 8px 10px;
-        border-radius: 12px;
-        background: rgba(15,23,42,0.85);
-        border: 1px solid rgba(30,64,175,0.5);
-        font-size: 13px;
+        font-size: 12px;
       }
-
-      .legend-left {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .legend-color {
-        width: 14px;
-        height: 14px;
-        border-radius: 4px;
-        flex-shrink: 0;
-      }
-
-      .legend-category {
-        opacity: 0.9;
-      }
-
-      .legend-value {
-        font-weight: 600;
-        color: #fbbf24;
-        white-space: nowrap;
-      }
-
-      @media (max-width: 380px) {
-        .card {
-          padding: 18px 14px 16px;
-        }
-
-        .card-title {
-          font-size: 18px;
-        }
-
-        .chart-inner {
-          height: 220px;
-        }
-
-        .legend-item {
-          font-size: 12px;
-        }
-      }
-    </style>
+    }
+  </style>
 </head>
 <body>
 
-{% include "menu.html" %}
+  {% include "menu.html" %}
 
-<div class="page-container">
-  <!-- Card grafico torta -->
-  <div class="card">
-    <div class="card-header">
-      <h2 class="card-title">Tipologia spese del mese</h2>
-      <p class="card-subtitle">Distribuzione delle spese per categoria nel mese corrente.</p>
-    </div>
+  <div class="page-container">
+    <!-- Card grafico -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <h2 class="card-title">Tipologia spese</h2>
+        <p class="card-subtitle">Distribuzione delle spese del mese per categoria.</p>
+        <div class="card-header-line"></div>
+      </div>
 
-    <div class="chart-wrapper">
-      <div class="chart-inner">
-        <canvas id="torta"></canvas>
+      <div class="chart-wrapper">
+        <div class="chart-inner">
+          <canvas id="torta"></canvas>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- Card legenda -->
-  <div class="card">
-    <div class="card-header">
-      <h3 class="card-title">Legenda</h3>
-      <p class="card-subtitle">Categorie e importi corrispondenti.</p>
-    </div>
+    <!-- Card legenda -->
+    <div class="card legend-card">
+      <div class="card-header" style="margin-bottom: 6px;">
+        <h2 class="legend-title">Legenda categorie</h2>
+      </div>
 
-    <div class="legend-list">
-      {% for item in legenda %}
-        <div class="legend-item">
-          <div class="legend-left">
-            <span
-              class="legend-color"
-              style="background-color: {{ item.color }};"
-            ></span>
-            <span class="legend-category">{{ item.category }}</span>
-          </div>
-          <span class="legend-value">{{ "%.2f"|format(item.value) }} €</span>
+      {% if legenda %}
+        <div class="legend-list">
+          {% for item in legenda %}
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: {{ item.color }};"></span>
+              <span class="legend-label">
+                {{ item.category }}: {{ "%.2f"|format(item.value) }} €
+              </span>
+            </div>
+          {% endfor %}
         </div>
-      {% endfor %}
+      {% else %}
+        <p style="font-size:13px; color: var(--text-soft); margin-top: 4px;">
+          Nessuna spesa registrata per questo mese.
+        </p>
+      {% endif %}
     </div>
   </div>
-</div>
 
-<script>
-  const labels = {{ labels | tojson }};
-  const dataValues = {{ values | tojson }};
-  const colors = {{ colors | tojson }};
+  <script>
+    const labels = {{ labels | tojson }};
+    const dataValues = {{ values | tojson }};
+    const colors = {{ colors | tojson }};
 
-  const ctx = document.getElementById('torta');
+    const ctx = document.getElementById('torta');
 
-  new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: dataValues,
-        backgroundColor: colors,
-        borderColor: 'rgba(15,23,42,1)',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: dataValues,
+          backgroundColor: colors,
+          borderColor: 'rgba(15,23,42,1)',
+          borderWidth: 1.5
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                return `${label}: ${value.toFixed(2)} €`;
+              }
+            }
+          }
+        }
       }
-    }
-  });
-</script>
+    });
+  </script>
 
-{% if session.get('user_id') == 1 %}
-<style>
-  * {
-    cursor: url("/static/cursor.png") 0 0, default !important;
-  }
-  button, a, input, select, textarea, label {
-    cursor: url("/static/cursor.png") 0 0, pointer !important;
-  }
-</style>
-{% endif %}
+  {% if session.get('user_id') == 1 %}
+  <style>
+    * {
+      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
+    }
+    button, a, input, select, textarea, label {
+      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
+    }
+  </style>
+  {% endif %}
 
 </body>
 </html>

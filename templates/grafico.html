@@ -1,283 +1,379 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Grafico saldo</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Grafico saldo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-      :root {
-        --radius-lg: 18px;
-        --radius-xl: 22px;
-        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
-        --accent: #4fd1c5;
+  <style>
+    :root {
+      --bg: #02040a;
+      --bg-soft: #050815;
+      --card: #050815;
+      --card-soft: #070a18;
+      --gold: #f4c97a;
+      --gold-soft: rgba(244, 201, 122, 0.16);
+      --gold-strong: #ffd992;
+      --text-main: #f9fafb;
+      --text-soft: #a1a1aa;
+      --border-soft: rgba(148, 163, 184, 0.3);
+      --radius-xl: 26px;
+      --radius-md: 18px;
+      --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      background: radial-gradient(circle at top, #0b1024 0, #02040a 45%, #000 100%);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+      padding: 20px 14px;
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 520px;
+      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.04), rgba(15, 23, 42, 0.98));
+      border-radius: 32px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 16px 22px;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      margin-top: 70px; /* spazio per il menu flottante */
+    }
+
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(244, 201, 122, 0.10), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(148, 163, 184, 0.11), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      animation: glowFloat 18s ease-in-out infinite alternate;
+    }
+
+    .app-shell::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(244, 201, 122, 0.08);
+      pointer-events: none;
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.8),
+        0 0 40px rgba(0, 0, 0, 0.9);
+    }
+
+    @keyframes glowFloat {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0.7;
       }
-
-      * {
-        box-sizing: border-box;
+      100% {
+        transform: translate3d(0, 12px, 0) scale(1.03);
+        opacity: 1;
       }
+    }
 
-      body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        padding: 20px;
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
 
-        background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-
-        color: white;
-        text-shadow: 0 0 5px rgba(0,0,0,0.7);
+    @media (min-width: 768px) {
+      .app-shell {
+        padding: 24px 24px 26px;
+        margin-top: 90px;
       }
+    }
 
-      /* overlay per contrasto, come le altre pagine */
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
-                    linear-gradient(160deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
-        z-index: -1;
+    .page-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* CARD GENERICA */
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.07), var(--card));
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      padding: 18px 16px 16px;
+      color: var(--text-main);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(244, 201, 122, 0.04);
+      pointer-events: none;
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 20px 18px 18px;
       }
+    }
 
-      .page-container {
-        width: 100%;
-        max-width: 480px;
-        margin-top: 70px; /* spazio per il menu */
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
+    .card-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+
+    .card-title {
+      margin: 0;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    /* CONTENITORE GRAFICO */
+
+    .chart-wrapper {
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), #020617);
+      border-radius: 18px;
+      padding: 10px 10px 8px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+    }
+
+    .chart-inner {
+      position: relative;
+      width: 100%;
+      height: 240px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+
+    /* LISTA ULTIME SPESE */
+
+    .spese-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .spesa {
+      padding: 10px 10px 8px;
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.75);
+    }
+
+    .spesa-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .spesa-amount {
+      font-weight: 600;
+      color: var(--gold-strong);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .spesa-category {
+      font-size: 0.82rem;
+      opacity: 0.9;
+      text-transform: capitalize;
+      color: var(--text-soft);
+    }
+
+    .spesa-date {
+      font-size: 0.72rem;
+      opacity: 0.75;
+      color: var(--text-soft);
+    }
+
+    .empty-state {
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      margin-top: 6px;
+    }
+
+    @media (max-width: 380px) {
+      .app-shell {
+        padding: 18px 14px 20px;
       }
 
       .card {
-        background: rgba(10,18,40,0.55);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border-radius: var(--radius-xl);
-        border: 1px solid rgba(255,255,255,0.18);
-        padding: 20px 16px 18px;
-        box-shadow: var(--shadow-soft);
-      }
-
-      .card-header {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        margin-bottom: 14px;
+        padding: 18px 12px 16px;
       }
 
       .card-title {
-        margin: 0;
-        font-size: 20px;
-        letter-spacing: 0.03em;
-      }
-
-      .card-subtitle {
-        font-size: 13px;
-        opacity: 0.8;
-      }
-
-      /* contenitore grafico */
-      .chart-wrapper {
-        background: rgba(2, 8, 25, 0.9);
-        border-radius: 16px;
-        padding: 10px 10px 6px;
-        border: 1px solid rgba(148,163,184,0.4);
-        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5);
+        font-size: 1rem;
       }
 
       .chart-inner {
-        position: relative;
-        width: 100%;
-        height: 240px;
+        height: 210px;
       }
+    }
+  </style>
+</head>
 
-      canvas {
-        width: 100% !important;
-        height: 100% !important;
-        display: block;
-      }
+<body>
 
-      /* lista ultime spese */
-      .spese-list {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 4px;
-      }
+  {% include "menu.html" %}
 
-      .spesa {
-        padding: 10px 10px 8px;
-        border-radius: 12px;
-        background: rgba(15,23,42,0.75);
-        border: 1px solid rgba(30,64,175,0.6);
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-      }
+  <div class="app-shell">
+    <div class="app-inner">
+      <div class="page-container">
+        <!-- Card grafico saldo -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Andamento del saldo</h2>
+            <p class="card-subtitle">Vedi come è cambiato il saldo nel corso del mese.</p>
+          </div>
 
-      .spesa-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-      }
-
-      .spesa-amount {
-        font-weight: 700;
-        color: #fbbf24;
-      }
-
-      .spesa-category {
-        font-size: 13px;
-        opacity: 0.9;
-        text-transform: capitalize;
-      }
-
-      .spesa-date {
-        font-size: 11px;
-        opacity: 0.7;
-      }
-
-      .empty-state {
-        font-size: 13px;
-        opacity: 0.8;
-        margin-top: 6px;
-      }
-
-      @media (max-width: 380px) {
-        .card {
-          padding: 18px 12px 16px;
-        }
-
-        .card-title {
-          font-size: 18px;
-        }
-
-        .chart-inner {
-          height: 210px;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-
-    {% include "menu.html" %}
-
-    <div class="page-container">
-      <!-- Card grafico saldo -->
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">Andamento del saldo</h2>
-          <p class="card-subtitle">Vedi come è cambiato il saldo nel corso del mese</p>
-        </div>
-
-        <div class="chart-wrapper">
-          <div class="chart-inner">
-            <canvas id="mioGrafico"></canvas>
+          <div class="chart-wrapper">
+            <div class="chart-inner">
+              <canvas id="mioGrafico"></canvas>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Card ultime spese -->
-      <div class="card">
-        <div class="card-header">
-          <h2 class="card-title">Ultime 5 spese</h2>
-          <p class="card-subtitle">Riepilogo degli ultimi movimenti registrati</p>
-        </div>
+        <!-- Card ultime spese -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Ultime 5 spese</h2>
+            <p class="card-subtitle">Riepilogo degli ultimi movimenti registrati.</p>
+          </div>
 
-        {% if ultime_cinque %}
-          <div class="spese-list">
-            {% for mov in ultime_cinque %}
-              <div class="spesa">
-                <div class="spesa-header">
-                  <span class="spesa-amount">{{ "%.2f"|format(mov.amount) }} €</span>
-                  <span class="spesa-category">{{ mov.category }}</span>
+          {% if ultime_cinque %}
+            <div class="spese-list">
+              {% for mov in ultime_cinque %}
+                <div class="spesa">
+                  <div class="spesa-header">
+                    <span class="spesa-amount">{{ "%.2f"|format(mov.amount) }} €</span>
+                    <span class="spesa-category">{{ mov.category }}</span>
+                  </div>
+                  <span class="spesa-date">{{ mov.date }}</span>
                 </div>
-                <span class="spesa-date">{{ mov.date }}</span>
-              </div>
-            {% endfor %}
-          </div>
-        {% else %}
-          <p class="empty-state">Nessun movimento ancora registrato.</p>
-        {% endif %}
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="empty-state">Nessun movimento ancora registrato.</p>
+          {% endif %}
+        </div>
       </div>
     </div>
+  </div>
 
-    <script>
-      // Dati passati da Flask → Jinja → JS
-      const labels = {{ labels | tojson }};
-      const dataValues = {{ valori_saldo | tojson }};
+  <script>
+    // Dati passati da Flask → Jinja → JS
+    const labels = {{ labels | tojson }};
+    const dataValues = {{ valori_saldo | tojson }};
 
-      const ctx = document.getElementById('mioGrafico');
+    const ctx = document.getElementById('mioGrafico');
 
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: 'Saldo',
-            data: dataValues,
-            fill: true,
-            borderWidth: 2,
-            borderColor: 'rgba(79, 209, 197, 1)',
-            backgroundColor: 'rgba(79, 209, 197, 0.15)',
-            pointRadius: 3.5,
-            pointBackgroundColor: 'rgba(248, 250, 252, 1)',
-            pointBorderColor: 'rgba(15,23,42,1)',
-            tension: 0.3
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              display: false
-            }
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Saldo',
+          data: dataValues,
+          fill: true,
+          borderWidth: 2,
+          borderColor: 'rgba(244, 201, 122, 1)',
+          backgroundColor: 'rgba(244, 201, 122, 0.18)',
+          pointRadius: 3.5,
+          pointBackgroundColor: 'rgba(248, 250, 252, 1)',
+          pointBorderColor: 'rgba(15, 23, 42, 1)',
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
           },
-          scales: {
-            x: {
-              ticks: {
-                color: 'rgba(226,232,240,0.9)',
-                maxRotation: 0,
-                autoSkip: true
-              },
-              grid: {
-                display: false
-              }
-            },
-            y: {
-              ticks: {
-                color: 'rgba(203,213,225,0.9)'
-              },
-              grid: {
-                color: 'rgba(30,64,175,0.3)'
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const value = context.parsed.y ?? 0;
+                return 'Saldo: ' + value.toFixed(2) + ' €';
               }
             }
           }
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: 'rgba(226,232,240,0.9)',
+              maxRotation: 0,
+              autoSkip: true
+            },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            ticks: {
+              color: 'rgba(203,213,225,0.9)'
+            },
+            grid: {
+              color: 'rgba(51,65,85,0.7)'
+            }
+          }
         }
-      });
-    </script>
-
-    {% if session.get('user_id') == 1 %}
-    <style>
-      * {
-        cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
       }
+    });
+  </script>
 
-      button, a, input, select, textarea, label {
-        cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
-      }
-    </style>
-    {% endif %}
+  {% if session.get('user_id') == 1 %}
+  <style>
+    * {
+      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
+    }
 
-  </body>
+    button, a, input, select, textarea, label {
+      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
+    }
+  </style>
+  {% endif %}
+
+</body>
 </html>

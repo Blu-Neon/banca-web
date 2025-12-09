@@ -1,259 +1,394 @@
+
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Aggiorna saldo</title>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aggiorna saldo</title>
 
-    <style>
-      :root {
-        --radius-lg: 18px;
-        --radius-xl: 22px;
-        --shadow-soft: 0 14px 32px rgba(0,0,0,0.35);
-        --accent: #4fd1c5;
-      }
+  <style>
+    :root {
+      --bg: #02040a;
+      --bg-soft: #050815;
+      --card: #050815;
+      --card-soft: #070a18;
+      --gold: #f4c97a;
+      --gold-soft: rgba(244, 201, 122, 0.16);
+      --gold-strong: #ffd992;
+      --text-main: #f9fafb;
+      --text-soft: #a1a1aa;
+      --border-soft: rgba(148, 163, 184, 0.3);
+      --radius-xl: 26px;
+      --radius-md: 18px;
+      --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
+    }
 
-      * {
-        box-sizing: border-box;
-      }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-      body {
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        padding: 20px;
-        margin: 0;
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      margin: 0;
+      background: radial-gradient(circle at top, #0b1024 0, #02040a 45%, #000 100%);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+      padding: 20px 14px;
+    }
 
-        background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
+    .app-shell {
+      width: 100%;
+      max-width: 520px;
+      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.04), rgba(15, 23, 42, 0.98));
+      border-radius: 32px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 16px 22px;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      margin-top: 70px; /* spazio per il menu flottante */
+    }
 
-        color: white;
-        text-shadow: 0 0 5px rgba(0,0,0,0.7);
-      }
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(244, 201, 122, 0.10), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(148, 163, 184, 0.11), transparent 55%);
+      opacity: 0.9;
+      pointer-events: none;
+      mix-blend-mode: screen;
+      animation: glowFloat 18s ease-in-out infinite alternate;
+    }
 
-      /* overlay per contrasto, uguale stile alle altre pagine */
-      body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(circle at top, rgba(0,0,80,0.65), transparent 45%),
-                    linear-gradient(160deg, rgba(0,0,0,0.75), rgba(0,0,0,0.35));
-        z-index: -1;
-      }
+    .app-shell::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(244, 201, 122, 0.08);
+      pointer-events: none;
+      box-shadow:
+        0 0 0 1px rgba(15, 23, 42, 0.8),
+        0 0 40px rgba(0, 0, 0, 0.9);
+    }
 
-      .page-container {
-        width: 100%;
-        max-width: 480px;
-        margin-top: 70px; /* spazio per il menu */
-      }
-
-      .box {
-        background: rgba(10,18,40,0.55);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border-radius: var(--radius-xl);
-        border: 1px solid rgba(255,255,255,0.18);
-        padding: 22px 18px 20px;
-        box-shadow: var(--shadow-soft);
-      }
-
-      h1 {
-        margin: 0 0 6px;
-        font-size: 22px;
-        text-align: center;
-        letter-spacing: 0.03em;
-      }
-
-      .subtitle {
-        text-align: center;
-        font-size: 13px;
-        opacity: 0.8;
-        margin-bottom: 16px;
-      }
-
-      .current-balance-wrapper {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 14px;
-      }
-
-      .current-balance {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        border-radius: 999px;
-        border: 1px solid rgba(255,255,255,0.2);
-        background: radial-gradient(circle at top left, rgba(79,209,197,0.35), transparent);
-        font-size: 13px;
-      }
-
-      .current-balance strong {
-        font-size: 15px;
-      }
-
-      .amount-display-wrapper {
-        margin-top: 4px;
-        margin-bottom: 16px;
-        background: rgba(2, 8, 25, 0.9);
-        border-radius: 16px;
-        padding: 10px 12px;
-        border: 1px solid rgba(255,255,255,0.16);
-        box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
-      }
-
-      .amount-label-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 12px;
+    @keyframes glowFloat {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
         opacity: 0.7;
-        margin-bottom: 4px;
+      }
+      100% {
+        transform: translate3d(0, 12px, 0) scale(1.03);
+        opacity: 1;
+      }
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      .app-shell {
+        padding: 24px 24px 26px;
+        margin-top: 90px;
+      }
+    }
+
+    /* HEADER */
+
+    .page-header {
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .page-header h1 {
+      font-size: 1.5rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-header h1::before {
+      content: "";
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid var(--gold);
+      box-shadow: 0 0 18px rgba(244, 201, 122, 0.9);
+    }
+
+    .page-header p {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: var(--text-soft);
+    }
+
+    .page-meta-line {
+      margin: 12px auto 0;
+      width: 72px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      border-radius: 999px;
+    }
+
+    /* SALDO ATTUALE */
+
+    .current-balance-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .current-balance {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.16), rgba(15, 23, 42, 0.95));
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      backdrop-filter: blur(10px);
+    }
+
+    .current-balance strong {
+      font-size: 0.98rem;
+      color: var(--gold-strong);
+    }
+
+    /* CARD PRINCIPALE */
+
+    .box {
+      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.07), var(--card));
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
+      padding: 18px 16px 16px;
+      color: var(--text-main);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .box::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(244, 201, 122, 0.05);
+      pointer-events: none;
+    }
+
+    @media (min-width: 768px) {
+      .box {
+        padding: 20px 18px 18px;
+      }
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--text-soft);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    /* DISPLAY IMPORTO */
+
+    .amount-display-wrapper {
+      margin-top: 4px;
+      margin-bottom: 18px;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), #020617);
+      border-radius: 18px;
+      padding: 10px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+    }
+
+    .amount-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-soft);
+      margin-bottom: 4px;
+    }
+
+    .currency-tag {
+      font-size: 0.8rem;
+      opacity: 0.85;
+    }
+
+    #amount-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 2.0rem;
+      color: #fdfdfd;
+      font-weight: 600;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #amount-input::placeholder {
+      color: rgba(148, 163, 184, 0.85);
+      font-weight: 400;
+    }
+
+    #amount-input::selection {
+      background: rgba(244, 201, 122, 0.3);
+    }
+
+    form {
+      margin: 0;
+    }
+
+    /* KEYPAD */
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 18px;
+    }
+
+    .keypad button {
+      padding: 14px 0;
+      font-size: 1.25rem;
+      border-radius: 16px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.16), rgba(15, 23, 42, 0.96));
+      color: #fdfdfd;
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out,
+        filter 0.12s ease-out,
+        background 0.12s ease-out,
+        border-color 0.12s ease-out;
+    }
+
+    .keypad button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7);
+      filter: brightness(1.04);
+      border-color: rgba(244, 201, 122, 0.7);
+    }
+
+    .keypad button:active {
+      transform: translateY(0) scale(0.97);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+      filter: brightness(0.96);
+    }
+
+    .keypad .btn-special {
+      font-size: 1.1rem;
+      color: var(--gold-strong);
+    }
+
+    .keypad .btn-special:last-child {
+      color: #fecaca;
+      border-color: rgba(127, 29, 29, 0.9);
+    }
+
+    /* PULSANTE SUBMIT */
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      border-radius: 999px;
+      border: none;
+      background: radial-gradient(circle at top, var(--gold-strong), var(--gold));
+      color: #18181b;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.85);
+      letter-spacing: 0.04em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out,
+        filter 0.12s ease-out;
+    }
+
+    .btn-primary span {
+      font-size: 1rem;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95);
+      filter: brightness(1.02);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.85);
+    }
+
+    @media (max-width: 380px) {
+      .app-shell {
+        padding: 18px 14px 20px;
       }
 
-      .currency-tag {
-        font-size: 13px;
-        opacity: 0.85;
+      .page-header h1 {
+        font-size: 1.3rem;
       }
 
       #amount-input {
-        width: 100%;
-        border: none;
-        outline: none;
-        background: transparent;
-        font-size: 28px;
-        color: #fdfdfd;
-        font-weight: 600;
-        text-align: right;
-      }
-
-      #amount-input::placeholder {
-        color: rgba(148,163,184,0.85);
-        font-weight: 400;
-      }
-
-      #amount-input::selection {
-        background: rgba(79,209,197,0.3);
-      }
-
-      form {
-        margin: 0;
-      }
-
-      .keypad {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 10px;
-        margin-top: 10px;
-        margin-bottom: 18px;
+        font-size: 1.8rem;
       }
 
       .keypad button {
-        padding: 14px 0;
-        font-size: 20px;
-        border-radius: 16px;
-        border: none;
-        background: radial-gradient(circle at top, rgba(255,255,255,0.16), rgba(18,30,60,0.9));
-        color: #fdfdfd;
-        box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-        cursor: pointer;
-        transition:
-          transform 0.12s ease-out,
-          box-shadow 0.12s ease-out,
-          filter 0.12s ease-out;
+        padding: 12px 0;
+        font-size: 1.15rem;
       }
+    }
+  </style>
+</head>
 
-      .keypad button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 24px rgba(0,0,0,0.4);
-        filter: brightness(1.05);
-      }
+<body>
 
-      .keypad button:active {
-        transform: translateY(0) scale(0.97);
-        box-shadow: 0 5px 12px rgba(0,0,0,0.3);
-        filter: brightness(0.96);
-      }
+  {% include "menu.html" %}
 
-      .keypad .btn-special {
-        font-size: 18px;
-        opacity: 0.9;
-      }
+  <div class="app-shell">
+    <div class="app-inner">
 
-      .btn-primary {
-        width: 100%;
-        padding: 13px;
-        font-size: 17px;
-        border-radius: 999px;
-        border: none;
-        background: linear-gradient(135deg, #4fd1c5, #3182ce);
-        color: #020617;
-        font-weight: 600;
-        cursor: pointer;
-        box-shadow: 0 10px 26px rgba(15, 118, 110, 0.55);
-        letter-spacing: 0.02em;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 6px;
-        margin-bottom: 4px;
-        transition:
-          transform 0.12s ease-out,
-          box-shadow 0.12s ease-out,
-          filter 0.12s ease-out;
-      }
-
-      .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 14px 30px rgba(15, 118, 110, 0.7);
-        filter: brightness(1.03);
-      }
-
-      .btn-primary:active {
-        transform: translateY(0) scale(0.98);
-        box-shadow: 0 7px 16px rgba(15, 118, 110, 0.55);
-      }
-
-      @media (max-width: 380px) {
-        .box {
-          padding: 18px 14px 18px;
-        }
-
-        h1 {
-          font-size: 20px;
-        }
-
-        #amount-input {
-          font-size: 24px;
-        }
-
-        .keypad button {
-          padding: 12px 0;
-          font-size: 18px;
-        }
-      }
-    </style>
-  </head>
-
-  <body>
-
-    {% include "menu.html" %}
-
-    <div class="page-container">
-      <div class="box">
+      <header class="page-header">
         <h1>Aggiorna saldo</h1>
-        <p class="subtitle">Aggiungi un importo al saldo totale del viaggio</p>
+        <p>Aggiungi un importo al saldo totale del viaggio.</p>
+        <div class="page-meta-line"></div>
+      </header>
 
-        <div class="current-balance-wrapper">
-          <div class="current-balance">
-            <span>Saldo attuale</span>
-            <strong>{{ saldo }} €</strong>
-          </div>
+      <div class="current-balance-wrapper">
+        <div class="current-balance">
+          <span>Saldo attuale</span>
+          <strong>{{ saldo }} €</strong>
         </div>
+      </div>
+
+      <div class="box">
+        <p class="subtitle">Imposta l'importo usando il tastierino numerico dedicato.</p>
 
         <form method="POST" action="/update-saldo">
           <div class="amount-display-wrapper">
@@ -291,45 +426,50 @@
           </button>
         </form>
       </div>
+
     </div>
+  </div>
 
-    <script>
-      function addChar(ch) {
-        const input = document.getElementById('amount-input');
+  <script>
+    function addChar(ch) {
+      const input = document.getElementById('amount-input');
 
-        // evita doppia virgola
-        if (ch === ',' && input.value.includes(',')) {
-          return;
-        }
+      // evita doppia virgola
+      if (ch === ',' && input.value.includes(',')) {
+        return;
+      }
 
-        if (!input.value || input.value === '0') {
-          if (ch === ',') {
-            input.value = '0,';
-          } else {
-            input.value = ch;
-          }
+      if (!input.value || input.value === '0' || input.value === '0,00') {
+        if (ch === ',') {
+          input.value = '0,';
         } else {
-          input.value = input.value + ch;
+          input.value = ch;
         }
+      } else {
+        input.value = input.value + ch;
       }
+    }
 
-      function backspace() {
-        const input = document.getElementById('amount-input');
-        input.value = input.value.slice(0, -1);
-      }
-    </script>
+    function backspace() {
+      const input = document.getElementById('amount-input');
+      if (!input.value) return;
 
-    {% if session.get('user_id') == 1 %}
-    <style>
-      * {
-        cursor: url("/static/cursor.png") 0 0, default !important;
-      }
+      const newVal = input.value.slice(0, -1);
+      input.value = newVal || '';
+    }
+  </script>
 
-      button, a, input, select, textarea, label {
-        cursor: url("/static/cursor.png") 0 0, pointer !important;
-      }
-    </style>
-    {% endif %}
+  {% if session.get('user_id') == 1 %}
+  <style>
+    * {
+      cursor: url("/static/cursor.png") 0 0, default !important;
+    }
 
-  </body>
+    button, a, input, select, textarea, label {
+      cursor: url("/static/cursor.png") 0 0, pointer !important;
+    }
+  </style>
+  {% endif %}
+
+</body>
 </html>
