@@ -26,14 +26,14 @@ def tipologia():
     conn.close()
 
     category_colors = {
-    "spesa":"#FF6384",
-    "altro":"#595A5B",
-    "evitabile":"#ED0909",
-    "trasporti":"#4BC0C0",
-    "ristorante":"#9966FF",
-    "svago":"#36A2EF",
-    "viaggio":"#6D0251",
-    "vestiti":"#3AF083"
+        "spesa":     "#f59e0b",
+        "altro":     "#64748b",
+        "evitabile": "#ef4444",
+        "trasporti": "#0d9488", 
+        "ristorante":"#a855f7", # viola elegante
+        "svago":     "#0ea5e9", # azzurro vivace ma non troppo acceso
+        "viaggio":   "#ec4899", # rosa/rosa-rosso, diverso dal rosso
+        "vestiti":   "#22c55e"  # verde brillante ma ancora raffinato
     }
 
 
