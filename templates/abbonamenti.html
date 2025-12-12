@@ -365,16 +365,6 @@
         transform 0.08s ease;
     }
 
-    /* importo: togli frecce desktop */
-    #amount {
-      -moz-appearance: textfield;
-    }
-    #amount::-webkit-outer-spin-button,
-    #amount::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
     input::placeholder {
       color: rgba(148, 163, 184, 0.75);
     }
@@ -601,76 +591,89 @@
       }
     }
 
-    /* FLATPICKR STYLING (dark + accenti oro, alta leggibilità) */
-    .flatpickr-calendar {
-      background: #050816;
-      border: 1px solid rgba(248, 250, 252, 0.16);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.95);
-      border-radius: 18px;
-      color: #f9fafb;
-      font-size: 0.85rem;
+    /* =========================
+       FLATPICKR (CONTRAST FIX)
+       Mettilo qui in fondo così vince sempre
+       ========================= */
+
+    .flatpickr-calendar{
+      background:#050816 !important;
+      border:1px solid rgba(248,250,252,.18) !important;
+      box-shadow:0 18px 40px rgba(0,0,0,.95) !important;
+      border-radius:18px !important;
+      color:#f9fafb !important;
     }
 
     .flatpickr-months,
-    .flatpickr-weekdays {
-      background: #050816;
-      color: #e5e7eb;
+    .flatpickr-weekdays{
+      background:#050816 !important;
     }
 
-    .flatpickr-months .flatpickr-month {
-      height: 38px;
+    .flatpickr-weekday{
+      color: var(--gold-strong) !important;
+      font-weight: 700 !important;
+      letter-spacing: .08em;
+      opacity: 1 !important;
     }
 
-    .flatpickr-current-month {
-      font-size: 0.9rem;
-    }
-
+    .flatpickr-current-month,
     .flatpickr-current-month .cur-month,
-    .flatpickr-current-month input.cur-year {
-      color: #f9fafb !important;
+    .flatpickr-current-month input.cur-year,
+    .flatpickr-current-month .flatpickr-monthDropdown-months{
+      color:#f9fafb !important;
+      text-shadow:0 1px 0 rgba(0,0,0,.65);
+      font-weight: 600;
     }
 
-    .flatpickr-prev,
-    .flatpickr-next {
-      color: #f9fafb !important;
-      fill: #f9fafb !important;
+    .flatpickr-monthDropdown-months,
+    .flatpickr-monthDropdown-months option{
+      background:#050816 !important;
+      color:#f9fafb !important;
     }
 
-    .flatpickr-weekday {
-      color: #cbd5f5;
-      font-weight: 500;
+    .flatpickr-prev-month,
+    .flatpickr-next-month{
+      color:#f9fafb !important;
+    }
+    .flatpickr-prev-month svg,
+    .flatpickr-next-month svg{
+      fill:#f9fafb !important;
+      opacity:.95;
     }
 
-    .flatpickr-day {
-      color: #e5e7eb;
-      border-radius: 999px;
+    .flatpickr-day{
+      color:rgba(249,250,251,.92) !important;
+      font-weight:600;
+      border-radius:999px;
+    }
+
+    .flatpickr-day.prevMonthDay,
+    .flatpickr-day.nextMonthDay{
+      color:rgba(249,250,251,.35) !important;
     }
 
     .flatpickr-day.disabled,
-    .flatpickr-day.disabled:hover {
-      color: #4b5563;
+    .flatpickr-day.disabled:hover{
+      color:#4b5563 !important;
     }
 
-    .flatpickr-day:hover {
-      background: rgba(244, 201, 122, 0.22);
-      border-color: transparent;
+    .flatpickr-day:hover{
+      background:rgba(244,201,122,.22) !important;
+      border-color:transparent !important;
     }
 
-    .flatpickr-day.today {
-      border-color: var(--gold);
-      color: #f9fafb;
+    .flatpickr-day.today{
+      border-color:rgba(244,201,122,.95) !important;
+      box-shadow:inset 0 0 0 1px rgba(244,201,122,.75) !important;
     }
 
     .flatpickr-day.selected,
     .flatpickr-day.startRange,
-    .flatpickr-day.endRange {
+    .flatpickr-day.endRange{
       background: var(--gold) !important;
-      color: #18181b !important;
-      box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
-    }
-
-    .flatpickr-current-month input.cur-year {
-      color: #f9fafb;
+      color:#18181b !important;
+      font-weight:800 !important;
+      box-shadow:0 0 0 1px rgba(15,23,42,.9);
     }
 
     #created_at.flatpickr-input:focus {
@@ -681,6 +684,7 @@
     }
   </style>
 </head>
+
 <body>
 
   {# MENU FLOTTANTE #}
@@ -738,11 +742,6 @@
               {{ "%.2f"|format(spesa_media_mensile) }} € / mese
             </span>
           </div>
-
-          <div class="chips-row">
-            <div class="chip-soft">Controllo ricorrenze semplificato</div>
-            <div class="chip-soft">Mensile vs annuale sempre visibili</div>
-          </div>
         </section>
 
         <section class="card">
@@ -767,13 +766,14 @@
 
             <div class="form-row">
               <label for="amount">Importo (€)</label>
+              <!-- ✅ QUI: testo + tastiera decimale + gestione virgola/punto -->
               <input
-                type="number"
+                type="text"
                 id="amount"
                 name="amount"
-                step="0.01"
-                min="0"
                 inputmode="decimal"
+                autocomplete="off"
+                placeholder="0,00"
                 required
               />
             </div>
@@ -873,11 +873,48 @@
   <!-- Flatpickr script -->
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script>
+    // Calendario personalizzato (Flatpickr)
     flatpickr("#created_at", {
       dateFormat: "Y-m-d",
       allowInput: true,
       disableMobile: true
     });
+
+    // Importo: tastiera decimale + conversione . -> , + filtro input (max 2 decimali)
+    const amountEl = document.getElementById("amount");
+
+    amountEl.addEventListener("input", () => {
+      let v = amountEl.value;
+
+      // Android spesso mette il punto: convertiamo tutto in virgola
+      v = v.replace(/\./g, ",");
+
+      // lascia solo numeri e virgola
+      v = v.replace(/[^\d,]/g, "");
+
+      // una sola virgola
+      const parts = v.split(",");
+      if (parts.length > 2) {
+        v = parts[0] + "," + parts.slice(1).join("");
+      }
+
+      // max 2 decimali
+      if (v.includes(",")) {
+        const [a, b] = v.split(",");
+        v = a + "," + (b || "").slice(0, 2);
+      }
+
+      amountEl.value = v;
+    });
+
+    // se qualcuno preme '.' da tastiera fisica: metti virgola
+    amountEl.addEventListener("keydown", (e) => {
+      if (e.key === ".") {
+        e.preventDefault();
+        if (!amountEl.value.includes(",")) amountEl.value += ",";
+      }
+    });
   </script>
+
 </body>
 </html>

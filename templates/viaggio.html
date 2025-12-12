@@ -11,60 +11,54 @@
       --radius-xl: 24px;
       --shadow-soft: 0 22px 50px rgba(0,0,0,0.85);
       --gold: #f4c97a;
-      --gold-soft: rgba(244, 201, 122, 0.18);
+      --gold-soft: rgba(244,201,122,0.18);
       --gold-strong: #ffd992;
-      --accent: #4fd1c5;
       --text-main: #f9fafb;
       --text-soft: #a1a1aa;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing:border-box; margin:0; padding:0; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 20px;
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      padding:20px;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
 
-      background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=430&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
+      background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=430&auto=format&fit=crop');
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      background-attachment:fixed;
 
-      color: var(--text-main);
-      text-shadow: 0 0 5px rgba(0,0,0,0.7);
+      color:var(--text-main);
+      text-shadow:0 0 5px rgba(0,0,0,0.7);
     }
 
     /* overlay premium */
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
       background:
         radial-gradient(circle at top, rgba(15,23,42,0.9), transparent 55%),
         linear-gradient(160deg, rgba(0,0,0,0.92), rgba(3,7,18,0.7)),
         radial-gradient(circle at bottom, rgba(244,201,122,0.12), transparent 60%);
-      z-index: -1;
+      z-index:-1;
     }
 
-    .page-container {
-      width: 100%;
-      max-width: 500px;
-      margin-top: 70px; /* spazio per il menu */
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    .page-container{
+      width:100%;
+      max-width:500px;
+      margin-top:70px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
     }
 
-    .card {
+    .card{
       background: radial-gradient(circle at top left, rgba(244,201,122,0.05), rgba(5,8,22,0.96));
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
@@ -76,66 +70,64 @@
       overflow: hidden;
     }
 
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(244,201,122,0.06);
-      pointer-events: none;
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:inherit;
+      border:1px solid rgba(244,201,122,0.06);
+      pointer-events:none;
     }
 
-    .card-header {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-bottom: 12px;
+    .card-header{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      margin-bottom:12px;
     }
 
-    .card-title {
-      margin: 0;
-      font-size: 20px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+    .card-title{
+      margin:0;
+      font-size:20px;
+      letter-spacing:0.14em;
+      text-transform:uppercase;
     }
 
-    .card-subtitle {
-      font-size: 13px;
-      color: var(--text-soft);
+    .card-subtitle{
+      font-size:13px;
+      color:var(--text-soft);
     }
 
     .card-title.center,
-    .card-subtitle.center {
-      text-align: center;
+    .card-subtitle.center{ text-align:center; }
+
+    .card-header-line{
+      margin-top:8px;
+      width:80px;
+      height:2px;
+      background:linear-gradient(90deg,var(--gold),transparent);
+      border-radius:999px;
     }
 
-    .card-header-line {
-      margin-top: 8px;
-      width: 80px;
-      height: 2px;
-      background: linear-gradient(90deg, var(--gold), transparent);
-      border-radius: 999px;
+    /* link storico */
+    .link-storico{
+      margin-top:10px;
+      display:flex;
+      justify-content:center;
     }
 
-    /* link storico spese viaggio */
-    .link-storico {
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .link-storico a {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      text-decoration: none;
-      color: var(--text-main);
-      background: rgba(9,9,15,0.96);
-      border: 1px solid rgba(148,163,184,0.8);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.75);
+    .link-storico a{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:13px;
+      text-decoration:none;
+      color:var(--text-main);
+      background:rgba(9,9,15,0.96);
+      border:1px solid rgba(148,163,184,0.8);
+      box-shadow:0 6px 18px rgba(0,0,0,0.75);
       transition:
         background 0.12s ease-out,
         transform 0.12s ease-out,
@@ -143,246 +135,224 @@
         border-color 0.12s ease-out;
     }
 
-    .link-storico a:hover {
+    .link-storico a:hover{
       background: radial-gradient(circle at top, var(--gold-soft), rgba(9,9,15,1));
       border-color: var(--gold-soft);
       transform: translateY(-1px);
       box-shadow: 0 9px 24px rgba(0,0,0,0.85);
     }
 
-    .link-storico a:active {
+    .link-storico a:active{
       transform: translateY(0);
       box-shadow: 0 5px 14px rgba(0,0,0,0.8);
     }
 
     /* riepilogo budget / speso / rimanente */
-    .summary {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 6px;
-      margin-top: 10px;
-      margin-bottom: 8px;
-      font-size: 14px;
+    .summary{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:6px;
+      margin-top:10px;
+      margin-bottom:8px;
+      font-size:14px;
     }
 
-    .summary-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .summary-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
     }
 
-    .summary-item span:last-child {
-      font-weight: 600;
-    }
+    .summary-item span:last-child{ font-weight:600; }
 
-    .remaining-positive {
-      color: #4ade80;
-      font-weight: 600;
-    }
-
-    .remaining-negative {
-      color: #f97373;
-      font-weight: 600;
-    }
+    .remaining-positive{ color:#4ade80; font-weight:600; }
+    .remaining-negative{ color:#f97373; font-weight:600; }
 
     /* tabella per categoria */
-    .category-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 8px;
-      font-size: 13px;
+    .category-table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:8px;
+      font-size:13px;
     }
 
     .category-table th,
-    .category-table td {
-      padding: 6px 2px;
-      border-bottom: 1px solid rgba(55,65,81,0.9);
+    .category-table td{
+      padding:6px 2px;
+      border-bottom:1px solid rgba(55,65,81,0.9);
     }
 
-    .category-table th {
-      text-align: left;
-      font-weight: 600;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-soft);
+    .category-table th{
+      text-align:left;
+      font-weight:600;
+      font-size:11px;
+      letter-spacing:0.08em;
+      text-transform:uppercase;
+      color:var(--text-soft);
     }
 
     .category-table td:last-child,
-    .category-table th:last-child {
-      text-align: right;
-    }
+    .category-table th:last-child{ text-align:right; }
 
     /* input grande importo + tastierino */
-    .amount-display {
-      width: 100%;
-      text-align: right;
-      font-size: 30px;
-      padding: 0;
-      border-radius: 0;
-      border: none;
-      margin: 0;
-      background: transparent;
-      color: #fef2f2;
-      outline: none;
+    .amount-display{
+      width:100%;
+      text-align:right;
+      font-size:30px;
+      padding:0;
+      border-radius:0;
+      border:none;
+      margin:0;
+      background:transparent;
+      color:#fef2f2;
+      outline:none;
     }
 
-    .amount-display-wrapper {
-      margin-top: 4px;
-      margin-bottom: 12px;
-      background: rgba(9,9,15,0.96);
-      border-radius: 16px;
-      padding: 10px 12px;
-      border: 1px solid rgba(55,65,81,0.9);
+    .amount-display-wrapper{
+      margin-top:4px;
+      margin-bottom:12px;
+      background:rgba(9,9,15,0.96);
+      border-radius:16px;
+      padding:10px 12px;
+      border:1px solid rgba(55,65,81,0.9);
       box-shadow:
         inset 0 0 0 1px rgba(0,0,0,0.9),
         0 10px 24px rgba(0,0,0,0.85);
     }
 
-    .amount-label-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 12px;
-      color: var(--text-soft);
-      margin-bottom: 4px;
+    .amount-label-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:12px;
+      color:var(--text-soft);
+      margin-bottom:4px;
     }
 
-    .currency-tag {
-      font-size: 13px;
+    .currency-tag{ font-size:13px; }
+
+    .keypad{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:14px;
     }
 
-    .keypad {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .keypad button {
-      padding: 14px 0;
-      font-size: 20px;
-      border-radius: 16px;
-      border: none;
+    .keypad button{
+      padding:14px 0;
+      font-size:20px;
+      border-radius:16px;
+      border:none;
       background: radial-gradient(circle at top, rgba(255,255,255,0.16), rgba(18,30,60,0.9));
-      color: #fdfdfd;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.35);
-      cursor: pointer;
+      color:#fdfdfd;
+      box-shadow:0 8px 18px rgba(0,0,0,0.35);
+      cursor:pointer;
       transition:
         transform 0.12s ease-out,
         box-shadow 0.12s ease-out,
         filter 0.12s ease-out;
     }
 
-    .keypad button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.4);
-      filter: brightness(1.05);
+    .keypad button:hover{
+      transform:translateY(-2px);
+      box-shadow:0 10px 24px rgba(0,0,0,0.4);
+      filter:brightness(1.05);
     }
 
-    .keypad button:active {
-      transform: translateY(0) scale(0.97);
-      box-shadow: 0 5px 12px rgba(0,0,0,0.3);
-      filter: brightness(0.96);
+    .keypad button:active{
+      transform:translateY(0) scale(0.97);
+      box-shadow:0 5px 12px rgba(0,0,0,0.3);
+      filter:brightness(0.96);
     }
 
-    .keypad .btn-special {
-      font-size: 18px;
-      opacity: 0.9;
+    .keypad .btn-special{
+      font-size:18px;
+      opacity:0.9;
     }
 
     /* select e input nome viaggio */
-    .select-wrapper {
-      margin-bottom: 10px;
-    }
+    .select-wrapper{ margin-bottom:10px; }
 
-    label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
-      color: var(--text-main);
-      opacity: 0.95;
+    label{
+      display:block;
+      font-size:13px;
+      margin-bottom:4px;
+      color:var(--text-main);
+      opacity:0.95;
     }
 
     select,
-    .name-input {
-      width: 100%;
-      padding: 9px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(148,163,184,0.7);
-      font-size: 14px;
+    .name-input{
+      width:100%;
+      padding:9px 10px;
+      border-radius:12px;
+      border:1px solid rgba(148,163,184,0.7);
+      font-size:14px;
       background: rgba(15,23,42,0.9);
-      color: #e5e7eb;
-      outline: none;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+      color:#e5e7eb;
+      outline:none;
+      box-shadow:0 4px 10px rgba(0,0,0,0.4);
     }
 
     select::placeholder,
-    .name-input::placeholder {
-      color: rgba(148,163,184,0.9);
+    .name-input::placeholder{
+      color:rgba(148,163,184,0.9);
     }
 
     select:focus,
-    .name-input:focus {
-      border-color: rgba(96,165,250,1);
-      box-shadow: 0 0 0 1px rgba(96,165,250,0.7);
-    }
-
-    .name-input {
-      margin-bottom: 8px;
+    .name-input:focus{
+      border-color:rgba(96,165,250,1);
+      box-shadow:0 0 0 1px rgba(96,165,250,0.7);
     }
 
     /* bottoni */
-    .btn-primary {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 999px;
-      border: none;
+    .btn-primary{
+      width:100%;
+      padding:12px;
+      font-size:16px;
+      border-radius:999px;
+      border:none;
       background: linear-gradient(135deg, var(--gold-strong), #f59e0b);
-      color: #020617;
-      font-weight: 600;
-      margin-top: 4px;
-      margin-bottom: 4px;
-      cursor: pointer;
-      box-shadow: 0 14px 32px rgba(217, 119, 6, 0.65);
-      letter-spacing: 0.02em;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        filter 0.12s ease-out;
+      color:#020617;
+      font-weight:600;
+      margin-top:4px;
+      margin-bottom:4px;
+      cursor:pointer;
+      box-shadow:0 14px 32px rgba(217,119,6,0.65);
+      letter-spacing:0.02em;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
     }
 
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 40px rgba(217, 119, 6, 0.8);
-      filter: brightness(1.03);
+    .btn-primary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 18px 40px rgba(217,119,6,0.8);
+      filter:brightness(1.03);
     }
 
-    .btn-primary:active {
-      transform: translateY(0) scale(0.98);
-      box-shadow: 0 9px 20px rgba(217, 119, 6, 0.65);
+    .btn-primary:active{
+      transform:translateY(0) scale(0.98);
+      box-shadow:0 9px 20px rgba(217,119,6,0.65);
     }
 
-    .btn-secondary {
-      width: 100%;
-      padding: 11px;
-      font-size: 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.8);
+    .btn-secondary{
+      width:100%;
+      padding:11px;
+      font-size:14px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.8);
       background: rgba(9,9,15,0.96);
-      color: var(--text-main);
-      font-weight: 500;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      box-shadow: 0 8px 22px rgba(0,0,0,0.75);
+      color:var(--text-main);
+      font-weight:500;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      box-shadow:0 8px 22px rgba(0,0,0,0.75);
       transition:
         transform 0.12s ease-out,
         box-shadow 0.12s ease-out,
@@ -390,73 +360,133 @@
         border-color 0.12s ease-out;
     }
 
-    .btn-secondary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 11px 26px rgba(0,0,0,0.85);
+    .btn-secondary:hover{
+      transform:translateY(-1px);
+      box-shadow:0 11px 26px rgba(0,0,0,0.85);
       background: radial-gradient(circle at top, var(--gold-soft), rgba(9,9,15,1));
       border-color: var(--gold-soft);
     }
 
-    .btn-secondary:active {
-      transform: translateY(0);
-    }
+    .btn-secondary:active{ transform:translateY(0); }
 
-    .back-link {
-      text-align: center;
-      margin-top: 10px;
-    }
-
-    .back-link a {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      text-decoration: none;
-      color: var(--text-main);
+    /* ===== TERMINA VIAGGIO BUTTON (apre modale) ===== */
+    .btn-terminate{
+      width:100%;
+      padding:11px;
+      font-size:14px;
+      border-radius:999px;
+      border:1px solid rgba(244,201,122,0.7);
       background: rgba(9,9,15,0.96);
-      border: 1px solid rgba(148,163,184,0.8);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.75);
-      transition:
-        background 0.12s ease-out,
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        border-color 0.12s ease-out;
+      color: var(--gold-strong);
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 8px 22px rgba(0,0,0,0.75);
+      margin-top:12px;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out, border-color 0.12s ease-out;
     }
 
-    .back-link a:hover {
+    .btn-terminate:hover{
+      transform:translateY(-1px);
+      box-shadow:0 11px 26px rgba(0,0,0,0.85);
       background: radial-gradient(circle at top, var(--gold-soft), rgba(9,9,15,1));
       border-color: var(--gold-soft);
-      transform: translateY(-1px);
-      box-shadow: 0 9px 24px rgba(0,0,0,0.85);
     }
 
-    .back-link a:active {
-      transform: translateY(0);
-      box-shadow: 0 5px 14px rgba(0,0,0,0.8);
+    .btn-terminate:active{ transform:translateY(0); }
+
+    /* ===== MODALE CHIUSURA VIAGGIO ===== */
+    .modal-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(2,4,10,0.75);
+      backdrop-filter:blur(6px);
+      -webkit-backdrop-filter:blur(6px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      padding:16px;
+    }
+
+    .modal{
+      width:100%;
+      max-width:380px;
+      background: radial-gradient(circle at top left, rgba(244,201,122,0.08), rgba(5,8,22,0.96));
+      border-radius:22px;
+      border:1px solid rgba(244,201,122,0.42);
+      box-shadow:0 25px 60px rgba(0,0,0,0.95);
+      padding:18px 16px 16px;
+      position:relative;
+    }
+
+    .modal h3{
+      margin:0 0 6px;
+      font-size:16px;
+      letter-spacing:0.14em;
+      text-transform:uppercase;
+      text-align:center;
+    }
+
+    .modal p{
+      margin:0 0 12px;
+      font-size:13px;
+      color:var(--text-soft);
+      text-align:center;
+    }
+
+    .btn-confirm{
+      width:100%;
+      padding:12px;
+      border-radius:999px;
+      border:none;
+      background: linear-gradient(135deg, var(--gold-strong), #f59e0b);
+      color:#020617;
+      font-weight:650;
+      cursor:pointer;
+      box-shadow:0 14px 32px rgba(217,119,6,0.65);
+      transition: transform 0.12s ease-out, filter 0.12s ease-out;
+      margin-top:4px;
+    }
+
+    .btn-confirm:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.03);
+    }
+
+    .btn-confirm:active{
+      transform:translateY(0) scale(0.98);
+    }
+
+    .btn-confirm:disabled{
+      opacity:0.45;
+      cursor:not-allowed;
+      filter:grayscale(0.4);
+      box-shadow:none;
+      transform:none;
+    }
+
+    .btn-cancel{
+      width:100%;
+      padding:11px;
+      border-radius:999px;
+      border:1px solid rgba(148,163,184,0.8);
+      background: rgba(9,9,15,0.96);
+      color:var(--text-main);
+      font-weight:500;
+      cursor:pointer;
+      box-shadow:0 8px 22px rgba(0,0,0,0.75);
+      margin-top:8px;
     }
 
     @media (max-width: 380px) {
-      .card {
-        padding: 18px 14px 16px;
-      }
-
-      .card-title {
-        font-size: 18px;
-      }
-
-      .amount-display {
-        font-size: 26px;
-      }
-
-      .keypad button {
-        padding: 12px 0;
-        font-size: 18px;
-      }
+      .card { padding: 18px 14px 16px; }
+      .card-title { font-size: 18px; }
+      .amount-display { font-size: 26px; }
+      .keypad button { padding: 12px 0; font-size: 18px; }
     }
   </style>
 </head>
+
 <body>
 
 {% include "menu.html" %}
@@ -473,7 +503,7 @@
     <div class="link-storico">
       <a href="{{ url_for('viaggio_spese') }}">
         <span>📜</span>
-        <span>Vedi storico spese del viaggio</span>
+        <span>Storico spese del viaggio</span>
       </a>
     </div>
 
@@ -521,6 +551,10 @@
         Nessuna spesa registrata per questo viaggio.
       </p>
     {% endif %}
+
+    <button type="button" class="btn-terminate" onclick="openTerminateModal()">
+      🔒 Termina viaggio
+    </button>
   </div>
 
   <!-- REGISTRA SPESA VIAGGIO -->
@@ -586,45 +620,44 @@
       </button>
     </form>
   </div>
+</div>
 
-  <!-- CHIUDI VIAGGIO -->
-  <div class="card">
-    <div class="card-header">
-      <h2 class="card-title">Chiudi viaggio</h2>
-      <p class="card-subtitle">Dai un nome al viaggio e aggiorna il saldo generale.</p>
-      <div class="card-header-line"></div>
-    </div>
+<!-- ===== MODALE CHIUDI VIAGGIO ===== -->
+<div id="terminateModal" class="modal-overlay" onclick="closeTerminateModal(event)">
+  <div class="modal">
+    <h3>Chiudi viaggio</h3>
+    <p>Dai un nome al viaggio e conferma la chiusura.</p>
 
     <form method="POST" action="{{ url_for('chiudi_viaggio') }}">
-      <label for="nome_viaggio">Nome del viaggio</label>
+      <label for="nome_viaggio_modal">Nome del viaggio</label>
       <input
         type="text"
-        id="nome_viaggio"
+        id="nome_viaggio_modal"
         name="nome_viaggio"
         class="name-input"
         placeholder="Es. Madrid, Weekend Roma"
         required
       >
 
-      <button type="submit" class="btn-secondary">
-        Chiudi viaggio e aggiorna saldo
+      <button type="submit" class="btn-confirm" id="confirmClose" disabled>
+        Conferma chiusura
       </button>
     </form>
 
-    <div class="back-link">
-      <a href="{{ url_for('tipo') }}">⟵ Torna a tipi</a>
-    </div>
+    <button type="button" class="btn-cancel" onclick="closeTerminateModal()">
+      Annulla
+    </button>
   </div>
 </div>
 
 <script>
+  // tastierino importo
   const input = document.getElementById('amount-input');
 
   function addDigit(d) {
     if (input.value === '0' && d !== ',') {
       input.value = d;
     } else {
-      // evita doppia virgola
       if (d === ',' && input.value.includes(',')) return;
       input.value += d;
     }
@@ -637,6 +670,29 @@
       input.value = input.value.slice(0, -1);
     }
   }
+
+  // modale chiudi viaggio
+  const modal = document.getElementById('terminateModal');
+  const nomeInput = document.getElementById('nome_viaggio_modal');
+  const confirmBtn = document.getElementById('confirmClose');
+
+  function openTerminateModal() {
+    modal.style.display = 'flex';
+    // reset e focus
+    nomeInput.value = '';
+    confirmBtn.disabled = true;
+    setTimeout(() => nomeInput.focus(), 30);
+  }
+
+  function closeTerminateModal(e) {
+    if (!e || e.target.id === 'terminateModal') {
+      modal.style.display = 'none';
+    }
+  }
+
+  nomeInput.addEventListener('input', () => {
+    confirmBtn.disabled = nomeInput.value.trim().length === 0;
+  });
 </script>
 
 {% if session.get('user_id') == 1 %}

@@ -22,11 +22,7 @@
       --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -51,7 +47,7 @@
       position: relative;
       overflow: hidden;
       isolation: isolate;
-      margin-top: 70px; /* spazio per il menu flottante */
+      margin-top: 70px;
     }
 
     .app-shell::before {
@@ -80,33 +76,17 @@
     }
 
     @keyframes glowFloat {
-      0% {
-        transform: translate3d(0, 0, 0) scale(1);
-        opacity: 0.7;
-      }
-      100% {
-        transform: translate3d(0, 12px, 0) scale(1.03);
-        opacity: 1;
-      }
+      0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.7; }
+      100% { transform: translate3d(0, 12px, 0) scale(1.03); opacity: 1; }
     }
 
-    .app-inner {
-      position: relative;
-      z-index: 1;
-    }
+    .app-inner { position: relative; z-index: 1; }
 
     @media (min-width: 768px) {
-      .app-shell {
-        padding: 24px 24px 26px;
-        margin-top: 90px;
-      }
+      .app-shell { padding: 24px 24px 26px; margin-top: 90px; }
     }
 
-    .page-container {
-      width: 100%;
-    }
-
-    /* CARD PRINCIPALE */
+    .page-container { width: 100%; }
 
     .box {
       background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.07), var(--card));
@@ -128,11 +108,7 @@
       pointer-events: none;
     }
 
-    @media (min-width: 768px) {
-      .box {
-        padding: 20px 18px 18px;
-      }
-    }
+    @media (min-width: 768px) { .box { padding: 20px 18px 18px; } }
 
     .header-row {
       display: flex;
@@ -141,11 +117,7 @@
       margin-bottom: 14px;
     }
 
-    .saldo-label {
-      font-size: 0.8rem;
-      color: var(--text-soft);
-    }
-
+    .saldo-label { font-size: 0.8rem; color: var(--text-soft); }
     .saldo-value {
       font-size: 1.6rem;
       font-weight: 700;
@@ -168,18 +140,9 @@
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
     }
 
-    .categoria-pill span:last-child {
-      text-transform: capitalize;
-      color: var(--text-main);
-    }
+    .categoria-pill span:last-child { text-transform: capitalize; color: var(--text-main); }
 
-    .subtitle {
-      font-size: 0.82rem;
-      color: var(--text-soft);
-      margin: 8px 0 12px;
-    }
-
-    /* DISPLAY IMPORTO */
+    .subtitle { font-size: 0.82rem; color: var(--text-soft); margin: 8px 0 12px; }
 
     .amount-display-wrapper {
       margin-top: 4px;
@@ -200,10 +163,7 @@
       margin-bottom: 4px;
     }
 
-    .currency-tag {
-      font-size: 0.8rem;
-      opacity: 0.85;
-    }
+    .currency-tag { font-size: 0.8rem; opacity: 0.85; }
 
     #amount-input {
       width: 100%;
@@ -217,20 +177,9 @@
       font-variant-numeric: tabular-nums;
     }
 
-    #amount-input::placeholder {
-      color: rgba(248, 113, 113, 0.9);
-      font-weight: 400;
-    }
-
-    #amount-input::selection {
-      background: rgba(248, 113, 113, 0.35);
-    }
-
-    form {
-      margin: 0;
-    }
-
-    /* KEYPAD */
+    #amount-input::placeholder { color: rgba(248, 113, 113, 0.9); font-weight: 400; }
+    #amount-input::selection { background: rgba(248, 113, 113, 0.35); }
+    form { margin: 0; }
 
     .keypad {
       display: grid;
@@ -249,12 +198,7 @@
       color: #fdfdfd;
       box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
       cursor: pointer;
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        filter 0.12s ease-out,
-        background 0.12s ease-out,
-        border-color 0.12s ease-out;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out, background 0.12s ease-out, border-color 0.12s ease-out;
     }
 
     .keypad button:hover {
@@ -270,15 +214,8 @@
       filter: brightness(0.96);
     }
 
-    .keypad .btn-special {
-      font-size: 1.1rem;
-      color: var(--gold-strong);
-    }
-
-    .keypad .btn-special:last-child {
-      color: #fecaca;
-      border-color: rgba(127, 29, 29, 0.9);
-    }
+    .keypad .btn-special { font-size: 1.1rem; color: var(--gold-strong); }
+    .keypad .btn-special:last-child { color: #fecaca; border-color: rgba(127, 29, 29, 0.9); }
 
     .actions {
       display: flex;
@@ -287,48 +224,83 @@
       margin-top: 4px;
     }
 
-    /* PRIMARY BUTTON (salva spesa) */
-
-    .btn-primary {
-      width: 100%;
+    /* ✅ SALVA SPESA – stesso stile di prima, solo rosso più vivo + icona più bella */
+    .btn-primary{
+      width:100%;
       padding: 12px 14px;
-      font-size: 0.95rem;
       border-radius: 999px;
-      border: none;
-      background: radial-gradient(circle at top, #fed7d7, #f97373);
-      color: #111827;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.85);
-      letter-spacing: 0.04em;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+
+      /* bordo più vivo */
+      border: 1px solid rgba(252,165,165,0.78);
+
+      /* rosso un pelo più presente (sempre glass) */
+      background:
+        radial-gradient(circle at top,
+          rgba(254,215,215,0.20),
+          rgba(248,113,113,0.16)
+        ),
+        rgba(15,23,42,0.92);
+
+      color: rgba(255,255,255,0.94);
+      font-weight: 650;
+      font-size: 0.9rem;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
+
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+
+      box-shadow:
+        0 0 0 1px rgba(24,24,27,0.92),
+        0 12px 26px rgba(0,0,0,0.90);
+
+      cursor:pointer;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+
       transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        filter 0.12s ease-out;
+        transform .12s ease-out,
+        box-shadow .12s ease-out,
+        border-color .12s ease-out,
+        filter .12s ease-out,
+        background .12s ease-out;
     }
 
-    .btn-primary span {
-      font-size: 1rem;
+    .btn-primary .btn-icon{
+      width: 19px;
+      height: 19px;
+      display:inline-block;
+      color: rgba(254,202,202,0.98);
+      filter: drop-shadow(0 1px 0 rgba(0,0,0,0.35));
     }
 
-    .btn-primary:hover {
+    .btn-primary:hover{
       transform: translateY(-1px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95);
-      filter: brightness(1.02);
+      border-color: rgba(252,165,165,0.96);
+      filter: brightness(1.045);
+      box-shadow:
+        0 0 0 1px rgba(248,113,113,0.18),
+        0 18px 36px rgba(0,0,0,1),
+        0 0 18px rgba(248,113,113,0.10);
+
+      background:
+        radial-gradient(circle at top,
+          rgba(254,215,215,0.24),
+          rgba(248,113,113,0.18)
+        ),
+        rgba(15,23,42,0.95);
     }
 
-    .btn-primary:active {
-      transform: translateY(0) scale(0.98);
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.85);
+    .btn-primary:active{
+      transform: translateY(0) scale(0.97);
+      box-shadow:
+        0 0 0 1px rgba(248,113,113,0.16),
+        0 10px 22px rgba(0,0,0,0.92);
     }
 
-    /* SECONDARY BUTTON (cambia categoria) */
-
+    /* SECONDARY BUTTON */
     .btn-secondary {
       width: 100%;
       padding: 10px 12px;
@@ -344,10 +316,7 @@
       justify-content: center;
       gap: 6px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        background 0.12s ease-out;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out;
     }
 
     .btn-secondary:hover {
@@ -356,31 +325,14 @@
       background: rgba(15, 23, 42, 0.98);
     }
 
-    .btn-secondary:active {
-      transform: translateY(0);
-    }
+    .btn-secondary:active { transform: translateY(0); }
 
     @media (max-width: 380px) {
-      .app-shell {
-        padding: 18px 14px 20px;
-      }
-
-      .box {
-        padding: 18px 14px 18px;
-      }
-
-      .saldo-value {
-        font-size: 1.4rem;
-      }
-
-      #amount-input {
-        font-size: 1.8rem;
-      }
-
-      .keypad button {
-        padding: 12px 0;
-        font-size: 1.15rem;
-      }
+      .app-shell { padding: 18px 14px 20px; }
+      .box { padding: 18px 14px 18px; }
+      .saldo-value { font-size: 1.4rem; }
+      #amount-input { font-size: 1.8rem; }
+      .keypad button { padding: 12px 0; font-size: 1.15rem; }
     }
   </style>
 </head>
@@ -407,20 +359,13 @@
 
           <p class="subtitle">Inserisci una nuova spesa per questa categoria.</p>
 
-          <!-- Form principale per aggiungere la spesa -->
           <form method="POST" action="/add-expense">
             <div class="amount-display-wrapper">
               <div class="amount-label-row">
                 <span>Importo spesa</span>
                 <span class="currency-tag">EUR €</span>
               </div>
-              <input
-                type="text"
-                id="amount-input"
-                name="amount"
-                placeholder="0,00"
-                required
-              />
+              <input type="text" id="amount-input" name="amount" placeholder="0,00" required />
             </div>
 
             <div class="keypad">
@@ -441,17 +386,25 @@
             <div class="actions">
               <button type="submit" class="btn-primary">
                 Salva spesa
-                <span>💸</span>
+
+                <!-- SVG più carino: wallet + freccia -->
+                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M4.5 8.5A3.5 3.5 0 0 1 8 5h10.5a1 1 0 0 1 1 1v2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M4.5 9.5V18A3 3 0 0 0 7.5 21h11a1 1 0 0 0 1-1v-9a2 2 0 0 0-2-2h-10a3 3 0 0 0-3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                  <path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                  <path d="M10.5 14.5 12 16l1.5-1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M15.8 13.5h3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
               </button>
             </div>
           </form>
 
-          <!-- Bottone separato per cambiare categoria -->
           <form method="GET" action="/tipo">
             <button class="btn-secondary" type="submit" style="margin-top: 10px">
               Cambia categoria
             </button>
           </form>
+
         </div>
       </div>
     </div>
@@ -460,40 +413,25 @@
   <script>
     function addChar(ch) {
       const input = document.getElementById('amount-input');
-      // evita doppia virgola
-      if (ch === ',' && input.value.includes(',')) {
-        return;
-      }
+      if (ch === ',' && input.value.includes(',')) return;
+
       if (!input.value || input.value === '0' || input.value === '0,00') {
-        if (ch === ',') {
-          input.value = '0,';
-        } else {
-          input.value = ch;
-        }
+        input.value = (ch === ',') ? '0,' : ch;
       } else {
         input.value = input.value + ch;
       }
     }
 
-    function clearInput() {
-      const input = document.getElementById('amount-input');
-      input.value = '';
-    }
-
     function backspace() {
       const input = document.getElementById('amount-input');
       if (!input.value) return;
-      const newVal = input.value.slice(0, -1);
-      input.value = newVal || '';
+      input.value = input.value.slice(0, -1) || '';
     }
   </script>
 
   {% if session.get('user_id') == 1 %}
   <style>
-    * {
-      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
-    }
-
+    * { cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important; }
     button, a, input, select, textarea, label {
       cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
     }
