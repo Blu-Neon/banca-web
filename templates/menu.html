@@ -1,280 +1,425 @@
 <style>
-  :root {
-    --menu-radius: 20px;
-    --menu-shadow: 0 18px 40px rgba(0,0,0,0.85);
-    --menu-gold: #f4c97a;
-    --menu-gold-strong: #ffd992;
-    --menu-text: #f9fafb;
-    --menu-soft: #a1a1aa;
+  :root{
+    --bg: #02040a;
+
+    --menu-radius: 22px;
+    --menu-shadow: 0 22px 55px rgba(0,0,0,.78);
+
+    --gold: #f4c97a;
+    --gold-strong: #ffd992;
+
+    --text: rgba(255,255,255,.96);
+    --soft: rgba(255,255,255,.82);
+    --muted: rgba(255,255,255,.58);
+
+    --border: rgba(244,201,122,.26);
+    --border-soft: rgba(244,201,122,.16);
   }
 
-  /* Pulsante floating in alto a destra */
-  #menu-button {
+  /* Pulsante menu */
+  #menu-button{
     position: fixed;
     top: 16px;
     right: 16px;
     width: 46px;
     height: 46px;
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
-    color: var(--menu-gold-strong);
-    font-size: 22px;
-    font-weight: 600;
+    color: var(--gold-strong);
+    font-size: 20px;
+    font-weight: 800;
 
-    background:
-      radial-gradient(circle at top,
-        rgba(244, 201, 122, 0.22),
-        rgba(5, 8, 21, 0.98)
-      );
+    background: radial-gradient(circle at 35% 25%,
+      rgba(244,201,122,.14),
+      rgba(2,4,10,.95)
+    );
+
     border-radius: 999px;
-    border: 1px solid rgba(244, 201, 122, 0.7);
+    border: 1px solid rgba(244,201,122,.48);
 
     box-shadow:
-      0 0 0 1px rgba(15,23,42,0.9),
-      var(--menu-shadow);
-    cursor: pointer;
-    z-index: 9999;
+      0 0 0 1px rgba(15,23,42,.70),
+      0 18px 44px rgba(0,0,0,.72);
+
+    cursor:pointer;
+    z-index:9999;
 
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
 
-    transition:
-      transform 0.12s ease-out,
-      box-shadow 0.12s ease-out,
-      background 0.12s ease-out,
-      opacity 0.12s ease-out,
-      border-color 0.12s ease-out;
+    transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
   }
 
-  #menu-button:hover {
+  #menu-button:hover{
     transform: translateY(-1px);
+    border-color: rgba(244,201,122,.70);
     box-shadow:
-      0 0 0 1px rgba(244, 201, 122, 0.7),
-      0 20px 46px rgba(0,0,0,0.95);
-    background:
-      radial-gradient(circle at top,
-        rgba(244, 201, 122, 0.3),
-        rgba(5, 8, 21, 1)
-      );
+      0 0 0 1px rgba(244,201,122,.22),
+      0 22px 55px rgba(0,0,0,.82);
+    background: radial-gradient(circle at 35% 25%,
+      rgba(244,201,122,.18),
+      rgba(2,4,10,.97)
+    );
   }
+  #menu-button:active{ transform: translateY(0) scale(.96); }
 
-  #menu-button:active {
-    transform: translateY(0) scale(0.96);
-    box-shadow:
-      0 0 0 1px rgba(244, 201, 122, 0.6),
-      0 12px 28px rgba(0,0,0,0.8);
-  }
-
-  /* Contenitore menu */
-  #dropdown-menu {
+  /* Pannello dropdown (luce affievolita + laterale, non sopra al testo) */
+  #dropdown-menu{
     position: fixed;
     top: 70px;
     right: 16px;
 
-    width: 230px;
-    padding: 14px 12px 12px;
+    width: 262px;
+    padding: 12px;
 
     background:
-      radial-gradient(circle at top left,
-        rgba(244, 201, 122, 0.06),
-        rgba(5, 8, 21, 0.98)
+      radial-gradient(circle at 90% 0%,
+        rgba(244,201,122,.055),
+        transparent 42%
+      ),
+      linear-gradient(
+        to bottom,
+        rgba(2,4,10,.93),
+        rgba(6,10,26,.95)
       );
-    border-radius: var(--menu-radius);
-    border: 1px solid rgba(148,163,184,0.8);
 
-    display: flex;
-    flex-direction: column;
+    border-radius: var(--menu-radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--menu-shadow);
+
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+
+    display:flex;
+    flex-direction:column;
     gap: 8px;
 
     opacity: 0;
-    transform: translateY(-10px) scale(0.97);
-    pointer-events: none;
+    transform: translateY(-10px) scale(.98);
+    pointer-events:none;
 
-    box-shadow: var(--menu-shadow);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    transition:
-      opacity 0.18s ease-out,
-      transform 0.18s ease-out;
-    z-index: 9998;
+    transition: opacity .18s ease, transform .18s ease;
+    z-index:9998;
   }
 
-  #dropdown-menu.open {
-    opacity: 1;
+  #dropdown-menu.open{
+    opacity:1;
     transform: translateY(0) scale(1);
-    pointer-events: auto;
+    pointer-events:auto;
   }
 
-  /* Titolo mini in alto al menu */
-  .menu-header {
+  .menu-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 2px 6px 8px;
+
     font-size: 11px;
+    letter-spacing: .18em;
     text-transform: uppercase;
-    letter-spacing: 0.16em;
-    opacity: 0.78;
-    margin-bottom: 4px;
-    padding: 0 4px;
-    color: var(--menu-soft);
+    color: var(--muted);
   }
 
-  /* Bottoni di navigazione */
-  .menu-btn {
-    width: 100%;
-    padding: 9px 10px;
-    border-radius: 999px;
+  /* Bottoni */
+  .menu-btn{
+    width:100%;
+    padding: 10px 12px;
+    border-radius: 14px;
+
+    border: 1px solid var(--border-soft);
+    background: rgba(255,255,255,.075);
+    color: var(--text);
+
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 650;
+    letter-spacing: .02em;
 
-    border: none;
-    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap: 10px;
 
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+    cursor:pointer;
 
-    color: var(--menu-text);
-    background:
-      radial-gradient(circle at top,
-        var(--menu-gold-strong),
-        var(--menu-gold)
-      );
-    box-shadow:
-      0 0 0 1px rgba(24,24,27,0.9),
-      0 12px 26px rgba(0,0,0,0.9);
+    box-shadow: 0 10px 22px rgba(0,0,0,.45);
 
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
+    text-shadow:
+      0 1px 0 rgba(0,0,0,.65),
+      0 0 1px rgba(0,0,0,.45);
 
-    transition:
-      transform 0.12s ease-out,
-      box-shadow 0.12s ease-out,
-      filter 0.12s ease-out,
-      background 0.12s ease-out;
+    transition: transform .12s ease, background .12s ease, border-color .12s ease, box-shadow .12s ease, filter .12s ease;
   }
 
-  .menu-btn:hover {
+  .menu-btn:hover{
     transform: translateY(-1px);
-    box-shadow:
-      0 0 0 1px rgba(244, 201, 122, 0.7),
-      0 16px 34px rgba(0,0,0,1);
-    filter: brightness(1.03);
+    background: rgba(244,201,122,.10);
+    border-color: rgba(244,201,122,.34);
+    box-shadow: 0 16px 34px rgba(0,0,0,.60);
+    filter: brightness(1.02);
   }
 
-  .menu-btn:active {
-    transform: translateY(0) scale(0.97);
-    box-shadow:
-      0 0 0 1px rgba(244, 201, 122, 0.6),
-      0 10px 22px rgba(0,0,0,0.9);
+  .menu-btn:active{ transform: translateY(0) scale(.98); }
+
+  .menu-left{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    min-width: 0;
   }
 
-  /* Variante “secondaria” visiva per qualche voce, se vuoi usarla in futuro
-  .menu-btn.secondary {
-    background: rgba(15,23,42,0.96);
-    color: var(--menu-soft);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-  }
-  */
-
-  .menu-btn.logout {
-    background:
-      radial-gradient(circle at top,
-        #fed7d7,
-        #f97373
-      );
-    color: #111827;
-    box-shadow:
-      0 0 0 1px rgba(24,24,27,0.95),
-      0 12px 26px rgba(0,0,0,1);
+  .menu-icon{
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    color: rgba(255,217,146,.98);
+    opacity: .95;
   }
 
-  .menu-btn.logout:hover {
-    box-shadow:
-      0 0 0 1px rgba(252,165,165,0.9),
-      0 18px 36px rgba(0,0,0,1);
+  .menu-label{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text);
   }
 
-  .menu-divider {
+  .menu-right{
+    color: rgba(255,255,255,.70);
+    font-size: 12px;
+    letter-spacing: .10em;
+    flex: 0 0 auto;
+  }
+
+  /* Pagina attiva */
+  .menu-btn.active{
+    background: rgba(244,201,122,.14);
+    border-color: rgba(244,201,122,.52);
+    box-shadow: 0 18px 40px rgba(0,0,0,.68);
+  }
+
+  .menu-divider{
     height: 1px;
     margin: 6px 4px 4px;
-    background: radial-gradient(circle, rgba(148,163,184,0.9), transparent);
-    opacity: 0.7;
+    background: linear-gradient(90deg, transparent, rgba(244,201,122,.34), transparent);
+    opacity: .95;
   }
 
-  /* Anti scroll-click sotto al menu */
-  body.menu-open {
-    overflow-x: hidden;
+  /* Logout */
+  .menu-btn.logout{
+    background: rgba(248,113,113,.12);
+    border-color: rgba(248,113,113,.30);
+  }
+  .menu-btn.logout .menu-icon{ color: rgba(254,202,202,.95); }
+  .menu-btn.logout:hover{
+    background: rgba(248,113,113,.16);
+    border-color: rgba(248,113,113,.45);
   }
 
-  @media (max-width: 480px) {
-    #dropdown-menu {
-      right: 12px;
-      width: 215px;
-    }
+  body.menu-open{ overflow-x:hidden; }
 
-    #menu-button {
-      right: 12px;
-      top: 14px;
-    }
+  @media (max-width: 480px){
+    #dropdown-menu{ right: 12px; width: 238px; }
+    #menu-button{ right: 12px; top: 14px; }
   }
 </style>
 
 <!-- ====================== MENU UNIVERSALE ====================== -->
+<button id="menu-button" aria-label="Apri il menu di navigazione" aria-expanded="false">☰</button>
 
-<!-- Pulsante menu -->
-<button id="menu-button" aria-label="Apri il menu di navigazione">☰</button>
+<div id="dropdown-menu" role="menu" aria-label="Menu di navigazione">
+  <div class="menu-header">
+    <div>Navigazione</div>
+    <div style="color: rgba(244,201,122,.62); font-size: 10px; letter-spacing:.22em;">MENU</div>
+  </div>
 
-<!-- Menu contenitore -->
-<div id="dropdown-menu">
-  <div class="menu-header">Navigazione</div>
+  <!-- Icone (SVG outline) -->
+  <template id="icon-home">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V10.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </svg>
+  </template>
 
+  <template id="icon-receipt">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M7 3h10a2 2 0 0 1 2 2v16l-2-1-2 1-2-1-2 1-2-1-2 1-2-1-2 1V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+  </template>
+
+  <template id="icon-repeat">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M17 2v4h-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M7 22v-4h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M20 11a8 8 0 0 0-14.5-4.5L13 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 13a8 8 0 0 0 14.5 4.5L11 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </template>
+
+  <template id="icon-wallet">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3.5 8.5A3.5 3.5 0 0 1 7 5h12a1 1 0 0 1 1 1v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3.5 9.5V18A3 3 0 0 0 6.5 21h13a1 1 0 0 0 1-1v-9a2 2 0 0 0-2-2h-12A3 3 0 0 0 3.5 9.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M16.5 14h4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+  </template>
+
+  <template id="icon-chart">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 19V5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M4 19h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M8 15v-4M12 15V8M16 15v-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+  </template>
+
+  <template id="icon-grid">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z"
+            stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+    </svg>
+  </template>
+
+  <template id="icon-clock">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M12 7v6l4 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </template>
+
+  <template id="icon-plane">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M2.5 13.5 21 4.5l-6.5 18-3.5-7-8.5-2Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M21 4.5 11 15.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+  </template>
+
+  <template id="icon-user">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="currentColor" stroke-width="1.7"/>
+      <path d="M4 21a8 8 0 0 1 16 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+  </template>
+
+  <template id="icon-logout">
+    <svg class="menu-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M10 7V6a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-7a2 2 0 0 1-2-2v-1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M3 12h10" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+      <path d="M6.5 9.5 3 12l3.5 2.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </template>
+
+  <!-- Voci -->
   <form method="GET" action="/tipo">
-    <button class="menu-btn" type="submit">Home</button>
+    <button class="menu-btn" type="submit" data-path="/tipo">
+      <div class="menu-left">
+        <span data-icon="icon-home"></span>
+        <div class="menu-label">Home</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
 
   <form method="GET" action="/">
-    <button class="menu-btn" type="submit">Spesa</button>
+    <button class="menu-btn" type="submit" data-path="/">
+      <div class="menu-left">
+        <span data-icon="icon-receipt"></span>
+        <div class="menu-label">Spesa</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
 
   <form method="GET" action="/abbonamenti">
-    <button class="menu-btn" type="submit">Abbonamenti</button>
+    <button class="menu-btn" type="submit" data-path="/abbonamenti">
+      <div class="menu-left">
+        <span data-icon="icon-repeat"></span>
+        <div class="menu-label">Abbonamenti</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
-  
+
   <form method="GET" action="/update-saldo">
-    <button class="menu-btn" type="submit">Aggiorna saldo</button>
+    <button class="menu-btn" type="submit" data-path="/update-saldo">
+      <div class="menu-left">
+        <span data-icon="icon-wallet"></span>
+        <div class="menu-label">Aggiorna saldo</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
 
   <form method="GET" action="/grafico">
-    <button class="menu-btn" type="submit">Grafico del mese</button>
+    <button class="menu-btn" type="submit" data-path="/grafico">
+      <div class="menu-left">
+        <span data-icon="icon-chart"></span>
+        <div class="menu-label">Grafico del mese</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
 
   <form method="GET" action="/tipologia">
-    <button class="menu-btn" type="submit">Spese per tipologia</button>
+    <button class="menu-btn" type="submit" data-path="/tipologia">
+      <div class="menu-left">
+        <span data-icon="icon-grid"></span>
+        <div class="menu-label">Spese per tipologia</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
 
   <form method="GET" action="/storico">
-    <button class="menu-btn" type="submit">Storico</button>
+    <button class="menu-btn" type="submit" data-path="/storico">
+      <div class="menu-left">
+        <span data-icon="icon-clock"></span>
+        <div class="menu-label">Storico</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
-  
+
   <form method="GET" action="/viaggio">
-    <button class="menu-btn" type="submit">Viaggio</button>
+    <button class="menu-btn" type="submit" data-path="/viaggio">
+      <div class="menu-left">
+        <span data-icon="icon-plane"></span>
+        <div class="menu-label">Viaggio</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
 
   <form method="GET" action="/storico_viaggi">
-    <button class="menu-btn" type="submit">Storico viaggi</button>
+    <button class="menu-btn" type="submit" data-path="/storico_viaggi">
+      <div class="menu-left">
+        <span data-icon="icon-clock"></span>
+        <div class="menu-label">Storico viaggi</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
 
   <div class="menu-divider"></div>
 
   <form method="GET" action="/profile">
-    <button class="menu-btn" type="submit">Account</button>
+    <button class="menu-btn" type="submit" data-path="/profile">
+      <div class="menu-left">
+        <span data-icon="icon-user"></span>
+        <div class="menu-label">Account</div>
+      </div>
+      <div class="menu-right">→</div>
+    </button>
   </form>
 
   <form method="GET" action="/logout">
-    <button class="menu-btn logout" type="submit">Logout</button>
+    <button class="menu-btn logout" type="submit" data-path="/logout">
+      <div class="menu-left">
+        <span data-icon="icon-logout"></span>
+        <div class="menu-label">Logout</div>
+      </div>
+      <div class="menu-right">⎋</div>
+    </button>
   </form>
 </div>
 
@@ -282,9 +427,42 @@
   const menuBtn = document.getElementById("menu-button");
   const drop = document.getElementById("dropdown-menu");
 
-  function toggleMenu() {
-    drop.classList.toggle("open");
-    document.body.classList.toggle("menu-open", drop.classList.contains("open"));
+  // Inject icone dai <template>
+  document.querySelectorAll("[data-icon]").forEach(el => {
+    const id = el.getAttribute("data-icon");
+    const tpl = document.getElementById(id);
+    if (tpl) el.replaceWith(tpl.content.cloneNode(true));
+  });
+
+  // Evidenzia pagina attiva
+  (function setActive(){
+    const path = window.location.pathname || "/";
+    const items = document.querySelectorAll(".menu-btn[data-path]");
+    let best = null;
+
+    items.forEach(btn => {
+      const p = btn.getAttribute("data-path");
+      if (!p) return;
+
+      const ok = (p === "/" ? path === "/" : (path === p || path.startsWith(p + "/")));
+      if (ok) {
+        if (!best || p.length > best.getAttribute("data-path").length) best = btn;
+      }
+    });
+
+    if (best) best.classList.add("active");
+  })();
+
+  function closeMenu(){
+    drop.classList.remove("open");
+    document.body.classList.remove("menu-open");
+    menuBtn.setAttribute("aria-expanded", "false");
+  }
+
+  function toggleMenu(){
+    const isOpen = drop.classList.toggle("open");
+    document.body.classList.toggle("menu-open", isOpen);
+    menuBtn.setAttribute("aria-expanded", String(isOpen));
   }
 
   menuBtn.addEventListener("click", (e) => {
@@ -292,14 +470,15 @@
     toggleMenu();
   });
 
-  // Chiudi cliccando fuori dal menu
+  // Chiudi cliccando fuori
   document.addEventListener("click", (e) => {
     if (!drop.classList.contains("open")) return;
+    const inside = drop.contains(e.target) || menuBtn.contains(e.target);
+    if (!inside) closeMenu();
+  });
 
-    const clickInsideMenu = drop.contains(e.target) || menuBtn.contains(e.target);
-    if (!clickInsideMenu) {
-      drop.classList.remove("open");
-      document.body.classList.remove("menu-open");
-    }
+  // Chiudi con ESC
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && drop.classList.contains("open")) closeMenu();
   });
 </script>
