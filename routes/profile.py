@@ -1,364 +1,131 @@
-{% extends "base.html" %}
+from flask import request, redirect, url_for, render_template, session, flash
+from werkzeug.security import generate_password_hash, check_password_hash
+from db import get_connection
+from app import app
 
-{% block title %}Profilo{% endblock %}
 
-{% block extra_head %}
-<style>
-  /* ====== PAGE CSS (Profile) ====== */
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    user_id = session.get("user_id")
+    if not user_id:
+        flash("Devi effettuare il login.", "error")
+        return redirect(url_for("login"))
 
-  .page-container{
-    width: 100%;
-    max-width: 560px;
-    margin: 0 auto;
-    margin-top: 70px; /* spazio per il menu */
-  }
+    conn = get_connection()
+    cur = conn.cursor()
 
-  .card{
-    background: radial-gradient(circle at top left, rgba(244,201,122,0.05), rgba(5,8,22,0.96));
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 24px;
-    border: 1px solid rgba(148,163,184,0.7);
-    padding: 22px 18px 18px;
-    box-shadow: var(--shadow-soft);
-    position: relative;
-    overflow: hidden;
-  }
+    if request.method == "POST":
+        action = request.form.get("action")
 
-  .card::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    border-radius: inherit;
-    border: 1px solid rgba(244,201,122,0.05);
-    pointer-events:none;
-  }
+        # 1) Aggiornamento email
+        if action == "update_email":
+            new_email = request.form.get("email", "").strip()
 
-  .card-header{
-    display:flex;
-    flex-direction:column;
-    gap:4px;
-    margin-bottom: 14px;
-    align-items:center;
-    text-align:center;
-  }
+            if not new_email:
+                conn.close()
+                flash("Inserisci una email valida.", "error")
+                return redirect(url_for("profile"))
 
-  .card-title{
-    margin:0;
-    font-size: 20px;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-  }
+            # controlla che non sia di un altro utente
+            cur.execute(
+                "SELECT id FROM users WHERE email = %s AND id != %s;",
+                (new_email, user_id)
+            )
+            if cur.fetchone():
+                conn.close()
+                flash("Questa email è già usata da un altro account.", "error")
+                return redirect(url_for("profile"))
 
-  .card-subtitle{
-    margin:0;
-    font-size: 13px;
-    color: var(--text-soft);
-    max-width: 340px;
-  }
+            cur.execute(
+                "UPDATE users SET email = %s WHERE id = %s;",
+                (new_email, user_id)
+            )
+            conn.commit()
+            conn.close()
+            flash("Email aggiornata con successo.", "success")
+            return redirect(url_for("profile"))
 
-  .card-header-line{
-    margin-top: 8px;
-    width: 78px;
-    height: 2px;
-    background: linear-gradient(90deg, var(--gold), transparent);
-    border-radius: 999px;
-  }
+        # 2) Aggiornamento username
+        elif action == "update_username":
+            new_username = request.form.get("username", "").strip()
 
-  /* FLASH */
-  .flash-container{
-    margin: 14px 0 12px;
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-  }
+            if not new_username:
+                conn.close()
+                flash("Inserisci uno username valido.", "error")
+                return redirect(url_for("profile"))
 
-  .flash-message{
-    padding: 9px 12px;
-    border-radius: 999px;
-    font-size: .85rem;
-    display:inline-flex;
-    align-items:center;
-    gap:8px;
-    border: 1px solid rgba(15,23,42,.9);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 10px 24px rgba(0,0,0,.6);
-  }
+            # controlla che non sia di un altro
+            cur.execute(
+                "SELECT id FROM users WHERE username = %s AND id != %s;",
+                (new_username, user_id)
+            )
+            if cur.fetchone():
+                conn.close()
+                flash("Questo username è già usato da un altro account.", "error")
+                return redirect(url_for("profile"))
 
-  .flash-message::before{
-    content:"";
-    width:8px;
-    height:8px;
-    border-radius:999px;
-    background: currentColor;
-  }
+            cur.execute(
+                "UPDATE users SET username = %s WHERE id = %s;",
+                (new_username, user_id)
+            )
+            conn.commit()
+            conn.close()
+            flash("Username aggiornato con successo.", "success")
+            return redirect(url_for("profile"))
 
-  .flash-error{
-    background: radial-gradient(circle at top, rgba(248,113,113,.24), rgba(24,24,27,.96));
-    color: #fecaca;
-    border-color: rgba(127,29,29,.9);
-  }
+        # 3) Cambio password
+        elif action == "change_password":
+            current_password = request.form.get("current_password", "").strip()
+            new_password = request.form.get("new_password", "").strip()
+            confirm_password = request.form.get("confirm_password", "").strip()
 
-  .flash-success{
-    background: radial-gradient(circle at top, rgba(74,222,128,.22), rgba(24,24,27,.96));
-    color: #bbf7d0;
-    border-color: rgba(21,128,61,.9);
-  }
+            if not current_password or not new_password or not confirm_password:
+                conn.close()
+                flash("Compila tutti i campi per cambiare password.", "error")
+                return redirect(url_for("profile"))
 
-  /* SEZIONI */
-  .grid{
-    display:grid;
-    gap: 12px;
-    margin-top: 10px;
-  }
+            # prendo l'hash attuale
+            cur.execute(
+                "SELECT password_hash FROM users WHERE id = %s;",
+                (user_id,)
+            )
+            row = cur.fetchone()
+            if not row:
+                conn.close()
+                flash("Utente non trovato.", "error")
+                return redirect(url_for("login"))
 
-  .panel{
-    border-radius: 20px;
-    border: 1px solid rgba(55,65,81,0.9);
-    background: rgba(9,9,15,0.96);
-    box-shadow: 0 14px 32px rgba(0,0,0,0.85);
-    padding: 14px 12px 12px;
-  }
+            if not check_password_hash(row["password_hash"], current_password):
+                conn.close()
+                flash("La password attuale non è corretta.", "error")
+                return redirect(url_for("profile"))
 
-  .panel-title{
-    margin: 0 0 10px;
-    font-size: 12px;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    color: var(--text-soft);
-  }
+            if new_password != confirm_password:
+                conn.close()
+                flash("Le nuove password non coincidono.", "error")
+                return redirect(url_for("profile"))
 
-  .info-row{
-    display:flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 10px;
-    padding: 9px 10px;
-    border-radius: 14px;
-    background: rgba(15,23,42,0.75);
-    border: 1px solid rgba(51,65,85,0.75);
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.55);
-  }
+            new_hash = generate_password_hash(new_password)
+            cur.execute(
+                "UPDATE users SET password_hash = %s WHERE id = %s;",
+                (new_hash, user_id)
+            )
+            conn.commit()
+            conn.close()
+            flash("Password cambiata con successo.", "success")
+            return redirect(url_for("profile"))
 
-  .info-row span:first-child{
-    font-size: 13px;
-    color: var(--text-soft);
-  }
+        # fallback
+        conn.close()
+        flash("Azione non valida.", "error")
+        return redirect(url_for("profile"))
 
-  .info-row span:last-child{
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-main);
-    text-align:right;
-    word-break: break-word;
-  }
+    # GET → carica dati utente
+    cur.execute(
+        "SELECT username, email FROM users WHERE id = %s;",
+        (user_id,)
+    )
+    user = cur.fetchone()
+    conn.close()
 
-  form{
-    display:flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .field{
-    display:flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  label{
-    font-size: 0.8rem;
-    color: var(--text-soft);
-  }
-
-  input{
-    padding: 10px 12px;
-    font-size: .95rem;
-    width: 100%;
-    border-radius: 999px;
-    border: 1px solid rgba(51,65,85,0.9);
-    background: rgba(15,23,42,0.96);
-    color: #e5e7eb;
-    outline: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-    transition: border-color .15s ease, box-shadow .15s ease, transform .08s ease;
-  }
-
-  input::placeholder{ color: rgba(148,163,184,0.9); }
-
-  input:focus{
-    border-color: var(--gold);
-    box-shadow: 0 0 0 1px rgba(244,201,122,.6), 0 12px 28px rgba(0,0,0,.85);
-    transform: translateY(-0.5px);
-  }
-
-  .btn-primary{
-    padding: 11px 14px;
-    border: none;
-    border-radius: 999px;
-    cursor: pointer;
-    background: radial-gradient(circle at top, var(--gold-strong), var(--gold));
-    color: #18181b;
-    font-weight: 650;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    box-shadow: 0 16px 32px rgba(0,0,0,0.85);
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    gap: 8px;
-    transition: transform .12s ease-out, box-shadow .12s ease-out, filter .12s ease-out;
-  }
-
-  .btn-primary:hover{
-    transform: translateY(-1px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.95);
-    filter: brightness(1.02);
-  }
-
-  .btn-primary:active{
-    transform: translateY(0) scale(.98);
-    box-shadow: 0 12px 26px rgba(0,0,0,0.85);
-  }
-
-  .hint{
-    margin-top: 6px;
-    font-size: 12px;
-    color: var(--text-soft);
-    opacity: .9;
-    line-height: 1.35;
-  }
-
-  @media (max-width: 380px){
-    .card{ padding: 18px 14px 14px; }
-    .card-title{ font-size: 18px; }
-  }
-</style>
-{% endblock %}
-
-{% block content %}
-
-  {% include "menu.html" %}
-
-  <div class="page-container">
-    <div class="card">
-      <div class="card-header">
-        <h1 class="card-title">Il tuo profilo</h1>
-        <p class="card-subtitle">Gestisci email, username e password.</p>
-        <div class="card-header-line"></div>
-      </div>
-
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="flash-container">
-            {% for category, msg in messages %}
-              <div class="flash-message {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">
-                {{ msg }}
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-
-      <div class="grid">
-
-        <!-- DETTAGLI -->
-        <div class="panel">
-          <h2 class="panel-title">Dettagli account</h2>
-
-          <div class="info-row">
-            <span>Username</span>
-            <span>{{ user["username"] if user else "-" }}</span>
-          </div>
-
-          <div class="info-row" style="margin-top:10px;">
-            <span>Email</span>
-            <span>{{ user["email"] if user else "-" }}</span>
-          </div>
-        </div>
-
-        <!-- UPDATE EMAIL -->
-        <div class="panel">
-          <h2 class="panel-title">Aggiorna email</h2>
-
-          <form method="POST" action="{{ url_for('profile') }}">
-            <input type="hidden" name="action" value="update_email">
-
-            <div class="field">
-              <label for="email">Nuova email</label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="es. nome@email.com"
-                required
-              >
-            </div>
-
-            <button class="btn-primary" type="submit">
-              Salva <span>✓</span>
-            </button>
-          </form>
-
-          <p class="hint">L’email deve essere unica: se è già usata, ti avviso.</p>
-        </div>
-
-        <!-- UPDATE USERNAME -->
-        <div class="panel">
-          <h2 class="panel-title">Aggiorna username</h2>
-
-          <form method="POST" action="{{ url_for('profile') }}">
-            <input type="hidden" name="action" value="update_username">
-
-            <div class="field">
-              <label for="username">Nuovo username</label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                placeholder="Scegli un nuovo username"
-                required
-              >
-            </div>
-
-            <button class="btn-primary" type="submit">
-              Salva <span>✓</span>
-            </button>
-          </form>
-        </div>
-
-        <!-- CHANGE PASSWORD -->
-        <div class="panel">
-          <h2 class="panel-title">Cambia password</h2>
-
-          <form method="POST" action="{{ url_for('profile') }}">
-            <input type="hidden" name="action" value="change_password">
-
-            <div class="field">
-              <label for="current_password">Password attuale</label>
-              <input id="current_password" name="current_password" type="password" autocomplete="current-password" required>
-            </div>
-
-            <div class="field">
-              <label for="new_password">Nuova password</label>
-              <input id="new_password" name="new_password" type="password" autocomplete="new-password" required>
-            </div>
-
-            <div class="field">
-              <label for="confirm_password">Conferma nuova password</label>
-              <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" required>
-            </div>
-
-            <button class="btn-primary" type="submit">
-              Cambia <span>→</span>
-            </button>
-          </form>
-
-          <p class="hint">Se hai dimenticato la password, usa “Password dimenticata?” dal login.</p>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-{% endblock %}
+    return render_template("profile.html", user=user)
