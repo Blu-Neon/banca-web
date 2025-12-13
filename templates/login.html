@@ -4,6 +4,14 @@
 
 {% block extra_head %}
   <style>
+    /* ✅ FIX: se il menu è incluso dal base.html, lo nascondo qui */
+    #menu-button,
+    #dropdown-menu {
+      display: none !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+    }
+
     /* ====== PAGE CSS (Login) ====== */
 
     .auth-wrap {
@@ -198,7 +206,7 @@
 
     input:focus {
       border-color: var(--gold);
-      box-shadow: 0 0 0 1px rgba(244, 201, 122, 0.6), 0 12px 28px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 0 0 1px rgba(244, 201, 122, 0.6), 0 12px 28px rgba(0,  0, 0, 0.85);
       background: rgba(15, 23, 42, 1);
       transform: translateY(-0.5px);
     }
