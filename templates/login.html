@@ -1,49 +1,19 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Login</title>
+{% block title %}Login{% endblock %}
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+{% block extra_head %}
   <style>
-    :root {
-      --bg: #02040a;
-      --bg-soft: #050815;
-      --card: #050815;
-      --gold: #f4c97a;
-      --gold-soft: rgba(244, 201, 122, 0.16);
-      --gold-strong: #ffd992;
-      --text-main: #f9fafb;
-      --text-soft: #a1a1aa;
-      --border-soft: rgba(148, 163, 184, 0.3);
-      --radius-xl: 26px;
-      --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
-    }
+    /* ====== PAGE CSS (Login) ====== */
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      min-height: 100vh;
-      margin: 0;
-      background: radial-gradient(circle at top, #0b1024 0, #02040a 45%, #000 100%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
+    .auth-wrap {
+      min-height: calc(100dvh - (20px + env(safe-area-inset-top)) - (20px + env(safe-area-inset-bottom)));
       display: flex;
-      justify-content: center;
       align-items: center;
-      padding: 20px 14px;
+      justify-content: center;
     }
 
-    .app-shell {
+    .auth-shell {
       width: 100%;
       max-width: 430px;
       background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.05), rgba(15, 23, 42, 0.98));
@@ -56,7 +26,7 @@
       isolation: isolate;
     }
 
-    .app-shell::before {
+    .auth-shell::before {
       content: "";
       position: absolute;
       inset: -40%;
@@ -69,7 +39,7 @@
       animation: glowFloat 18s ease-in-out infinite alternate;
     }
 
-    .app-shell::after {
+    .auth-shell::after {
       content: "";
       position: absolute;
       inset: 0;
@@ -82,29 +52,17 @@
     }
 
     @keyframes glowFloat {
-      0% {
-        transform: translate3d(0, 0, 0) scale(1);
-        opacity: 0.7;
-      }
-      100% {
-        transform: translate3d(0, 10px, 0) scale(1.03);
-        opacity: 1;
-      }
+      0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.7; }
+      100% { transform: translate3d(0, 10px, 0) scale(1.03); opacity: 1; }
     }
 
-    .app-inner {
-      position: relative;
-      z-index: 1;
-    }
+    .auth-inner { position: relative; z-index: 1; }
 
     @media (min-width: 768px) {
-      .app-shell {
-        padding: 24px 22px 22px;
-      }
+      .auth-shell { padding: 24px 22px 22px; }
     }
 
     /* HEADER */
-
     .logo-title {
       text-align: center;
       margin-bottom: 14px;
@@ -144,8 +102,7 @@
       border-radius: 999px;
     }
 
-    /* FLASH MESSAGES */
-
+    /* FLASH */
     .flash-container {
       margin: 14px 0 10px;
       display: flex;
@@ -157,7 +114,6 @@
       padding: 9px 12px;
       border-radius: 999px;
       margin: 0;
-      color: #f9fafb;
       font-size: 0.85rem;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
       border: 1px solid rgba(15, 23, 42, 0.9);
@@ -189,7 +145,6 @@
     }
 
     /* CARD FORM */
-
     .box {
       background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.05), var(--card));
       border-radius: var(--radius-xl);
@@ -197,7 +152,6 @@
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
       padding: 18px 16px 16px;
       color: var(--text-main);
-      text-shadow: none;
       margin-top: 12px;
       position: relative;
       overflow: hidden;
@@ -224,10 +178,7 @@
       gap: 4px;
     }
 
-    label {
-      font-size: 0.8rem;
-      color: var(--text-soft);
-    }
+    label { font-size: 0.8rem; color: var(--text-soft); }
 
     input[type="text"],
     input[type="password"] {
@@ -240,27 +191,17 @@
       color: #e5e7eb;
       outline: none;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-      transition:
-        border-color 0.15s ease,
-        box-shadow 0.15s ease,
-        background 0.15s ease,
-        transform 0.08s ease;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, transform 0.08s ease;
     }
 
-    input::placeholder {
-      color: rgba(148, 163, 184, 0.9);
-    }
+    input::placeholder { color: rgba(148, 163, 184, 0.9); }
 
     input:focus {
       border-color: var(--gold);
-      box-shadow:
-        0 0 0 1px rgba(244, 201, 122, 0.6),
-        0 12px 28px rgba(0, 0, 0, 0.85);
+      box-shadow: 0 0 0 1px rgba(244, 201, 122, 0.6), 0 12px 28px rgba(0, 0, 0, 0.85);
       background: rgba(15, 23, 42, 1);
       transform: translateY(-0.5px);
     }
-
-    /* PRIMARY BUTTON – LOGIN */
 
     .btn-primary {
       padding: 11px 14px;
@@ -281,15 +222,10 @@
       box-shadow: 0 16px 32px rgba(0, 0, 0, 0.85);
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        filter 0.12s ease-out;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
     }
 
-    .btn-primary span {
-      font-size: 1rem;
-    }
+    .btn-primary span { font-size: 1rem; }
 
     .btn-primary:hover {
       transform: translateY(-1px);
@@ -301,8 +237,6 @@
       transform: translateY(0) scale(0.98);
       box-shadow: 0 12px 26px rgba(0, 0, 0, 0.85);
     }
-
-    /* SECONDARY BUTTON – PASSWORD DIMENTICATA */
 
     .btn-secondary {
       margin-top: 10px;
@@ -320,11 +254,7 @@
       justify-content: center;
       gap: 6px;
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        background 0.12s ease-out,
-        color 0.12s ease-out;
+      transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, background 0.12s ease-out, color 0.12s ease-out;
     }
 
     .btn-secondary:hover {
@@ -334,9 +264,7 @@
       color: var(--text-main);
     }
 
-    .btn-secondary:active {
-      transform: translateY(0);
-    }
+    .btn-secondary:active { transform: translateY(0); }
 
     .register-text {
       margin-top: 14px;
@@ -351,93 +279,67 @@
       font-weight: 500;
     }
 
-    .register-text a:hover {
-      text-decoration: underline;
-    }
+    .register-text a:hover { text-decoration: underline; }
 
     @media (max-width: 380px) {
-      .app-shell {
-        padding: 20px 14px 18px;
-      }
-
-      .logo-title h1 {
-        font-size: 1.25rem;
-      }
-
-      .box {
-        padding: 16px 14px 14px;
-      }
+      .auth-shell { padding: 20px 14px 18px; }
+      .logo-title h1 { font-size: 1.25rem; }
+      .box { padding: 16px 14px 14px; }
     }
   </style>
-</head>
-<body>
+{% endblock %}
 
-  <div class="app-shell">
-    <div class="app-inner">
+{% block body %}
+  <div class="auth-wrap">
+    <div class="auth-shell">
+      <div class="auth-inner">
 
-      <div class="logo-title">
-        <h1>Login</h1>
-        <p>Accedi per gestire budget, spese e viaggi.</p>
-        <div class="page-meta-line"></div>
+        <div class="logo-title">
+          <h1>Login</h1>
+          <p>Accedi per gestire budget, spese e viaggi.</p>
+          <div class="page-meta-line"></div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flash-container">
+              {% for category, msg in messages %}
+                <div class="flash-message {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">
+                  {{ msg }}
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="box">
+          <form method="POST" action="/login">
+            <div class="input-group">
+              <label for="username">Username</label>
+              <input id="username" type="text" name="username" placeholder="Inserisci il tuo username" required />
+            </div>
+
+            <div class="input-group">
+              <label for="password">Password</label>
+              <input id="password" type="password" name="password" placeholder="Inserisci la tua password" required />
+            </div>
+
+            <button type="submit" class="btn-primary">
+              Entra <span>→</span>
+            </button>
+          </form>
+
+          <form action="{{ url_for('forgot_password') }}" method="get">
+            <button type="submit" class="btn-secondary">Password dimenticata?</button>
+          </form>
+
+          <p class="register-text">
+            Non hai un account?
+            <a href="{{ url_for('register') }}">Registrati</a>
+          </p>
+        </div>
+
       </div>
-
-      <!-- MESSAGGI FLASH -->
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="flash-container">
-            {% for category, msg in messages %}
-              <div class="flash-message {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">
-                {{ msg }}
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-
-      <div class="box">
-        <form method="POST" action="/login">
-          <div class="input-group">
-            <label for="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              name="username"
-              placeholder="Inserisci il tuo username"
-              required
-            />
-          </div>
-
-          <div class="input-group">
-            <label for="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              name="password"
-              placeholder="Inserisci la tua password"
-              required
-            />
-          </div>
-
-          <button type="submit" class="btn-primary">
-            Entra
-            <span>→</span>
-          </button>
-        </form>
-
-        <form action="{{ url_for('forgot_password') }}" method="get">
-          <button type="submit" class="btn-secondary">
-            Password dimenticata?
-          </button>
-        </form>
-
-        <p class="register-text">
-          Non hai un account?
-          <a href="{{ url_for('register') }}">Registrati</a>
-        </p>
-      </div>
-
     </div>
   </div>
-
-</body>
-</html>
+{% endblock %}

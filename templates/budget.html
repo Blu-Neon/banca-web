@@ -1,120 +1,21 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Budget viaggio</title>
+{% extends "base.html" %}
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% block title %}Budget viaggio{% endblock %}
 
+{% block extra_head %}
   <style>
-    :root {
-      --bg: #02040a;
-      --bg-soft: #050815;
-      --card: #050815;
-      --card-soft: #070a18;
-      --gold: #f4c97a;
-      --gold-soft: rgba(244, 201, 122, 0.16);
-      --gold-strong: #ffd992;
-      --text-main: #f9fafb;
-      --text-soft: #a1a1aa;
-      --border-soft: rgba(148, 163, 184, 0.3);
-      --radius-xl: 26px;
-      --radius-md: 18px;
-      --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      min-height: 100vh;
-      margin: 0;
-      background: radial-gradient(circle at top, #0b1024 0, #02040a 45%, #000 100%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      justify-content: center;
-      padding: 20px 14px;
-    }
-
-    .app-shell {
-      width: 100%;
-      max-width: 520px;
-      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.04), rgba(15, 23, 42, 0.98));
-      border-radius: 32px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: var(--shadow-soft);
-      padding: 20px 16px 22px;
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-      margin-top: 70px; /* spazio per il menu flottante */
-    }
-
-    .app-shell::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(244, 201, 122, 0.10), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(148, 163, 184, 0.11), transparent 55%);
-      opacity: 0.9;
-      pointer-events: none;
-      mix-blend-mode: screen;
-      animation: glowFloat 18s ease-in-out infinite alternate;
-    }
-
-    .app-shell::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(244, 201, 122, 0.08);
-      pointer-events: none;
-      box-shadow:
-        0 0 0 1px rgba(15, 23, 42, 0.8),
-        0 0 40px rgba(0, 0, 0, 0.9);
-    }
-
-    @keyframes glowFloat {
-      0% {
-        transform: translate3d(0, 0, 0) scale(1);
-        opacity: 0.7;
-      }
-      100% {
-        transform: translate3d(0, 12px, 0) scale(1.03);
-        opacity: 1;
-      }
-    }
-
-    .app-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    @media (min-width: 768px) {
-      .app-shell {
-        padding: 24px 24px 26px;
-        margin-top: 90px;
-      }
-    }
+    /* ====== PAGE CSS (Budget viaggio) ======
+       Nota: niente :root / body / app-shell qui, perché stanno nel base.html */
 
     /* HEADER */
-
     .page-header {
-      margin-bottom: 18px;
       text-align: center;
+      margin-bottom: 18px;
     }
 
     .page-header h1 {
       font-size: 1.5rem;
-      letter-spacing: 0.18em;
+      letter-spacing: .18em;
       text-transform: uppercase;
       font-weight: 600;
       display: inline-flex;
@@ -128,12 +29,12 @@
       height: 22px;
       border-radius: 999px;
       border: 1px solid var(--gold);
-      box-shadow: 0 0 18px rgba(244, 201, 122, 0.9);
+      box-shadow: 0 0 18px rgba(244,201,122,.9);
     }
 
     .page-header p {
       margin-top: 6px;
-      font-size: 0.9rem;
+      font-size: .9rem;
       color: var(--text-soft);
     }
 
@@ -146,7 +47,6 @@
     }
 
     /* BUDGET ATTUALE */
-
     .current-budget-wrapper {
       display: flex;
       justify-content: center;
@@ -154,337 +54,218 @@
     }
 
     .current-budget {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
       padding: 7px 12px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.16), rgba(15, 23, 42, 0.95));
-      font-size: 0.82rem;
+      border: 1px solid rgba(148,163,184,.5);
+      background: radial-gradient(circle at top left, rgba(244,201,122,.16), rgba(15,23,42,.95));
+      font-size: .82rem;
       color: var(--text-soft);
-      backdrop-filter: blur(10px);
     }
 
     .current-budget strong {
-      font-size: 0.98rem;
+      font-size: .95rem;
       color: var(--gold-strong);
+      margin-left: 6px;
     }
 
-    /* CARD PRINCIPALE */
-
+    /* CARD */
     .box {
-      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.07), var(--card));
+      background: radial-gradient(circle at top left, rgba(244,201,122,.07), var(--card));
       border-radius: var(--radius-xl);
       border: 1px solid var(--border-soft);
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.9);
-      padding: 18px 16px 16px;
-      color: var(--text-main);
-      position: relative;
-      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15,23,42,.9);
+      padding: 18px 16px;
     }
 
-    .box::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(244, 201, 122, 0.05);
-      pointer-events: none;
-    }
-
-    @media (min-width: 768px) {
-      .box {
-        padding: 20px 18px 18px;
-      }
+    /* ✅ qui evitiamo di “stirare” il box su desktop */
+    .box-narrow {
+      max-width: 520px;
+      margin: 0 auto;
     }
 
     .subtitle {
-      font-size: 0.85rem;
-      color: var(--text-soft);
       text-align: center;
+      font-size: .85rem;
+      color: var(--text-soft);
       margin-bottom: 14px;
     }
 
     /* DISPLAY IMPORTO */
-
     .amount-display-wrapper {
-      margin-top: 4px;
       margin-bottom: 18px;
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.96), #020617);
+      background: radial-gradient(circle at top, rgba(15,23,42,.96), #020617);
       border-radius: 18px;
       padding: 10px 12px;
-      border: 1px solid rgba(148, 163, 184, 0.55);
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(148,163,184,.55);
     }
 
     .amount-label-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-size: 0.78rem;
+      font-size: .78rem;
       color: var(--text-soft);
       margin-bottom: 4px;
-    }
-
-    .currency-tag {
-      font-size: 0.8rem;
-      opacity: 0.85;
     }
 
     .amount-display {
       width: 100%;
       text-align: right;
       font-size: 2.1rem;
-      padding: 2px 0 0;
-      border-radius: 0;
       border: none;
       background: transparent;
-      color: #fdfdfd;
+      color: #fff;
       outline: none;
       font-variant-numeric: tabular-nums;
     }
 
-    .amount-display::selection {
-      background: rgba(244, 201, 122, 0.3);
-    }
-
     /* KEYPAD */
-
     .keypad {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       margin-bottom: 18px;
-      margin-top: 4px;
     }
 
     .keypad button {
       padding: 14px 0;
       font-size: 1.25rem;
       border-radius: 16px;
-      border: 1px solid rgba(31, 41, 55, 0.95);
-      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.16), rgba(15, 23, 42, 0.96));
-      color: #fdfdfd;
-      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(31,41,55,.95);
+      background: radial-gradient(circle at top, rgba(148,163,184,.16), rgba(15,23,42,.96));
+      color: #fff;
       cursor: pointer;
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        filter 0.12s ease-out,
-        background 0.12s ease-out,
-        border-color 0.12s ease-out;
+      box-shadow: 0 10px 22px rgba(0,0,0,.6);
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
     }
 
     .keypad button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.7);
-      filter: brightness(1.04);
-      border-color: rgba(244, 201, 122, 0.7);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(0,0,0,.75);
+      filter: brightness(1.03);
     }
 
     .keypad button:active {
-      transform: translateY(0) scale(0.97);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
-      filter: brightness(0.96);
+      transform: translateY(0) scale(.98);
+      box-shadow: 0 10px 22px rgba(0,0,0,.6);
     }
 
-    .keypad .btn-special {
-      font-size: 1.1rem;
-      color: var(--gold-strong);
-    }
+    .keypad .btn-special { color: var(--gold-strong); }
+    .keypad .btn-special:last-child { color: #fecaca; }
 
-    .keypad .btn-special:last-child {
-      color: #fecaca;
-      border-color: rgba(127, 29, 29, 0.9);
-    }
-
-    /* PULSANTE SUBMIT */
-
+    /* BUTTON */
     .btn-primary {
       width: 100%;
-      padding: 12px 14px;
-      font-size: 0.95rem;
+      padding: 12px;
       border-radius: 999px;
       border: none;
       background: radial-gradient(circle at top, var(--gold-strong), var(--gold));
       color: #18181b;
       font-weight: 600;
       cursor: pointer;
-      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.85);
-      letter-spacing: 0.04em;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 8px;
       text-transform: uppercase;
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        filter 0.12s ease-out;
-    }
-
-    .btn-primary span {
-      font-size: 1rem;
+      box-shadow: 0 16px 32px rgba(0,0,0,.85);
+      margin-bottom: 8px;
+      transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
     }
 
     .btn-primary:hover {
       transform: translateY(-1px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.95);
+      box-shadow: 0 20px 40px rgba(0,0,0,.95);
       filter: brightness(1.02);
     }
 
     .btn-primary:active {
-      transform: translateY(0) scale(0.98);
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.85);
+      transform: translateY(0) scale(.98);
+      box-shadow: 0 12px 26px rgba(0,0,0,.85);
     }
 
-    /* LINK INDIETRO */
-
-    .back-link {
-      margin-top: 6px;
-      text-align: center;
-    }
-
+    .back-link { text-align: center; }
     .back-link a {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.8rem;
+      font-size: .8rem;
       text-decoration: none;
       color: #e5e7eb;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(148, 163, 184, 0.5);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
-      transition:
-        background 0.12s ease-out,
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,.5);
+      background: rgba(15,23,42,.7);
+      display: inline-block;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
     }
-
     .back-link a:hover {
-      background: rgba(15, 23, 42, 0.9);
       transform: translateY(-1px);
-      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.8);
+      background: rgba(15,23,42,.9);
+      border-color: rgba(244,201,122,.35);
     }
-
-    .back-link a:active {
-      transform: translateY(0);
-    }
-
-    @media (max-width: 380px) {
-      .app-shell {
-        padding: 18px 14px 20px;
-      }
-
-      .page-header h1 {
-        font-size: 1.3rem;
-      }
-
-      .amount-display {
-        font-size: 1.8rem;
-      }
-
-      .keypad button {
-        padding: 12px 0;
-        font-size: 1.15rem;
-      }
-    }
+    .back-link a:active { transform: translateY(0); }
   </style>
-</head>
-<body>
+{% endblock %}
 
-{% include "menu.html" %}
+{% block content %}
 
-<div class="app-shell">
-  <div class="app-inner">
+  <header class="page-header">
+    <h1>Budget viaggio</h1>
+    <p>Imposta il tetto massimo che non vuoi superare durante il viaggio.</p>
+    <div class="page-meta-line"></div>
+  </header>
 
-    <header class="page-header">
-      <h1>Budget viaggio</h1>
-      <p>Imposta il tetto massimo che non vuoi superare durante il viaggio.</p>
-      <div class="page-meta-line"></div>
-    </header>
-
-    <div class="current-budget-wrapper">
-      <div class="current-budget">
-        <span>Budget attuale</span>
-        <strong>{{ budget }} €</strong>
-      </div>
+  <div class="current-budget-wrapper">
+    <div class="current-budget">
+      Budget attuale <strong>{{ budget }} €</strong>
     </div>
-
-    <div class="box">
-      <p class="subtitle">Definisci il nuovo budget con il tastierino numerico dedicato.</p>
-
-      <form method="POST" action="{{ url_for('budget') }}">
-        <div class="amount-display-wrapper">
-          <div class="amount-label-row">
-            <span>Nuovo budget</span>
-            <span class="currency-tag">EUR €</span>
-          </div>
-          <!-- Importo che verrà mandato al backend -->
-          <input
-            type="text"
-            id="amount-input"
-            name="amount"
-            class="amount-display"
-            readonly
-            value="0"
-          >
-        </div>
-
-        <div class="keypad">
-          <button type="button" onclick="addDigit('1')">1</button>
-          <button type="button" onclick="addDigit('2')">2</button>
-          <button type="button" onclick="addDigit('3')">3</button>
-          <button type="button" onclick="addDigit('4')">4</button>
-          <button type="button" onclick="addDigit('5')">5</button>
-          <button type="button" onclick="addDigit('6')">6</button>
-          <button type="button" onclick="addDigit('7')">7</button>
-          <button type="button" onclick="addDigit('8')">8</button>
-          <button type="button" onclick="addDigit('9')">9</button>
-          <button type="button" class="btn-special" onclick="addDigit(',')">,</button>
-          <button type="button" onclick="addDigit('0')">0</button>
-          <button type="button" class="btn-special" onclick="delDigit()">⌫</button>
-        </div>
-
-        <button type="submit" class="btn-primary">
-          Imposta budget
-          <span>✓</span>
-        </button>
-      </form>
-
-      <div class="back-link">
-        <a href="{{ url_for('tipo') }}">⟵ Indietro</a>
-      </div>
-    </div>
-
   </div>
-</div>
 
-<script>
-  const input = document.getElementById('amount-input');
+  <div class="box box-narrow">
+    <p class="subtitle">Definisci il nuovo budget con il tastierino numerico.</p>
 
-  function addDigit(d) {
-    if (input.value === '0' && d !== ',') {
-      input.value = d;
-    } else {
-      if (d === ',' && input.value.includes(',')) return; // evita doppia virgola
-      input.value += d;
+    <form method="POST" action="{{ url_for('budget') }}">
+      <div class="amount-display-wrapper">
+        <div class="amount-label-row">
+          <span>Nuovo budget</span>
+          <span>EUR €</span>
+        </div>
+        <input type="text" id="amount-input" name="amount" class="amount-display" readonly value="0">
+      </div>
+
+      <div class="keypad">
+        <button type="button" onclick="addDigit('1')">1</button>
+        <button type="button" onclick="addDigit('2')">2</button>
+        <button type="button" onclick="addDigit('3')">3</button>
+        <button type="button" onclick="addDigit('4')">4</button>
+        <button type="button" onclick="addDigit('5')">5</button>
+        <button type="button" onclick="addDigit('6')">6</button>
+        <button type="button" onclick="addDigit('7')">7</button>
+        <button type="button" onclick="addDigit('8')">8</button>
+        <button type="button" onclick="addDigit('9')">9</button>
+        <button type="button" class="btn-special" onclick="addDigit(',')">,</button>
+        <button type="button" onclick="addDigit('0')">0</button>
+        <button type="button" class="btn-special" onclick="delDigit()">⌫</button>
+      </div>
+
+      <button type="submit" class="btn-primary">Imposta budget ✓</button>
+    </form>
+
+    <div class="back-link">
+      <a href="{{ url_for('tipo') }}">⟵ Indietro</a>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
+  <script>
+    const input = document.getElementById('amount-input');
+
+    function addDigit(d) {
+      if (input.value === '0' && d !== ',') {
+        input.value = d;
+      } else {
+        if (d === ',' && input.value.includes(',')) return;
+        input.value += d;
+      }
     }
-  }
 
-  function delDigit() {
-    if (input.value.length <= 1) {
-      input.value = '0';
-    } else {
-      input.value = input.value.slice(0, -1);
+    function delDigit() {
+      input.value = input.value.length <= 1 ? '0' : input.value.slice(0, -1);
     }
-  }
-</script>
-
-</body>
-</html>
-
+  </script>
+{% endblock %}

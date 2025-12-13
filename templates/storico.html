@@ -2,8 +2,26 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ✅ viewport unico + safe-area -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
   <title>Storico spese annuale</title>
+
+  <!-- ✅ PWA / iOS -->
+  <meta name="theme-color" content="#02040a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+  <!-- ✅ Global CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
 
   <style>
     :root {
@@ -17,22 +35,22 @@
       --text-soft: #a1a1aa;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 20px;
-      margin: 0;
-      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
 
-      background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=430&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+      padding:
+        calc(20px + env(safe-area-inset-top))
+        calc(14px + env(safe-area-inset-right))
+        calc(20px + env(safe-area-inset-bottom))
+        calc(14px + env(safe-area-inset-left));
+
+      background-image: url('https://images.unsplash.com/photo-1602292678572-16cb94ea0d88?q=80&w=900&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -52,6 +70,11 @@
         linear-gradient(160deg, rgba(0,0,0,0.9), rgba(3,7,18,0.65)),
         radial-gradient(circle at bottom, rgba(244,201,122,0.08), transparent 60%);
       z-index: -1;
+    }
+
+    /* ✅ fallback mobile: evita lag iOS con fixed */
+    @media (max-width: 768px) {
+      body { background-attachment: scroll; }
     }
 
     .page-container {
@@ -168,20 +191,13 @@
     }
 
     @media (max-width: 380px) {
-      .card {
-        padding: 18px 14px 16px;
-      }
-
-      .card-title {
-        font-size: 18px;
-      }
-
-      .riga-mese {
-        font-size: 13px;
-      }
+      .card { padding: 18px 14px 16px; }
+      .card-title { font-size: 18px; }
+      .riga-mese { font-size: 13px; }
     }
   </style>
 </head>
+
 <body>
 
   {% include "menu.html" %}
@@ -194,6 +210,7 @@
           Riepilogo delle spese mese per mese nell'anno selezionato.
         </p>
         <div class="card-header-line"></div>
+
         <div class="year-pill">
           <span>Anno</span>
           <span>{{ current_year if current_year is defined else "corrente" }}</span>
@@ -217,9 +234,7 @@
 
   {% if session.get('user_id') == 1 %}
   <style>
-    * {
-      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
-    }
+    * { cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important; }
     button, a, input, select, textarea, label {
       cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
     }

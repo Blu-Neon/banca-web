@@ -2,8 +2,26 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ✅ viewport unico + safe-area -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
   <title>Spese viaggio</title>
+
+  <!-- ✅ PWA / iOS -->
+  <meta name="theme-color" content="#02040a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+  <!-- ✅ (opzionale ma consigliato) font coerente -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- ✅ Global CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
 
   <style>
     :root {
@@ -16,20 +34,21 @@
       --text-soft: #a1a1aa;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 20px;
-      margin: 0;
-      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      /* ✅ safe-area iOS */
+      padding:
+        calc(20px + env(safe-area-inset-top))
+        calc(14px + env(safe-area-inset-right))
+        calc(20px + env(safe-area-inset-bottom))
+        calc(14px + env(safe-area-inset-left));
 
       background-image: url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=430&auto=format&fit=crop');
       background-size: cover;
@@ -116,7 +135,8 @@
       border-radius: 18px;
       background: rgba(9,9,15,0.96);
       border: 1px solid rgba(55,65,81,0.9);
-      overflow: hidden;
+      overflow-x: auto;              /* ✅ fix: su mobile non rompe, scrolla */
+      -webkit-overflow-scrolling: touch;
       box-shadow:
         inset 0 0 0 1px rgba(0,0,0,0.9),
         0 14px 32px rgba(0,0,0,0.9);
@@ -124,6 +144,7 @@
 
     table {
       width: 100%;
+      min-width: 420px;             /* ✅ fix: evita compressioni brutte */
       border-collapse: collapse;
       font-size: 13px;
     }
@@ -135,6 +156,7 @@
     th, td {
       padding: 7px 9px;
       border-bottom: 1px solid rgba(31,41,55,0.9);
+      vertical-align: top;
     }
 
     th {
@@ -144,20 +166,17 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--text-soft);
+      white-space: nowrap;
     }
 
-    td {
-      color: #e5e7eb;
-    }
+    td { color: #e5e7eb; }
 
     td.right {
       text-align: right;
       white-space: nowrap;
     }
 
-    tr:last-child td {
-      border-bottom: none;
-    }
+    tr:last-child td { border-bottom: none; }
 
     .amount-original {
       font-size: 11px;
@@ -215,21 +234,10 @@
     }
 
     @media (max-width: 380px) {
-      .card {
-        padding: 18px 12px 14px;
-      }
-
-      .card-title {
-        font-size: 18px;
-      }
-
-      table {
-        font-size: 12px;
-      }
-
-      th, td {
-        padding: 6px 6px;
-      }
+      .card { padding: 18px 12px 14px; }
+      .card-title { font-size: 18px; }
+      table { font-size: 12px; }
+      th, td { padding: 6px 6px; }
     }
   </style>
 </head>

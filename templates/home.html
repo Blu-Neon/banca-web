@@ -1,92 +1,17 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Banca</title>
+{% extends "base.html" %}
 
+{% block title %}Banca{% endblock %}
+
+{% block extra_head %}
   <style>
-    :root {
-      --bg: #02040a;
-      --bg-soft: #050815;
-      --card: #050815;
-      --card-soft: #070a18;
-      --gold: #f4c97a;
-      --gold-soft: rgba(244, 201, 122, 0.16);
-      --gold-strong: #ffd992;
-      --text-main: #f9fafb;
-      --text-soft: #a1a1aa;
-      --border-soft: rgba(148, 163, 184, 0.3);
-      --radius-xl: 26px;
-      --radius-md: 18px;
-      --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
-    }
+    /* ====== PAGE CSS (Banca) ======
+       Niente :root / body / app-shell: sono nel base.html */
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      min-height: 100vh;
-      margin: 0;
-      background: radial-gradient(circle at top, #0b1024 0, #02040a 45%, #000 100%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      justify-content: center;
-      padding: 20px 14px;
-    }
-
-    .app-shell {
+    .page-container{
       width: 100%;
       max-width: 520px;
-      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.04), rgba(15, 23, 42, 0.98));
-      border-radius: 32px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: var(--shadow-soft);
-      padding: 20px 16px 22px;
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-      margin-top: 70px;
+      margin: 0 auto;
     }
-
-    .app-shell::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(244, 201, 122, 0.10), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(148, 163, 184, 0.11), transparent 55%);
-      opacity: 0.9;
-      pointer-events: none;
-      mix-blend-mode: screen;
-      animation: glowFloat 18s ease-in-out infinite alternate;
-    }
-
-    .app-shell::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(244, 201, 122, 0.08);
-      pointer-events: none;
-      box-shadow:
-        0 0 0 1px rgba(15, 23, 42, 0.8),
-        0 0 40px rgba(0, 0, 0, 0.9);
-    }
-
-    @keyframes glowFloat {
-      0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.7; }
-      100% { transform: translate3d(0, 12px, 0) scale(1.03); opacity: 1; }
-    }
-
-    .app-inner { position: relative; z-index: 1; }
-
-    @media (min-width: 768px) {
-      .app-shell { padding: 24px 24px 26px; margin-top: 90px; }
-    }
-
-    .page-container { width: 100%; }
 
     .box {
       background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.07), var(--card));
@@ -224,42 +149,32 @@
       margin-top: 4px;
     }
 
-    /* ✅ SALVA SPESA – stesso stile di prima, solo rosso più vivo + icona più bella */
     .btn-primary{
       width:100%;
       padding: 12px 14px;
       border-radius: 999px;
-
-      /* bordo più vivo */
       border: 1px solid rgba(252,165,165,0.78);
-
-      /* rosso un pelo più presente (sempre glass) */
       background:
         radial-gradient(circle at top,
           rgba(254,215,215,0.20),
           rgba(248,113,113,0.16)
         ),
         rgba(15,23,42,0.92);
-
       color: rgba(255,255,255,0.94);
       font-weight: 650;
       font-size: 0.9rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
-
       display:inline-flex;
       align-items:center;
       justify-content:center;
       gap: 10px;
-
       box-shadow:
         0 0 0 1px rgba(24,24,27,0.92),
         0 12px 26px rgba(0,0,0,0.90);
-
       cursor:pointer;
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-
       transition:
         transform .12s ease-out,
         box-shadow .12s ease-out,
@@ -284,7 +199,6 @@
         0 0 0 1px rgba(248,113,113,0.18),
         0 18px 36px rgba(0,0,0,1),
         0 0 18px rgba(248,113,113,0.10);
-
       background:
         radial-gradient(circle at top,
           rgba(254,215,215,0.24),
@@ -300,7 +214,6 @@
         0 10px 22px rgba(0,0,0,0.92);
     }
 
-    /* SECONDARY BUTTON */
     .btn-secondary {
       width: 100%;
       padding: 10px 12px;
@@ -328,88 +241,88 @@
     .btn-secondary:active { transform: translateY(0); }
 
     @media (max-width: 380px) {
-      .app-shell { padding: 18px 14px 20px; }
       .box { padding: 18px 14px 18px; }
       .saldo-value { font-size: 1.4rem; }
       #amount-input { font-size: 1.8rem; }
       .keypad button { padding: 12px 0; font-size: 1.15rem; }
     }
   </style>
-</head>
 
-<body>
+  {% if session.get('user_id') == 1 %}
+  <style>
+    * { cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important; }
+    button, a, input, select, textarea, label {
+      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
+    }
+  </style>
+  {% endif %}
+{% endblock %}
 
-  {% include "menu.html" %}
+{% block content %}
+  <div class="page-container">
+    <div class="box">
+      <div class="header-row">
+        <div>
+          <div class="saldo-label">Saldo disponibile</div>
+          <div class="saldo-value">{{ saldo }} €</div>
+        </div>
 
-  <div class="app-shell">
-    <div class="app-inner">
-      <div class="page-container">
-        <div class="box">
-          <div class="header-row">
-            <div>
-              <div class="saldo-label">Saldo disponibile</div>
-              <div class="saldo-value">{{ saldo }} €</div>
-            </div>
-
-            <div class="categoria-pill">
-              <span>Categoria:</span>
-              <span>{{ selected_category }}</span>
-            </div>
-          </div>
-
-          <p class="subtitle">Inserisci una nuova spesa per questa categoria.</p>
-
-          <form method="POST" action="/add-expense">
-            <div class="amount-display-wrapper">
-              <div class="amount-label-row">
-                <span>Importo spesa</span>
-                <span class="currency-tag">EUR €</span>
-              </div>
-              <input type="text" id="amount-input" name="amount" placeholder="0,00" required />
-            </div>
-
-            <div class="keypad">
-              <button type="button" onclick="addChar('1')">1</button>
-              <button type="button" onclick="addChar('2')">2</button>
-              <button type="button" onclick="addChar('3')">3</button>
-              <button type="button" onclick="addChar('4')">4</button>
-              <button type="button" onclick="addChar('5')">5</button>
-              <button type="button" onclick="addChar('6')">6</button>
-              <button type="button" onclick="addChar('7')">7</button>
-              <button type="button" onclick="addChar('8')">8</button>
-              <button type="button" onclick="addChar('9')">9</button>
-              <button type="button" class="btn-special" onclick="addChar(',')">,</button>
-              <button type="button" onclick="addChar('0')">0</button>
-              <button type="button" class="btn-special" onclick="backspace()">⌫</button>
-            </div>
-
-            <div class="actions">
-              <button type="submit" class="btn-primary">
-                Salva spesa
-
-                <!-- SVG più carino: wallet + freccia -->
-                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <path d="M4.5 8.5A3.5 3.5 0 0 1 8 5h10.5a1 1 0 0 1 1 1v2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M4.5 9.5V18A3 3 0 0 0 7.5 21h11a1 1 0 0 0 1-1v-9a2 2 0 0 0-2-2h-10a3 3 0 0 0-3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                  <path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                  <path d="M10.5 14.5 12 16l1.5-1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                  <path d="M15.8 13.5h3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-                </svg>
-              </button>
-            </div>
-          </form>
-
-          <form method="GET" action="/tipo">
-            <button class="btn-secondary" type="submit" style="margin-top: 10px">
-              Cambia categoria
-            </button>
-          </form>
-
+        <div class="categoria-pill">
+          <span>Categoria:</span>
+          <span>{{ selected_category }}</span>
         </div>
       </div>
+
+      <p class="subtitle">Inserisci una nuova spesa per questa categoria.</p>
+
+      <form method="POST" action="/add-expense">
+        <div class="amount-display-wrapper">
+          <div class="amount-label-row">
+            <span>Importo spesa</span>
+            <span class="currency-tag">EUR €</span>
+          </div>
+          <input type="text" id="amount-input" name="amount" placeholder="0,00" required />
+        </div>
+
+        <div class="keypad">
+          <button type="button" onclick="addChar('1')">1</button>
+          <button type="button" onclick="addChar('2')">2</button>
+          <button type="button" onclick="addChar('3')">3</button>
+          <button type="button" onclick="addChar('4')">4</button>
+          <button type="button" onclick="addChar('5')">5</button>
+          <button type="button" onclick="addChar('6')">6</button>
+          <button type="button" onclick="addChar('7')">7</button>
+          <button type="button" onclick="addChar('8')">8</button>
+          <button type="button" onclick="addChar('9')">9</button>
+          <button type="button" class="btn-special" onclick="addChar(',')">,</button>
+          <button type="button" onclick="addChar('0')">0</button>
+          <button type="button" class="btn-special" onclick="backspace()">⌫</button>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn-primary">
+            Salva spesa
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4.5 8.5A3.5 3.5 0 0 1 8 5h10.5a1 1 0 0 1 1 1v2.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4.5 9.5V18A3 3 0 0 0 7.5 21h11a1 1 0 0 0 1-1v-9a2 2 0 0 0-2-2h-10a3 3 0 0 0-3 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+              <path d="M12 11v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M10.5 14.5 12 16l1.5-1.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15.8 13.5h3.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+
+      <form method="GET" action="/tipo">
+        <button class="btn-secondary" type="submit" style="margin-top: 10px">
+          Cambia categoria
+        </button>
+      </form>
     </div>
   </div>
+{% endblock %}
 
+{% block scripts %}
   <script>
     function addChar(ch) {
       const input = document.getElementById('amount-input');
@@ -428,15 +341,4 @@
       input.value = input.value.slice(0, -1) || '';
     }
   </script>
-
-  {% if session.get('user_id') == 1 %}
-  <style>
-    * { cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important; }
-    button, a, input, select, textarea, label {
-      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
-    }
-  </style>
-  {% endif %}
-
-</body>
-</html>
+{% endblock %}

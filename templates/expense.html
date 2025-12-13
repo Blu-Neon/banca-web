@@ -1,110 +1,13 @@
+{% extends "base.html" %}
 
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Aggiorna saldo</title>
+{% block title %}Aggiorna saldo{% endblock %}
 
+{% block extra_head %}
   <style>
-    :root {
-      --bg: #02040a;
-      --bg-soft: #050815;
-      --card: #050815;
-      --card-soft: #070a18;
-      --gold: #f4c97a;
-      --gold-soft: rgba(244, 201, 122, 0.16);
-      --gold-strong: #ffd992;
-      --text-main: #f9fafb;
-      --text-soft: #a1a1aa;
-      --border-soft: rgba(148, 163, 184, 0.3);
-      --radius-xl: 26px;
-      --radius-md: 18px;
-      --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      min-height: 100vh;
-      margin: 0;
-      background: radial-gradient(circle at top, #0b1024 0, #02040a 45%, #000 100%);
-      color: var(--text-main);
-      -webkit-font-smoothing: antialiased;
-      display: flex;
-      justify-content: center;
-      padding: 20px 14px;
-    }
-
-    .app-shell {
-      width: 100%;
-      max-width: 520px;
-      background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.04), rgba(15, 23, 42, 0.98));
-      border-radius: 32px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      box-shadow: var(--shadow-soft);
-      padding: 20px 16px 22px;
-      position: relative;
-      overflow: hidden;
-      isolation: isolate;
-      margin-top: 70px; /* spazio per il menu flottante */
-    }
-
-    .app-shell::before {
-      content: "";
-      position: absolute;
-      inset: -40%;
-      background:
-        radial-gradient(circle at 0% 0%, rgba(244, 201, 122, 0.10), transparent 55%),
-        radial-gradient(circle at 100% 0%, rgba(148, 163, 184, 0.11), transparent 55%);
-      opacity: 0.9;
-      pointer-events: none;
-      mix-blend-mode: screen;
-      animation: glowFloat 18s ease-in-out infinite alternate;
-    }
-
-    .app-shell::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(244, 201, 122, 0.08);
-      pointer-events: none;
-      box-shadow:
-        0 0 0 1px rgba(15, 23, 42, 0.8),
-        0 0 40px rgba(0, 0, 0, 0.9);
-    }
-
-    @keyframes glowFloat {
-      0% {
-        transform: translate3d(0, 0, 0) scale(1);
-        opacity: 0.7;
-      }
-      100% {
-        transform: translate3d(0, 12px, 0) scale(1.03);
-        opacity: 1;
-      }
-    }
-
-    .app-inner {
-      position: relative;
-      z-index: 1;
-    }
-
-    @media (min-width: 768px) {
-      .app-shell {
-        padding: 24px 24px 26px;
-        margin-top: 90px;
-      }
-    }
+    /* ====== PAGE CSS (Aggiorna saldo) ======
+       Nota: niente :root / body / app-shell qui, perché stanno nel base.html */
 
     /* HEADER */
-
     .page-header {
       margin-bottom: 18px;
       text-align: center;
@@ -144,7 +47,6 @@
     }
 
     /* SALDO ATTUALE */
-
     .current-balance-wrapper {
       display: flex;
       justify-content: center;
@@ -170,7 +72,6 @@
     }
 
     /* CARD PRINCIPALE */
-
     .box {
       background: radial-gradient(circle at top left, rgba(244, 201, 122, 0.07), var(--card));
       border-radius: var(--radius-xl);
@@ -180,6 +81,8 @@
       color: var(--text-main);
       position: relative;
       overflow: hidden;
+      max-width: 520px;
+      margin: 0 auto; /* ✅ mantiene la pagina “stretta” anche se base max-width è grande */
     }
 
     .box::before {
@@ -205,7 +108,6 @@
     }
 
     /* DISPLAY IMPORTO */
-
     .amount-display-wrapper {
       margin-top: 4px;
       margin-bottom: 18px;
@@ -251,12 +153,9 @@
       background: rgba(244, 201, 122, 0.3);
     }
 
-    form {
-      margin: 0;
-    }
+    form { margin: 0; }
 
     /* KEYPAD */
-
     .keypad {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -306,7 +205,6 @@
     }
 
     /* PULSANTE SUBMIT */
-
     .btn-primary {
       width: 100%;
       padding: 12px 14px;
@@ -331,9 +229,7 @@
         filter 0.12s ease-out;
     }
 
-    .btn-primary span {
-      font-size: 1rem;
-    }
+    .btn-primary span { font-size: 1rem; }
 
     .btn-primary:hover {
       transform: translateY(-1px);
@@ -347,104 +243,92 @@
     }
 
     @media (max-width: 380px) {
-      .app-shell {
-        padding: 18px 14px 20px;
-      }
-
-      .page-header h1 {
-        font-size: 1.3rem;
-      }
-
-      #amount-input {
-        font-size: 1.8rem;
-      }
-
-      .keypad button {
-        padding: 12px 0;
-        font-size: 1.15rem;
-      }
+      .page-header h1 { font-size: 1.3rem; }
+      #amount-input { font-size: 1.8rem; }
+      .keypad button { padding: 12px 0; font-size: 1.15rem; }
     }
   </style>
-</head>
 
-<body>
+  {% if session.get('user_id') == 1 %}
+  <style>
+    * {
+      cursor: url("/static/cursor.png") 0 0, default !important;
+    }
+    button, a, input, select, textarea, label {
+      cursor: url("/static/cursor.png") 0 0, pointer !important;
+    }
+  </style>
+  {% endif %}
+{% endblock %}
 
-  {% include "menu.html" %}
+{% block content %}
 
-  <div class="app-shell">
-    <div class="app-inner">
+  <header class="page-header">
+    <h1>Aggiorna saldo</h1>
+    <p>Aggiungi un importo al saldo totale del viaggio.</p>
+    <div class="page-meta-line"></div>
+  </header>
 
-      <header class="page-header">
-        <h1>Aggiorna saldo</h1>
-        <p>Aggiungi un importo al saldo totale del viaggio.</p>
-        <div class="page-meta-line"></div>
-      </header>
-
-      <div class="current-balance-wrapper">
-        <div class="current-balance">
-          <span>Saldo attuale</span>
-          <strong>{{ saldo }} €</strong>
-        </div>
-      </div>
-
-      <div class="box">
-        <p class="subtitle">Imposta l'importo usando il tastierino numerico dedicato.</p>
-
-        <form method="POST" action="/update-saldo">
-          <div class="amount-display-wrapper">
-            <div class="amount-label-row">
-              <span>Importo da aggiungere</span>
-              <span class="currency-tag">EUR €</span>
-            </div>
-            <input
-              type="text"
-              id="amount-input"
-              name="amount"
-              placeholder="0,00"
-              required
-            />
-          </div>
-
-          <div class="keypad">
-            <button type="button" onclick="addChar('1')">1</button>
-            <button type="button" onclick="addChar('2')">2</button>
-            <button type="button" onclick="addChar('3')">3</button>
-            <button type="button" onclick="addChar('4')">4</button>
-            <button type="button" onclick="addChar('5')">5</button>
-            <button type="button" onclick="addChar('6')">6</button>
-            <button type="button" onclick="addChar('7')">7</button>
-            <button type="button" onclick="addChar('8')">8</button>
-            <button type="button" onclick="addChar('9')">9</button>
-            <button type="button" class="btn-special" onclick="addChar(',')">,</button>
-            <button type="button" onclick="addChar('0')">0</button>
-            <button type="button" class="btn-special" onclick="backspace()">⌫</button>
-          </div>
-
-          <button type="submit" class="btn-primary">
-            Aggiungi al saldo
-            <span>+</span>
-          </button>
-        </form>
-      </div>
-
+  <div class="current-balance-wrapper">
+    <div class="current-balance">
+      <span>Saldo attuale</span>
+      <strong>{{ saldo }} €</strong>
     </div>
   </div>
 
+  <div class="box">
+    <p class="subtitle">Imposta l'importo usando il tastierino numerico dedicato.</p>
+
+    <form method="POST" action="/update-saldo">
+      <div class="amount-display-wrapper">
+        <div class="amount-label-row">
+          <span>Importo da aggiungere</span>
+          <span class="currency-tag">EUR €</span>
+        </div>
+        <input
+          type="text"
+          id="amount-input"
+          name="amount"
+          placeholder="0,00"
+          required
+        />
+      </div>
+
+      <div class="keypad">
+        <button type="button" onclick="addChar('1')">1</button>
+        <button type="button" onclick="addChar('2')">2</button>
+        <button type="button" onclick="addChar('3')">3</button>
+        <button type="button" onclick="addChar('4')">4</button>
+        <button type="button" onclick="addChar('5')">5</button>
+        <button type="button" onclick="addChar('6')">6</button>
+        <button type="button" onclick="addChar('7')">7</button>
+        <button type="button" onclick="addChar('8')">8</button>
+        <button type="button" onclick="addChar('9')">9</button>
+        <button type="button" class="btn-special" onclick="addChar(',')">,</button>
+        <button type="button" onclick="addChar('0')">0</button>
+        <button type="button" class="btn-special" onclick="backspace()">⌫</button>
+      </div>
+
+      <button type="submit" class="btn-primary">
+        Aggiungi al saldo
+        <span>+</span>
+      </button>
+    </form>
+  </div>
+
+{% endblock %}
+
+{% block scripts %}
   <script>
     function addChar(ch) {
       const input = document.getElementById('amount-input');
 
       // evita doppia virgola
-      if (ch === ',' && input.value.includes(',')) {
-        return;
-      }
+      if (ch === ',' && input.value.includes(',')) return;
 
       if (!input.value || input.value === '0' || input.value === '0,00') {
-        if (ch === ',') {
-          input.value = '0,';
-        } else {
-          input.value = ch;
-        }
+        if (ch === ',') input.value = '0,';
+        else input.value = ch;
       } else {
         input.value = input.value + ch;
       }
@@ -453,23 +337,8 @@
     function backspace() {
       const input = document.getElementById('amount-input');
       if (!input.value) return;
-
       const newVal = input.value.slice(0, -1);
       input.value = newVal || '';
     }
   </script>
-
-  {% if session.get('user_id') == 1 %}
-  <style>
-    * {
-      cursor: url("/static/cursor.png") 0 0, default !important;
-    }
-
-    button, a, input, select, textarea, label {
-      cursor: url("/static/cursor.png") 0 0, pointer !important;
-    }
-  </style>
-  {% endif %}
-
-</body>
-</html>
+{% endblock %}

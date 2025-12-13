@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+
+  <!-- ✅ Viewport unico + safe area -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>{% block title %}Budget App{% endblock %}</title>
+
+  <!-- ✅ PWA / iOS -->
+  <meta name="theme-color" content="#02040a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+  <!-- ✅ Global CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  {% block extra_head %}{% endblock %}
+
+  <style>
+    :root {
+      --bg: #02040a;
+      --bg-soft: #050815;
+      --card: #050815;
+      --card-soft: #070a18;
+
+      --gold: #f4c97a;
+      --gold-soft: rgba(244, 201, 122, 0.16);
+      --gold-strong: #ffd992;
+
+      --text-main: #f9fafb;
+      --text-soft: #a1a1aa;
+
+      --border-soft: rgba(148, 163, 184, 0.3);
+
+      --radius-xl: 26px;
+      --radius-md: 18px;
+
+      --shadow-soft: 0 22px 50px rgba(0, 0, 0, 0.85);
+    }
+
+    /* ✅ Body globale con safe-area + margini “di ieri” */
+    body {
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100dvh;
+      background: radial-gradient(circle at top, #0b1024 0, #02040a 45%, #000 100%);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+
+      padding:
+        calc(20px + env(safe-area-inset-top))
+        calc(14px + env(safe-area-inset-right))
+        calc(20px + env(safe-area-inset-bottom))
+        calc(14px + env(safe-area-inset-left));
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 1040px;
+      margin: 0 auto;
+
+      background: radial-gradient(
+        circle at top left,
+        rgba(244, 201, 122, 0.05),
+        rgba(15, 23, 42, 0.98)
+      );
+
+      border-radius: 32px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: var(--shadow-soft);
+
+      padding: 18px 14px 22px;
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    .app-shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(244, 201, 122, 0.10), transparent 55%),
+        radial-gradient(circle at 100% 0%, rgba(148, 163, 184, 0.11), transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .app-shell::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(244, 201, 122, 0.08);
+      pointer-events: none;
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      .app-shell {
+        padding: 24px 26px 26px;
+        margin-top: 32px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  {% include "menu.html" %}
+
+  {% block body %}
+    <div class="app-shell">
+      <div class="app-inner">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  {% endblock %}
+
+  {% block scripts %}{% endblock %}
+
+</body>
+</html>

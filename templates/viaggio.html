@@ -2,8 +2,26 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ✅ viewport UNICO + safe-area -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
   <title>Viaggio</title>
+
+  <!-- ✅ PWA / iOS -->
+  <meta name="theme-color" content="#02040a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
+  <!-- ✅ Font coerente -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- ✅ Global CSS (se lo stai usando) -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
 
   <style>
     :root {
@@ -20,12 +38,18 @@
     * { box-sizing:border-box; margin:0; padding:0; }
 
     body {
-      font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-      padding:20px;
-      min-height:100vh;
+      font-family: "Inter", system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      min-height: 100dvh;
       display:flex;
       flex-direction:column;
       align-items:center;
+
+      /* ✅ safe-area iOS */
+      padding:
+        calc(20px + env(safe-area-inset-top))
+        calc(14px + env(safe-area-inset-right))
+        calc(20px + env(safe-area-inset-bottom))
+        calc(14px + env(safe-area-inset-left));
 
       background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=430&auto=format&fit=crop');
       background-size:cover;
@@ -36,6 +60,9 @@
       color:var(--text-main);
       text-shadow:0 0 5px rgba(0,0,0,0.7);
     }
+
+    /* ✅ quando modale/menu aperti: blocca lo scroll */
+    body.is-locked { overflow: hidden; }
 
     /* overlay premium */
     body::before{
@@ -52,7 +79,7 @@
     .page-container{
       width:100%;
       max-width:500px;
-      margin-top:70px;
+      margin-top:70px; /* spazio per il menu */
       display:flex;
       flex-direction:column;
       gap:16px;
@@ -161,6 +188,7 @@
       display:flex;
       justify-content:space-between;
       align-items:center;
+      gap: 10px;
     }
 
     .summary-item span:last-child{ font-weight:600; }
@@ -206,6 +234,7 @@
       background:transparent;
       color:#fef2f2;
       outline:none;
+      font-variant-numeric: tabular-nums;
     }
 
     .amount-display-wrapper{
@@ -301,8 +330,8 @@
 
     select:focus,
     .name-input:focus{
-      border-color:rgba(96,165,250,1);
-      box-shadow:0 0 0 1px rgba(96,165,250,0.7);
+      border-color: rgba(244,201,122,0.9);
+      box-shadow: 0 0 0 1px rgba(244,201,122,0.6);
     }
 
     /* bottoni */
@@ -337,37 +366,6 @@
       transform:translateY(0) scale(0.98);
       box-shadow:0 9px 20px rgba(217,119,6,0.65);
     }
-
-    .btn-secondary{
-      width:100%;
-      padding:11px;
-      font-size:14px;
-      border-radius:999px;
-      border:1px solid rgba(148,163,184,0.8);
-      background: rgba(9,9,15,0.96);
-      color:var(--text-main);
-      font-weight:500;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:6px;
-      box-shadow:0 8px 22px rgba(0,0,0,0.75);
-      transition:
-        transform 0.12s ease-out,
-        box-shadow 0.12s ease-out,
-        background 0.12s ease-out,
-        border-color 0.12s ease-out;
-    }
-
-    .btn-secondary:hover{
-      transform:translateY(-1px);
-      box-shadow:0 11px 26px rgba(0,0,0,0.85);
-      background: radial-gradient(circle at top, var(--gold-soft), rgba(9,9,15,1));
-      border-color: var(--gold-soft);
-    }
-
-    .btn-secondary:active{ transform:translateY(0); }
 
     /* ===== TERMINA VIAGGIO BUTTON (apre modale) ===== */
     .btn-terminate{
@@ -572,6 +570,8 @@
           <span>Nuova spesa</span>
           <span class="currency-tag">Importo</span>
         </div>
+
+        <!-- ✅ readonly ok: lo compila il tastierino -->
         <input type="text" id="amount-input" name="amount" class="amount-display" readonly value="0">
       </div>
 
@@ -623,9 +623,16 @@
 </div>
 
 <!-- ===== MODALE CHIUDI VIAGGIO ===== -->
-<div id="terminateModal" class="modal-overlay" onclick="closeTerminateModal(event)">
-  <div class="modal">
-    <h3>Chiudi viaggio</h3>
+<div
+  id="terminateModal"
+  class="modal-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="terminateTitle"
+  style="display:none;"
+>
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3 id="terminateTitle">Chiudi viaggio</h3>
     <p>Dai un nome al viaggio e conferma la chiusura.</p>
 
     <form method="POST" action="{{ url_for('chiudi_viaggio') }}">
@@ -676,19 +683,34 @@
   const nomeInput = document.getElementById('nome_viaggio_modal');
   const confirmBtn = document.getElementById('confirmClose');
 
+  function lockBody(lock) {
+    document.body.classList.toggle('is-locked', !!lock);
+  }
+
   function openTerminateModal() {
     modal.style.display = 'flex';
+    lockBody(true);
+
     // reset e focus
     nomeInput.value = '';
     confirmBtn.disabled = true;
     setTimeout(() => nomeInput.focus(), 30);
   }
 
-  function closeTerminateModal(e) {
-    if (!e || e.target.id === 'terminateModal') {
-      modal.style.display = 'none';
-    }
+  function closeTerminateModal() {
+    modal.style.display = 'none';
+    lockBody(false);
   }
+
+  // chiudi cliccando fuori dalla modale
+  modal.addEventListener('click', () => closeTerminateModal());
+
+  // chiudi con ESC
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal.style.display === 'flex') {
+      closeTerminateModal();
+    }
+  });
 
   nomeInput.addEventListener('input', () => {
     confirmBtn.disabled = nomeInput.value.trim().length === 0;

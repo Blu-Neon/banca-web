@@ -19,8 +19,8 @@
   /* Pulsante menu */
   #menu-button{
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: calc(14px + env(safe-area-inset-top));
+    right: calc(14px + env(safe-area-inset-right));
     width: 46px;
     height: 46px;
 
@@ -66,11 +66,26 @@
   }
   #menu-button:active{ transform: translateY(0) scale(.96); }
 
+  /* BACKDROP: cattura tap/click fuori (mobile friendly) */
+  #menu-backdrop{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.18);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .18s ease;
+    z-index: 9997;
+  }
+  #menu-backdrop.open{
+    opacity: 1;
+    pointer-events: auto;
+  }
+
   /* Pannello dropdown (luce affievolita + laterale, non sopra al testo) */
   #dropdown-menu{
     position: fixed;
-    top: 70px;
-    right: 16px;
+    top: calc(70px + env(safe-area-inset-top));
+    right: calc(14px + env(safe-area-inset-right));
 
     width: 262px;
     padding: 12px;
@@ -96,6 +111,10 @@
     display:flex;
     flex-direction:column;
     gap: 8px;
+
+    /* ✅ se è troppo lungo su mobile -> scroll */
+    max-height: calc(100dvh - (92px + env(safe-area-inset-top) + env(safe-area-inset-bottom)));
+    overflow: auto;
 
     opacity: 0;
     transform: translateY(-10px) scale(.98);
@@ -220,13 +239,22 @@
   body.menu-open{ overflow-x:hidden; }
 
   @media (max-width: 480px){
-    #dropdown-menu{ right: 12px; width: 238px; }
-    #menu-button{ right: 12px; top: 14px; }
+    #dropdown-menu{
+      right: calc(12px + env(safe-area-inset-right));
+      width: 238px;
+    }
+    #menu-button{
+      right: calc(12px + env(safe-area-inset-right));
+      top: calc(12px + env(safe-area-inset-top));
+    }
   }
 </style>
 
 <!-- ====================== MENU UNIVERSALE ====================== -->
 <button id="menu-button" aria-label="Apri il menu di navigazione" aria-expanded="false">☰</button>
+
+<!-- ✅ backdrop (tap fuori = chiudi) -->
+<div id="menu-backdrop" aria-hidden="true"></div>
 
 <div id="dropdown-menu" role="menu" aria-label="Menu di navigazione">
   <div class="menu-header">
@@ -426,6 +454,7 @@
 <script>
   const menuBtn = document.getElementById("menu-button");
   const drop = document.getElementById("dropdown-menu");
+  const backdrop = document.getElementById("menu-backdrop");
 
   // Inject icone dai <template>
   document.querySelectorAll("[data-icon]").forEach(el => {
@@ -455,14 +484,22 @@
 
   function closeMenu(){
     drop.classList.remove("open");
+    backdrop.classList.remove("open");
     document.body.classList.remove("menu-open");
     menuBtn.setAttribute("aria-expanded", "false");
   }
 
+  function openMenu(){
+    drop.classList.add("open");
+    backdrop.classList.add("open");
+    document.body.classList.add("menu-open");
+    menuBtn.setAttribute("aria-expanded", "true");
+  }
+
   function toggleMenu(){
-    const isOpen = drop.classList.toggle("open");
-    document.body.classList.toggle("menu-open", isOpen);
-    menuBtn.setAttribute("aria-expanded", String(isOpen));
+    const isOpen = drop.classList.contains("open");
+    if (isOpen) closeMenu();
+    else openMenu();
   }
 
   menuBtn.addEventListener("click", (e) => {
@@ -470,12 +507,8 @@
     toggleMenu();
   });
 
-  // Chiudi cliccando fuori
-  document.addEventListener("click", (e) => {
-    if (!drop.classList.contains("open")) return;
-    const inside = drop.contains(e.target) || menuBtn.contains(e.target);
-    if (!inside) closeMenu();
-  });
+  // ✅ tap/click fuori (backdrop)
+  backdrop.addEventListener("click", closeMenu);
 
   // Chiudi con ESC
   document.addEventListener("keydown", (e) => {
