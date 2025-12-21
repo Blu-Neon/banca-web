@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}🎄 Buon Natale{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='xmas/xmas_card.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="xmas-page">
+  <section class="xmas-hero" id="top">
+    <canvas id="snow" aria-hidden="true"></canvas>
+
+    <div class="xmas-hero-inner">
+      <div class="xmas-tree-wrap" aria-hidden="true">
+        <div class="xmas-star"></div>
+        <div class="xmas-tree">
+          <div class="xmas-layer l1"></div>
+          <div class="xmas-layer l2"></div>
+          <div class="xmas-layer l3"></div>
+          <div class="xmas-trunk"></div>
+          <div class="xmas-lights" id="lights"></div>
+        </div>
+      </div>
+
+      <h1 class="xmas-title">Buon Natale!</h1>
+      <p class="xmas-subtitle">Ti auguro giorni sereni e pieni di cose belle</p>
+
+      <div class="xmas-controls">
+        <button class="xmas-btn" id="btnMusic" type="button">▶︎ Musica</button>
+        <a class="xmas-btn ghost" href="#letter">Scorri ↓</a>
+      </div>
+
+      <audio id="music" preload="auto">
+        <source src="/xmas-asset/canzone.mp3" type="audio/mpeg">
+      </audio>
+
+      <div class="xmas-hint">Suggerimento: attiva la musica e scorri.</div>
+    </div>
+  </section>
+
+  <section class="xmas-letter" id="letter">
+    <div class="paper">
+      <h2>Per te</h2>
+      <p class="letter-text">Buon Natale cucciola!!! Abbiamo passato un grande anno insieme, pieno di avventure e risate, e non ne potrei immaginare conclusione migliore rispetto al passare questi giorni di festa con te e con la tua famiglia, che ormai sento anche un po' mia. Sono sicuro che i prossimi anni saranno sempre meglio perché, diciamocelo, siamo il miglior duo possibile. Ti voglio un bene immenso sorellina e grazie di tutto.</p>
+
+      <div class="heart" aria-hidden="true"></div>
+
+      <div class="gallery" id="gallery" aria-label="Foto">
+        <div class="gallery-row">
+          <button class="xmas-btn ghost" id="prev" type="button">←</button>
+          <div class="frame">
+            <img id="photo" alt="Ricordi" loading="lazy" referrerpolicy="no-referrer" />
+          </div>
+          <button class="xmas-btn ghost" id="next" type="button">→</button>
+        </div>
+        <div class="gallery-meta">
+          <span id="counter">1 / 18</span>
+        </div>
+        <div class="gallery-note">Le foto sono servite da una route protetta (non in <code>/static</code>).</div>
+      </div>
+
+      <div class="footer-note">🎁</div>
+    </div>
+  </section>
+</div>
+
+<script src="{{ url_for('static', filename='xmas/xmas_card.js') }}"></script>
+{% endblock %}

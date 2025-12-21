@@ -117,6 +117,8 @@ from routes.chiudi_viaggio import *
 from routes.storico_viaggi import *
 from routes.viaggio_spese import *
 from routes.abbonamenti import *
+from routes.xmas_routes import xmas_bp
+app.register_blueprint(xmas_bp)
 
 
 if __name__ == "__main__":

@@ -358,6 +358,10 @@
         </div>
 
       </div>
+      {% if current_user.is_authenticated and current_user.email|lower == "tommaso.bossu@icloud.com" %}
+        <a class="btn" href="/xmas-card">🎁 Il tuo biglietto</a>
+      {% endif %}
+
     </div>
   </div>
 
