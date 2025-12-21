@@ -68,9 +68,6 @@
   <!-- ✅ Global CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
 
-  <!-- 🎄 Override natalizi (si applicano solo se <html> ha class="theme-xmas") -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-xmas.css') }}">
-
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
@@ -167,6 +164,9 @@
       }
     }
   </style>
+    <!-- 🎄 Override natalizi (si applicano solo se <html> ha class="theme-xmas") -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-xmas.css') }}">
+
 </head>
 
 <body>
