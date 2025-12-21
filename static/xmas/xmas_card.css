@@ -255,3 +255,7 @@
   margin-top: 16px;
   opacity: 0.65;
 }
+
+.frame { max-height: 55vh; }
+.frame img { max-height: 55vh; }
+.gallery-row { grid-template-columns: 44px 1fr 44px; }

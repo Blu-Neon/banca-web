@@ -2,7 +2,7 @@
 
 {% block title %}🎄 Buon Natale{% endblock %}
 
-{% block head %}
+{% block extra_head %}
   <link rel="stylesheet" href="{{ url_for('static', filename='xmas/xmas_card.css') }}">
 {% endblock %}
 
@@ -42,7 +42,9 @@
   <section class="xmas-letter" id="letter">
     <div class="paper">
       <h2>Per te</h2>
-      <p class="letter-text">Buon Natale cucciola!!! Abbiamo passato un grande anno insieme, pieno di avventure e risate, e non ne potrei immaginare conclusione migliore rispetto al passare questi giorni di festa con te e con la tua famiglia, che ormai sento anche un po' mia. Sono sicuro che i prossimi anni saranno sempre meglio perché, diciamocelo, siamo il miglior duo possibile. Ti voglio un bene immenso sorellina e grazie di tutto.</p>
+      <p class="letter-text">
+        Buon Natale cucciola!!! Abbiamo passato un grande anno insieme, pieno di avventure e risate, e non ne potrei immaginare conclusione migliore rispetto al passare questi giorni di festa con te e con la tua famiglia, che ormai sento anche un po' mia. Sono sicuro che i prossimi anni saranno sempre meglio perché, diciamocelo, siamo il miglior duo possibile. Ti voglio un bene immenso sorellina e grazie di tutto.
+      </p>
 
       <div class="heart" aria-hidden="true"></div>
 
@@ -57,13 +59,17 @@
         <div class="gallery-meta">
           <span id="counter">1 / 18</span>
         </div>
-        <div class="gallery-note">Le foto sono servite da una route protetta (non in <code>/static</code>).</div>
+        <div class="gallery-note">
+          Le foto sono servite da una route protetta (non in <code>/static</code>).
+        </div>
       </div>
 
       <div class="footer-note">🎁</div>
     </div>
   </section>
 </div>
+{% endblock %}
 
-<script src="{{ url_for('static', filename='xmas/xmas_card.js') }}"></script>
+{% block scripts %}
+  <script src="{{ url_for('static', filename='xmas/xmas_card.js') }}"></script>
 {% endblock %}
