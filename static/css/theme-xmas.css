@@ -33,22 +33,34 @@ html.theme-xmas body {
     radial-gradient(circle at 82% 10%, rgba(245, 208, 138, 0.11), transparent 62%);
 }
 
-html.theme-xmas .app-shell {
-  border-color: rgba(245, 208, 138, 0.34);
-  background:
-    radial-gradient(circle at top left, rgba(45, 179, 106, 0.10), rgba(15, 23, 42, 0.97));
+/* 🎄 Candy-cane border sulla shell principale */
+html.theme-xmas .app-shell{
+  position: relative; /* serve per l’overlay */
 }
 
-/* Un po' più “festoso” sugli aloni del contenitore */
-html.theme-xmas .app-shell::before {
-  inset: -45%;
-  background:
-    radial-gradient(circle at 0% 0%, rgba(45, 179, 106, 0.16), transparent 56%),
-    radial-gradient(circle at 100% 0%, rgba(227, 75, 75, 0.14), transparent 56%),
-    radial-gradient(circle at 40% 10%, rgba(245, 208, 138, 0.10), transparent 60%);
-  opacity: 0.92;
-  mix-blend-mode: screen;
+html.theme-xmas .app-shell::before{
+  content:"";
+  position:absolute;
+  inset:-1px;
+  border-radius: inherit;
+  padding: 2px;                 /* spessore bordo */
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(195,59,59,0.85) 0 10px,
+    rgba(255,255,255,0.00) 10px 20px,
+    rgba(47,164,106,0.85) 20px 30px,
+    rgba(255,255,255,0.00) 30px 40px
+  );
+
+  /* “ritaglia” l’interno, lasciando solo il bordo */
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  pointer-events:none;
+  opacity: 0.50;                /* più elegante, meno “circo” */
 }
+
 
 /* 🎄 Lucine in alto (inserite da base.html con .xmas-lights) */
 .xmas-lights {
@@ -57,13 +69,13 @@ html.theme-xmas .app-shell::before {
 
 html.theme-xmas .xmas-lights {
   display: block;
-  position: absolute;
+  position: fixed;
   left: 0;
   right: 0;
   top: 0;
   height: 58px;
   pointer-events: none;
-  z-index: 2;
+  z-index: 9999;
 
   /* Filo + bagliori */
   background:
@@ -112,39 +124,7 @@ html.theme-xmas .xmas-lights::after {
   animation: xmas-twinkle 2.4s ease-in-out infinite;
 }
 
-html.theme-xmas .card,
-html.theme-xmas .panel,
-html.theme-xmas .container,
-html.theme-xmas .box {
-  position: relative;
-  background: rgba(10, 26, 18, 0.72);
-  border: 1px solid rgba(255, 227, 168, 0.18);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
-}
 
-html.theme-xmas .card::after,
-html.theme-xmas .panel::after,
-html.theme-xmas .container::after,
-html.theme-xmas .box::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(90deg,
-    rgba(195,59,59,0.0),
-    rgba(195,59,59,0.55),
-    rgba(47,164,106,0.55),
-    rgba(255,227,168,0.45),
-    rgba(195,59,59,0.0)
-  );
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  opacity: 0.55;
-}
 
 
 @keyframes xmas-twinkle {
