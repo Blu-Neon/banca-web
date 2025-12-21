@@ -112,6 +112,41 @@ html.theme-xmas .xmas-lights::after {
   animation: xmas-twinkle 2.4s ease-in-out infinite;
 }
 
+html.theme-xmas .card,
+html.theme-xmas .panel,
+html.theme-xmas .container,
+html.theme-xmas .box {
+  position: relative;
+  background: rgba(10, 26, 18, 0.72);
+  border: 1px solid rgba(255, 227, 168, 0.18);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+
+html.theme-xmas .card::after,
+html.theme-xmas .panel::after,
+html.theme-xmas .container::after,
+html.theme-xmas .box::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(90deg,
+    rgba(195,59,59,0.0),
+    rgba(195,59,59,0.55),
+    rgba(47,164,106,0.55),
+    rgba(255,227,168,0.45),
+    rgba(195,59,59,0.0)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+
 @keyframes xmas-twinkle {
   0%, 100% { opacity: 0.65; filter: blur(0px); }
   50% { opacity: 0.95; filter: blur(0.4px); }

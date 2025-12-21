@@ -1,28 +1,8 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
+{% extends "base.html" %}
 
-  <!-- ✅ viewport UNICO + safe-area -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{% block title %}Viaggio{% endblock %}
 
-  <title>Viaggio</title>
-
-  <!-- ✅ PWA / iOS -->
-  <meta name="theme-color" content="#02040a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
-
-  <!-- ✅ Font coerente -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- ✅ Global CSS (se lo stai usando) -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
-
+{% block extra_head %}
   <style>
     :root {
       --radius-lg: 18px;
@@ -483,9 +463,9 @@
       .keypad button { padding: 12px 0; font-size: 18px; }
     }
   </style>
-</head>
+{% endblock %}
 
-<body>
+{% block body %}
 
 {% include "menu.html" %}
 
@@ -657,6 +637,9 @@
   </div>
 </div>
 
+{% endblock %}
+
+{% block scripts %}
 <script>
   // tastierino importo
   const input = document.getElementById('amount-input');
@@ -727,6 +710,4 @@
   }
 </style>
 {% endif %}
-
-</body>
-</html>
+{% endblock %}
