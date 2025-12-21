@@ -1,32 +1,75 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-  <meta charset="UTF-8">
+{% extends "base.html" %}
 
-  <!-- ✅ viewport unico + safe-area -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+{% block title %}Tipologia spese{% endblock %}
 
-  <title>Tipologia spese</title>
-
-  <!-- ✅ PWA / iOS -->
-  <meta name="theme-color" content="#02040a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+{% block extra_head %}
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
-  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+{% endblock %}
 
-  <!-- ✅ (opzionale ma consigliato) font coerente -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+{% block body %}
 
-  <!-- ✅ Global CSS -->
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+<div class="page-container">
+    <!-- Card grafico -->
+    <div class="card chart-card">
+      <div class="card-header">
+        <h2 class="card-title">Tipologia spese</h2>
+        <p class="card-subtitle">Distribuzione delle spese del mese per categoria.</p>
+        <div class="card-header-line"></div>
+      </div>
 
+      <div class="chart-wrapper">
+        <div class="chart-inner">
+          <canvas id="torta"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card legenda -->
+    <div class="card legend-card">
+      <div class="card-header" style="margin-bottom: 6px;">
+        <h2 class="legend-title">Legenda categorie</h2>
+      </div>
+
+      {% if legenda %}
+        <div class="legend-list">
+          {% for item in legenda %}
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: {{ item.color }};"></span>
+              <span class="legend-label">
+                {{ item.category }}: {{ "%.2f"|format(item.value) }} €
+              </span>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p style="font-size:13px; color: var(--text-soft); margin-top: 4px;">
+          Nessuna spesa registrata per questo mese.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+
+  
+
+  {% if session.get('user_id') == 1 %}
   <style>
-    :root {
+    * {
+      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
+    }
+    button, a, input, select, textarea, label {
+      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
+    }
+  </style>
+  {% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+
+<style>
+:root {
       --radius-lg: 18px;
       --radius-xl: 24px;
       --shadow-soft: 0 22px 50px rgba(0,0,0,0.85);
@@ -200,55 +243,10 @@
       .chart-inner { height: 230px; }
       .legend-item { font-size: 12px; }
     }
-  </style>
-</head>
-<body>
+</style>
 
-  {% include "menu.html" %}
-
-  <div class="page-container">
-    <!-- Card grafico -->
-    <div class="card chart-card">
-      <div class="card-header">
-        <h2 class="card-title">Tipologia spese</h2>
-        <p class="card-subtitle">Distribuzione delle spese del mese per categoria.</p>
-        <div class="card-header-line"></div>
-      </div>
-
-      <div class="chart-wrapper">
-        <div class="chart-inner">
-          <canvas id="torta"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card legenda -->
-    <div class="card legend-card">
-      <div class="card-header" style="margin-bottom: 6px;">
-        <h2 class="legend-title">Legenda categorie</h2>
-      </div>
-
-      {% if legenda %}
-        <div class="legend-list">
-          {% for item in legenda %}
-            <div class="legend-item">
-              <span class="legend-color" style="background-color: {{ item.color }};"></span>
-              <span class="legend-label">
-                {{ item.category }}: {{ "%.2f"|format(item.value) }} €
-              </span>
-            </div>
-          {% endfor %}
-        </div>
-      {% else %}
-        <p style="font-size:13px; color: var(--text-soft); margin-top: 4px;">
-          Nessuna spesa registrata per questo mese.
-        </p>
-      {% endif %}
-    </div>
-  </div>
-
-  <script>
-    const labels = {{ labels | tojson }};
+<script>
+const labels = {{ labels | tojson }};
     const dataValues = {{ values | tojson }};
     const colors = {{ colors | tojson }};
 
@@ -289,18 +287,6 @@
         }
       });
     }
-  </script>
+</script>
 
-  {% if session.get('user_id') == 1 %}
-  <style>
-    * {
-      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, default !important;
-    }
-    button, a, input, select, textarea, label {
-      cursor: url("{{ url_for('static', filename='cursor.png')}}") 0 0, pointer !important;
-    }
-  </style>
-  {% endif %}
-
-</body>
-</html>
+{% endblock %}
