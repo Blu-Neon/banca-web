@@ -8,6 +8,46 @@
 
   <title>{% block title %}Budget App{% endblock %}</title>
 
+  <!-- 🎄 Tema natalizio (attiva con ?theme=xmas, disattiva con ?theme=default) -->
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const params = new URLSearchParams(window.location.search);
+      const forced = (params.get("theme") || "").toLowerCase();
+
+      // Persistenza: "xmas" | "default"
+      try {
+        if (forced === "xmas") localStorage.setItem("theme", "xmas");
+        if (forced === "default" || forced === "off") localStorage.setItem("theme", "default");
+      } catch (_) {}
+
+      let stored = null;
+      try { stored = localStorage.getItem("theme"); } catch (_) {}
+
+      // Auto (1 Dic → 6 Gen) se non forzato
+      const now = new Date();
+      const month = now.getMonth(); // 0=Gen ... 11=Dic
+      const day = now.getDate();
+      const autoXmas = (month === 11) || (month === 0 && day <= 6);
+
+      const enabled = (stored === "xmas") ? true : (stored === "default") ? false : autoXmas;
+      if (enabled) {
+        root.classList.add("theme-xmas");
+
+        // Aggiorna colore barra browser (Android/iOS PWA)
+        const applyThemeColor = () => {
+          const meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", "#06130c");
+        };
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", applyThemeColor, { once: true });
+        } else {
+          applyThemeColor();
+        }
+      }
+    })();
+  </script>
+
   <!-- ✅ PWA / iOS -->
 <link rel="icon" type="image/png" sizes="192x192"
       href="{{ url_for('static', filename='icons/icon-192.png') }}">
@@ -27,6 +67,9 @@
 
   <!-- ✅ Global CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}">
+
+  <!-- 🎄 Override natalizi (si applicano solo se <html> ha class="theme-xmas") -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/theme-xmas.css') }}">
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -130,8 +173,30 @@
 
   {% include "menu.html" %}
 
+  <!-- ✅ Override menu (il CSS del menu è nel body, quindi lo sovrascriviamo qui dopo l'include) -->
+  <style>
+    html.theme-xmas #menu-button {
+      border-color: rgba(245, 208, 138, 0.75);
+      box-shadow:
+        0 0 0 1px rgba(45, 179, 106, 0.26),
+        0 18px 44px rgba(0, 0, 0, 0.74);
+      background:
+        radial-gradient(circle at 35% 25%, rgba(45, 179, 106, 0.20), rgba(2, 4, 10, 0.95));
+    }
+    html.theme-xmas #dropdown-menu {
+      border-color: rgba(245, 208, 138, 0.36);
+      background:
+        radial-gradient(circle at 90% 0%, rgba(45, 179, 106, 0.10), transparent 45%),
+        linear-gradient(to bottom, rgba(2, 4, 10, 0.93), rgba(6, 18, 12, 0.95));
+    }
+    html.theme-xmas #menu-backdrop {
+      background: rgba(0, 0, 0, 0.22);
+    }
+  </style>
+
   {% block body %}
     <div class="app-shell">
+      <div class="xmas-lights" aria-hidden="true"></div>
       <div class="app-inner">
         {% block content %}{% endblock %}
       </div>
@@ -139,6 +204,9 @@
   {% endblock %}
 
   {% block scripts %}{% endblock %}
+
+  <!-- 🎄 Effetti leggeri (neve soft). Non fa nulla se il tema non è attivo. -->
+  <script src="{{ url_for('static', filename='js/xmas.js') }}" defer></script>
 
 </body>
 </html>
