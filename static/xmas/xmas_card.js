@@ -1,9 +1,10 @@
 (function () {
   // ---- Snow (canvas) ----
   const canvas = document.getElementById("snow");
-  const ctx = canvas.getContext("2d");
-  const DPR = Math.min(2, window.devicePixelRatio || 1);
+  const ctx = canvas?.getContext("2d");
+  if (!canvas || !ctx) return;
 
+  const DPR = Math.min(2, window.devicePixelRatio || 1);
   let W = 0, H = 0;
   let flakes = [];
   let wind = 0;
@@ -29,14 +30,12 @@
   function step() {
     ctx.clearRect(0, 0, W, H);
 
-    // soft vignette so the snow reads better
     const g = ctx.createRadialGradient(W * 0.5, H * 0.25, 40, W * 0.5, H * 0.25, Math.max(W, H));
     g.addColorStop(0, "rgba(255,255,255,0.05)");
     g.addColorStop(1, "rgba(0,0,0,0.35)");
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, W, H);
 
-    // snow
     ctx.fillStyle = "rgba(255,255,255,0.85)";
     wind += (Math.random() - 0.5) * 0.02;
     wind = Math.max(-0.35, Math.min(0.35, wind));
@@ -68,6 +67,7 @@
   ];
 
   function placeLights() {
+    if (!lightsEl) return;
     lightsEl.innerHTML = "";
     const count = 38;
 
@@ -76,20 +76,21 @@
       d.className = "light";
       d.style.background = lightColors[i % lightColors.length];
 
-      // positions roughly inside a tree silhouette (triangle-ish)
-      const y = 86 + Math.random() * 250;
-      const t = (y - 86) / 250; // 0 top, 1 bottom
-      const half = 22 + t * 105; // width expands toward bottom
+      // percentuali: mobile perfetto
+      const y = 18 + Math.random() * 68;
+      const t = (y - 18) / 68;
+      const half = 10 + t * 36;
       const x = 50 + (Math.random() * 2 - 1) * half;
 
       d.style.left = x + "%";
-      d.style.top = y + "px";
+      d.style.top = y + "%";
       d.style.transform = `scale(${0.9 + Math.random() * 0.6})`;
       lightsEl.appendChild(d);
     }
   }
 
   function twinkle() {
+    if (!lightsEl) return;
     const nodes = lightsEl.querySelectorAll(".light");
     nodes.forEach((n, idx) => {
       const on = Math.random() > 0.35;
@@ -104,8 +105,7 @@
   const btnMusic = document.getElementById("btnMusic");
 
   async function toggleMusic() {
-    if (!music) return;
-
+    if (!music || !btnMusic) return;
     try {
       if (music.paused) {
         await music.play();
@@ -114,30 +114,47 @@
         music.pause();
         btnMusic.textContent = "▶︎ Musica";
       }
-    } catch (e) {
-      // iOS might block if not a user gesture; button click is a gesture, so usually OK.
+    } catch {
       btnMusic.textContent = "▶︎ Musica";
     }
   }
 
   btnMusic?.addEventListener("click", toggleMusic);
 
-  // ---- Gallery (protected assets) ----
+  // ---- Gallery ----
   const photo = document.getElementById("photo");
   const counter = document.getElementById("counter");
   const prev = document.getElementById("prev");
   const next = document.getElementById("next");
+  const frame = photo?.closest(".frame");
 
-  // Keep it simple: rename your files to foto1.jpg ... foto18.jpg (lowercase).
-  // If you have .JPG, rename them or adjust the list here.
-  const photos = Array.from({ length: 18 }, (_, i) => `foto${i + 1}.jpg`);
+  const total = 18;
   let idx = 0;
 
+  function candidatesFor(n) {
+    const base = `foto${n}`;
+    return [`${base}.jpg`, `${base}.JPG`, `${base}.jpeg`, `${base}.JPEG`];
+  }
+
+  function setFrameBg(url) {
+    if (frame) frame.style.setProperty("--bg", `url("${url}")`);
+  }
+
+  function loadWithFallback(list) {
+    if (!photo || list.length === 0) return;
+
+    const name = list[0];
+    const url = `/xmas-asset/${encodeURIComponent(name)}`;
+
+    setFrameBg(url);
+    photo.onerror = () => loadWithFallback(list.slice(1));
+    photo.src = url;
+  }
+
   function setPhoto(i) {
-    idx = (i + photos.length) % photos.length;
-    const name = photos[idx];
-    if (photo) photo.src = `/xmas-asset/${encodeURIComponent(name)}`;
-    if (counter) counter.textContent = `${idx + 1} / ${photos.length}`;
+    idx = (i + total) % total;
+    if (counter) counter.textContent = `${idx + 1} / ${total}`;
+    loadWithFallback(candidatesFor(idx + 1));
   }
 
   prev?.addEventListener("click", () => setPhoto(idx - 1));
