@@ -1,5 +1,38 @@
-/* Works nicely inside an existing app theme (base.html). No globals outside .xmas-page */
+/* Standalone: reset minimo + sfondo */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  color: rgba(245,245,255,0.95);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: radial-gradient(1200px 700px at 50% 15%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%),
+              linear-gradient(180deg, #05060b 0%, #070a13 55%, #04040a 100%);
+}
+
+/* evita highlight strano su mobile */
+* { -webkit-tap-highlight-color: transparent; }
+
 .xmas-page { width: 100%; }
+
+/* link in alto */
+.xmas-back-top{
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top));
+  left: 12px;
+  z-index: 10;
+  text-decoration: none;
+  color: rgba(245,245,255,0.9);
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(10, 12, 18, 0.35);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
 
 .xmas-hero{
   position: relative;
@@ -14,6 +47,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
+  z-index: 0;
 }
 
 .xmas-hero-inner{
@@ -21,7 +55,7 @@
   z-index: 2;
   width: min(920px, 92vw);
   margin: 0 auto;
-  padding: 28px 0 0;
+  padding: 62px 0 0; /* lascia spazio al tasto back */
   text-align: center;
 }
 
@@ -50,7 +84,7 @@
 .xmas-btn{
   border: 1px solid rgba(255,255,255,0.22);
   background: rgba(10, 12, 18, 0.35);
-  color: inherit;
+  color: rgba(245,245,255,0.95);
   padding: 10px 14px;
   border-radius: 14px;
   cursor: pointer;
@@ -69,7 +103,7 @@
   font-size: 13px;
 }
 
-/* ----------------- TREE (responsive, carino) ----------------- */
+/* ----------------- TREE ----------------- */
 .xmas-tree-wrap{
   position: relative;
   display: grid;
@@ -85,24 +119,27 @@
   filter: drop-shadow(0 18px 40px rgba(0,0,0,0.35));
 }
 
-/* TREE layers: piccolo sopra, grande sotto */
+/* layer order */
+.xmas-layer, .xmas-trunk { z-index: 1; }
+.xmas-lights { z-index: 3; }
+.xmas-star { z-index: 5; }
+
+/* TREE layers: punta in alto */
 .xmas-layer{
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* punta in alto */
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
   border-radius: 16px;
-  z-index: 1;
 }
 
-/* TOP (più piccolo) */
+/* TOP */
 .xmas-layer.l3{
   top: 18%;
   width: 52%;
   height: 22%;
   background: rgba(14, 96, 54, 0.94);
 }
-
 /* MID */
 .xmas-layer.l2{
   top: 32%;
@@ -110,15 +147,13 @@
   height: 26%;
   background: rgba(18, 120, 64, 0.92);
 }
-
-/* BOTTOM (più grande) */
+/* BOTTOM */
 .xmas-layer.l1{
   top: 48%;
   width: 90%;
   height: 30%;
   background: rgba(22, 140, 74, 0.92);
 }
-
 
 .xmas-trunk{
   position: absolute;
@@ -129,19 +164,16 @@
   height: 18%;
   border-radius: 16px;
   background: rgba(120, 70, 30, 0.92);
-  z-index: 1;
 }
 
-/* Stella vera (non “quadrato”) */
+/* Stella */
 .xmas-star{
   position: absolute;
   top: -10px;
   left: 50%;
   transform: translateX(-50%) rotate(10deg);
-  z-index: 5;
   width: 34px;
   height: 34px;
-  margin-bottom: -6px;
   background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(255,220,120,0.9) 45%, rgba(255,190,70,0.75));
   clip-path: polygon(
     50% 0%,
@@ -159,8 +191,8 @@
   animation: starPulse 1.6s ease-in-out infinite;
 }
 @keyframes starPulse{
-  0%,100% { transform: rotate(10deg) scale(1); }
-  50% { transform: rotate(10deg) scale(1.08); }
+  0%,100% { transform: translateX(-50%) rotate(10deg) scale(1); }
+  50% { transform: translateX(-50%) rotate(10deg) scale(1.08); }
 }
 
 /* Luci dentro al triangolo */
@@ -169,7 +201,6 @@
   inset: 0;
   pointer-events: none;
   clip-path: polygon(50% 12%, 12% 88%, 88% 88%);
-  z-index: 3;
 }
 
 .light{
@@ -225,7 +256,7 @@
   width: 48px;
   height: 48px;
   border-radius: 999px;
-  background: rgba(244, 14, 187);
+  background: rgb(244, 14, 187);
 }
 .heart::before{ top: -21px; left: 0; }
 .heart::after{ left: -21px; top: 0; }
@@ -234,12 +265,12 @@
   50% { transform: rotate(45deg) scale(1.08); }
 }
 
-/* ----------------- GALLERY (foto “carine”, non tagliate) ----------------- */
+/* ----------------- GALLERY ----------------- */
 .gallery{ margin: 0 auto; max-width: 760px; }
 
 .gallery-row{
   display: grid;
-  grid-template-columns: 44px 1fr 44px; /* perfetto su mobile */
+  grid-template-columns: 44px 1fr 44px;
   gap: 12px;
   align-items: center;
 }
@@ -256,7 +287,7 @@
   max-height: 55vh;
 }
 
-/* sfondo “sfocato” della stessa foto (fa subito premium) */
+/* sfondo sfocato */
 .frame::before{
   content: "";
   position: absolute;
@@ -275,10 +306,16 @@
   width: 100%;
   height: auto;
   max-height: 55vh;
-  object-fit: contain; /* così non taglia mai */
+  object-fit: contain;
   display: block;
 }
 
 .gallery-meta{ margin-top: 10px; opacity: 0.7; font-size: 13px; }
-.gallery-note{ margin-top: 10px; opacity: 0.6; font-size: 12px; }
-.footer-note{ margin-top: 16px; opacity: 0.65; }
+
+/* footer bottone */
+.xmas-footer{
+  margin-top: 18px;
+  display: grid;
+  place-items: center;
+  padding-bottom: 6px;
+}

@@ -1,5 +1,8 @@
 (function () {
-  // ---- Snow (canvas) ----
+  // ---------- helpers ----------
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+  // ---------- Snow (canvas) ----------
   const canvas = document.getElementById("snow");
   const ctx = canvas?.getContext("2d");
   if (!canvas || !ctx) return;
@@ -17,7 +20,7 @@
     canvas.height = Math.floor(H * DPR);
     ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
 
-    const target = Math.max(90, Math.floor(W * 0.18));
+    const target = clamp(Math.floor(W * 0.18), 90, 170);
     flakes = new Array(target).fill(0).map(() => ({
       x: Math.random() * W,
       y: Math.random() * H,
@@ -38,7 +41,7 @@
 
     ctx.fillStyle = "rgba(255,255,255,0.85)";
     wind += (Math.random() - 0.5) * 0.02;
-    wind = Math.max(-0.35, Math.min(0.35, wind));
+    wind = clamp(wind, -0.35, 0.35);
 
     for (const f of flakes) {
       f.p += 0.02;
@@ -57,7 +60,7 @@
     requestAnimationFrame(step);
   }
 
-  // ---- Lights ----
+  // ---------- Lights ----------
   const lightsEl = document.getElementById("treeLights");
   const lightColors = [
     "rgba(255, 92, 120, 0.95)",
@@ -76,15 +79,15 @@
       d.className = "light";
       d.style.background = lightColors[i % lightColors.length];
 
-      // percentuali: mobile perfetto
-      const y = 18 + Math.random() * 68;
+      // Distribuzione: più densa verso il basso (più “albero vero”)
+      const y = 18 + Math.pow(Math.random(), 0.75) * 68;
       const t = (y - 18) / 68;
       const half = 10 + t * 36;
       const x = 50 + (Math.random() * 2 - 1) * half;
 
       d.style.left = x + "%";
       d.style.top = y + "%";
-      d.style.transform = `scale(${0.9 + Math.random() * 0.6})`;
+      d.style.transform = `scale(${0.9 + Math.random() * 0.55})`;
       lightsEl.appendChild(d);
     }
   }
@@ -92,15 +95,19 @@
   function twinkle() {
     if (!lightsEl) return;
     const nodes = lightsEl.querySelectorAll(".light");
-    nodes.forEach((n, idx) => {
+    // “twinkle” morbido: cambia pochi per volta
+    const change = Math.max(6, Math.floor(nodes.length * 0.22));
+    for (let i = 0; i < change; i++) {
+      const n = nodes[Math.floor(Math.random() * nodes.length)];
+      if (!n) continue;
       const on = Math.random() > 0.35;
       n.style.opacity = on ? "0.95" : "0.35";
-      if (idx % 7 === 0) n.style.transform = `scale(${on ? 1.15 : 0.85})`;
-    });
+      n.style.transform = `scale(${on ? 1.1 : 0.85})`;
+    }
     setTimeout(twinkle, 420);
   }
 
-  // ---- Music ----
+  // ---------- Music ----------
   const music = document.getElementById("music");
   const btnMusic = document.getElementById("btnMusic");
 
@@ -118,10 +125,18 @@
       btnMusic.textContent = "▶︎ Musica";
     }
   }
-
   btnMusic?.addEventListener("click", toggleMusic);
 
-  // ---- Gallery ----
+  // pausa se l’utente cambia tab/app
+  document.addEventListener("visibilitychange", () => {
+    if (!music || !btnMusic) return;
+    if (document.hidden && !music.paused) {
+      music.pause();
+      btnMusic.textContent = "▶︎ Musica";
+    }
+  });
+
+  // ---------- Gallery ----------
   const photo = document.getElementById("photo");
   const counter = document.getElementById("counter");
   const prev = document.getElementById("prev");
@@ -160,7 +175,23 @@
   prev?.addEventListener("click", () => setPhoto(idx - 1));
   next?.addEventListener("click", () => setPhoto(idx + 1));
 
-  // init
+  // swipe su mobile
+  let startX = null;
+  frame?.addEventListener("touchstart", (e) => {
+    startX = e.touches?.[0]?.clientX ?? null;
+  }, { passive: true });
+
+  frame?.addEventListener("touchend", (e) => {
+    const endX = e.changedTouches?.[0]?.clientX ?? null;
+    if (startX == null || endX == null) return;
+    const dx = endX - startX;
+    if (Math.abs(dx) < 35) return;
+    if (dx < 0) setPhoto(idx + 1);
+    else setPhoto(idx - 1);
+    startX = null;
+  }, { passive: true });
+
+  // ---------- init ----------
   resize();
   placeLights();
   twinkle();
