@@ -176,9 +176,6 @@ body {
   width: 42px;
   height: 42px;
 
-  /* questa è la chiave: la spostiamo SU rispetto al suo top */
-  transform: translate(-50%, -88%) rotate(10deg);
-
   z-index: 6;
   background: radial-gradient(circle at 35% 35%,
     rgba(255,255,255,0.95),
