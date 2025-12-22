@@ -171,7 +171,7 @@ body {
 /* Stella più presente */
 .xmas-star{
   position: absolute;
-  top: -14px;
+  top: calc(18% - 40px);
   left: 50%;
   transform: translateX(-50%) rotate(10deg);
   width: 42px;
