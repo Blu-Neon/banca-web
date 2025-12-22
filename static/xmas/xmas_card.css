@@ -175,8 +175,9 @@ body {
   top: 18%; /* = top della punta del triangolo piccolo */
   width: 42px;
   height: 42px;
-
   z-index: 6;
+
+  transform: translate(-50%, -82%) rotate(10deg);
   background: radial-gradient(circle at 35% 35%,
     rgba(255,255,255,0.95),
     rgba(255,220,120,0.9) 45%,
@@ -202,8 +203,8 @@ body {
 
 /* IMPORTANTE: l'animazione deve mantenere lo stesso translate() */
 @keyframes starPulse{
-  0%,100% { transform: translate(-50%, -88%) rotate(10deg) scale(1); }
-  50%     { transform: translate(-50%, -88%) rotate(10deg) scale(1.08); }
+  0%,100% { transform: translate(-50%, -82%) rotate(10deg) scale(1); }
+  50%     { transform: translate(-50%, -82%) rotate(10deg) scale(1.08); }
 }
 
 /* Luci clippate nell’albero */
