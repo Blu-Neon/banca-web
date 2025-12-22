@@ -58,7 +58,7 @@
   }
 
   // ---- Lights ----
-  const lightsEl = document.getElementById("lights");
+  const lightsEl = document.getElementById("treeLights");
   const lightColors = [
     "rgba(255, 92, 120, 0.95)",
     "rgba(255, 220, 120, 0.95)",

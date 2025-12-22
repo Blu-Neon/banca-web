@@ -71,6 +71,7 @@
 
 /* ----------------- TREE (responsive, carino) ----------------- */
 .xmas-tree-wrap{
+  position: relative;
   display: grid;
   place-items: center;
   margin-top: 14px;
@@ -134,7 +135,10 @@
 /* Stella vera (non “quadrato”) */
 .xmas-star{
   position: absolute;
-  z-index: 4;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(10deg);
+  z-index: 5;
   width: 34px;
   height: 34px;
   margin-bottom: -6px;
@@ -210,9 +214,8 @@
   margin: 10px auto 22px;
   position: relative;
   transform: rotate(45deg);
-  background: rgba(210, 34, 66, 0.88);
+  background: rgb(244, 14, 187);
   border-radius: 0px;
-  box-shadow: 0 0 18px rgba(210, 34, 66, 0.35);
   animation: beat 1.35s infinite ease-in-out;
 }
 .heart::before,
@@ -222,7 +225,7 @@
   width: 48px;
   height: 48px;
   border-radius: 999px;
-  background: rgba(210, 34, 66, 0.88);
+  background: rgba(244, 14, 187);
 }
 .heart::before{ top: -21px; left: 0; }
 .heart::after{ left: -21px; top: 0; }
