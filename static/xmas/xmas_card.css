@@ -119,7 +119,8 @@ body {
 }
 
 /* layer order */
-.xmas-layer, .xmas-trunk { z-index: 1; }
+.xmas-layer {z-index: 2;}
+.xmas-trunk { z-index: 1; }
 .xmas-lights { z-index: 3; }
 .xmas-star { z-index: 6; }
 
@@ -170,7 +171,7 @@ body {
 /* Stella più presente */
 .xmas-star{
   position: absolute;
-  top: -6px;
+  top: -14px;
   left: 50%;
   transform: translateX(-50%) rotate(10deg);
   width: 42px;
