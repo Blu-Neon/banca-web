@@ -1,4 +1,3 @@
-/* Standalone: reset minimo + sfondo */
 html, body {
   margin: 0;
   padding: 0;
@@ -8,11 +7,11 @@ html, body {
 body {
   color: rgba(245,245,255,0.95);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  background: radial-gradient(1200px 700px at 50% 15%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%),
-              linear-gradient(180deg, #05060b 0%, #070a13 55%, #04040a 100%);
+  background:
+    radial-gradient(1200px 700px at 50% 15%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, #05060b 0%, #070a13 55%, #04040a 100%);
 }
 
-/* evita highlight strano su mobile */
 * { -webkit-tap-highlight-color: transparent; }
 
 .xmas-page { width: 100%; }
@@ -55,7 +54,7 @@ body {
   z-index: 2;
   width: min(920px, 92vw);
   margin: 0 auto;
-  padding: 62px 0 0; /* lascia spazio al tasto back */
+  padding: 62px 0 0;
   text-align: center;
 }
 
@@ -103,7 +102,7 @@ body {
   font-size: 13px;
 }
 
-/* ----------------- TREE ----------------- */
+/* ----------------- TREE (molto più carino) ----------------- */
 .xmas-tree-wrap{
   position: relative;
   display: grid;
@@ -116,45 +115,46 @@ body {
   width: min(340px, 80vw);
   aspect-ratio: 4 / 5;
   height: auto;
-  filter: drop-shadow(0 18px 40px rgba(0,0,0,0.35));
+  filter: drop-shadow(0 22px 55px rgba(0,0,0,0.38));
 }
 
 /* layer order */
 .xmas-layer, .xmas-trunk { z-index: 1; }
 .xmas-lights { z-index: 3; }
-.xmas-star { z-index: 5; }
+.xmas-star { z-index: 6; }
 
-/* TREE layers: punta in alto */
+/* Triangoli con gradient + neve */
 .xmas-layer{
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  border-radius: 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(28,170,90,0.96), rgba(12,110,60,0.96));
+  box-shadow: 0 14px 30px rgba(0,0,0,0.25);
 }
 
-/* TOP */
-.xmas-layer.l3{
-  top: 18%;
-  width: 52%;
-  height: 22%;
-  background: rgba(14, 96, 54, 0.94);
-}
-/* MID */
-.xmas-layer.l2{
-  top: 32%;
-  width: 70%;
+/* Neve sul bordo superiore */
+.xmas-layer::before{
+  content:"";
+  position:absolute;
+  left: 10%;
+  right: 10%;
+  top: 6%;
   height: 26%;
-  background: rgba(18, 120, 64, 0.92);
-}
-/* BOTTOM */
-.xmas-layer.l1{
-  top: 48%;
-  width: 90%;
-  height: 30%;
-  background: rgba(22, 140, 74, 0.92);
+  background: rgba(255,255,255,0.22);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  border-radius: 18px;
+  filter: blur(0.2px);
+  opacity: 0.95;
 }
 
+/* top/mid/bottom */
+.xmas-layer.l3{ top: 18%; width: 56%; height: 24%; opacity: 0.95; }
+.xmas-layer.l2{ top: 34%; width: 76%; height: 28%; opacity: 0.92; }
+.xmas-layer.l1{ top: 52%; width: 96%; height: 34%; opacity: 0.90; }
+
+/* Tronco */
 .xmas-trunk{
   position: absolute;
   left: 50%;
@@ -163,17 +163,18 @@ body {
   width: 18%;
   height: 18%;
   border-radius: 16px;
-  background: rgba(120, 70, 30, 0.92);
+  background: linear-gradient(180deg, rgba(150,90,40,0.95), rgba(95,55,22,0.95));
+  box-shadow: 0 10px 24px rgba(0,0,0,0.25);
 }
 
-/* Stella */
+/* Stella più presente */
 .xmas-star{
   position: absolute;
-  top: -10px;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%) rotate(10deg);
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  height: 42px;
   background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.95), rgba(255,220,120,0.9) 45%, rgba(255,190,70,0.75));
   clip-path: polygon(
     50% 0%,
@@ -187,7 +188,7 @@ body {
     2% 35%,
     38% 35%
   );
-  box-shadow: 0 0 22px rgba(255, 215, 120, 0.45);
+  box-shadow: 0 0 26px rgba(255, 215, 120, 0.5);
   animation: starPulse 1.6s ease-in-out infinite;
 }
 @keyframes starPulse{
@@ -195,21 +196,21 @@ body {
   50% { transform: translateX(-50%) rotate(10deg) scale(1.08); }
 }
 
-/* Luci dentro al triangolo */
+/* Luci clippate nell’albero */
 .xmas-lights{
   position: absolute;
   inset: 0;
   pointer-events: none;
-  clip-path: polygon(50% 12%, 12% 88%, 88% 88%);
+  clip-path: polygon(50% 10%, 10% 90%, 90% 90%);
 }
 
 .light{
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
   opacity: 0.95;
-  box-shadow: 0 0 10px rgba(255,255,255,0.12);
+  box-shadow: 0 0 10px rgba(255,255,255,0.22), 0 0 22px rgba(255,255,255,0.10);
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -287,7 +288,6 @@ body {
   max-height: 55vh;
 }
 
-/* sfondo sfocato */
 .frame::before{
   content: "";
   position: absolute;

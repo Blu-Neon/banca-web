@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-
   <title>🎄 Buon Natale</title>
-
   <link rel="stylesheet" href="{{ url_for('static', filename='xmas/xmas_card.css') }}">
 </head>
 
@@ -14,7 +12,6 @@
     <section class="xmas-hero" id="top">
       <canvas id="snow" aria-hidden="true"></canvas>
 
-      <!-- link discreto -->
       <a class="xmas-back-top" href="/profile">← Torna al profilo</a>
 
       <div class="xmas-hero-inner">
@@ -27,7 +24,6 @@
             <div class="xmas-layer l3"></div>
             <div class="xmas-trunk"></div>
 
-            <!-- id unico per evitare conflitti -->
             <div class="xmas-lights" id="treeLights"></div>
           </div>
         </div>
@@ -74,7 +70,6 @@
           </div>
         </div>
 
-        <!-- bottone finale -->
         <div class="xmas-footer">
           <a class="xmas-btn" href="/profile">Torna al profilo</a>
         </div>

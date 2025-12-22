@@ -1,8 +1,7 @@
 (function () {
-  // ---------- helpers ----------
   function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
-  // ---------- Snow (canvas) ----------
+  // ---- Snow ----
   const canvas = document.getElementById("snow");
   const ctx = canvas?.getContext("2d");
   if (!canvas || !ctx) return;
@@ -60,7 +59,7 @@
     requestAnimationFrame(step);
   }
 
-  // ---------- Lights ----------
+  // ---- Lights (ghirlande) ----
   const lightsEl = document.getElementById("treeLights");
   const lightColors = [
     "rgba(255, 92, 120, 0.95)",
@@ -72,31 +71,36 @@
   function placeLights() {
     if (!lightsEl) return;
     lightsEl.innerHTML = "";
-    const count = 38;
 
-    for (let i = 0; i < count; i++) {
-      const d = document.createElement("div");
-      d.className = "light";
-      d.style.background = lightColors[i % lightColors.length];
+    const garlands = [
+      { y: 34, spread: 16, count: 10 },
+      { y: 52, spread: 26, count: 14 },
+      { y: 72, spread: 36, count: 18 },
+    ];
 
-      // Distribuzione: più densa verso il basso (più “albero vero”)
-      const y = 18 + Math.pow(Math.random(), 0.75) * 68;
-      const t = (y - 18) / 68;
-      const half = 10 + t * 36;
-      const x = 50 + (Math.random() * 2 - 1) * half;
+    for (const g of garlands) {
+      for (let i = 0; i < g.count; i++) {
+        const d = document.createElement("div");
+        d.className = "light";
+        d.style.background = lightColors[(i + Math.floor(Math.random() * 4)) % lightColors.length];
 
-      d.style.left = x + "%";
-      d.style.top = y + "%";
-      d.style.transform = `scale(${0.9 + Math.random() * 0.55})`;
-      lightsEl.appendChild(d);
+        const t = i / (g.count - 1);            // 0..1
+        const x = 50 + (t * 2 - 1) * g.spread;  // -spread..+spread
+        const arc = Math.sin(t * Math.PI) * 2.2;
+        const y = g.y + arc + (Math.random() * 2 - 1) * 1.2;
+
+        d.style.left = x + "%";
+        d.style.top = y + "%";
+        d.style.transform = `scale(${0.9 + Math.random() * 0.45})`;
+        lightsEl.appendChild(d);
+      }
     }
   }
 
   function twinkle() {
     if (!lightsEl) return;
     const nodes = lightsEl.querySelectorAll(".light");
-    // “twinkle” morbido: cambia pochi per volta
-    const change = Math.max(6, Math.floor(nodes.length * 0.22));
+    const change = Math.max(6, Math.floor(nodes.length * 0.25));
     for (let i = 0; i < change; i++) {
       const n = nodes[Math.floor(Math.random() * nodes.length)];
       if (!n) continue;
@@ -107,7 +111,7 @@
     setTimeout(twinkle, 420);
   }
 
-  // ---------- Music ----------
+  // ---- Music ----
   const music = document.getElementById("music");
   const btnMusic = document.getElementById("btnMusic");
 
@@ -127,7 +131,6 @@
   }
   btnMusic?.addEventListener("click", toggleMusic);
 
-  // pausa se l’utente cambia tab/app
   document.addEventListener("visibilitychange", () => {
     if (!music || !btnMusic) return;
     if (document.hidden && !music.paused) {
@@ -136,7 +139,7 @@
     }
   });
 
-  // ---------- Gallery ----------
+  // ---- Gallery ----
   const photo = document.getElementById("photo");
   const counter = document.getElementById("counter");
   const prev = document.getElementById("prev");
@@ -175,7 +178,7 @@
   prev?.addEventListener("click", () => setPhoto(idx - 1));
   next?.addEventListener("click", () => setPhoto(idx + 1));
 
-  // swipe su mobile
+  // swipe
   let startX = null;
   frame?.addEventListener("touchstart", (e) => {
     startX = e.touches?.[0]?.clientX ?? null;
@@ -191,7 +194,7 @@
     startX = null;
   }, { passive: true });
 
-  // ---------- init ----------
+  // init
   resize();
   placeLights();
   twinkle();
