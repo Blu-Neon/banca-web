@@ -84,33 +84,40 @@
   filter: drop-shadow(0 18px 40px rgba(0,0,0,0.35));
 }
 
-/* Nuova struttura: triangoli “scalabili” (niente border fissi) */
+/* TREE layers: piccolo sopra, grande sotto */
 .xmas-layer{
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%); /* punta in alto */
   border-radius: 16px;
+  z-index: 1;
+}
+
+/* TOP (più piccolo) */
+.xmas-layer.l3{
+  top: 18%;
+  width: 52%;
+  height: 22%;
+  background: rgba(14, 96, 54, 0.94);
+}
+
+/* MID */
+.xmas-layer.l2{
+  top: 32%;
+  width: 70%;
+  height: 26%;
+  background: rgba(18, 120, 64, 0.92);
+}
+
+/* BOTTOM (più grande) */
+.xmas-layer.l1{
+  top: 48%;
+  width: 90%;
+  height: 30%;
   background: rgba(22, 140, 74, 0.92);
 }
 
-.xmas-layer.l1{
-  top: 14%;
-  width: 92%;
-  height: 36%;
-}
-.xmas-layer.l2{
-  top: 30%;
-  width: 80%;
-  height: 34%;
-  background: rgba(18, 120, 64, 0.92);
-}
-.xmas-layer.l3{
-  top: 46%;
-  width: 68%;
-  height: 32%;
-  background: rgba(14, 96, 54, 0.94);
-}
 
 .xmas-trunk{
   position: absolute;
@@ -121,10 +128,13 @@
   height: 18%;
   border-radius: 16px;
   background: rgba(120, 70, 30, 0.92);
+  z-index: 1;
 }
 
 /* Stella vera (non “quadrato”) */
 .xmas-star{
+  position: absolute;
+  z-index: 4;
   width: 34px;
   height: 34px;
   margin-bottom: -6px;
@@ -155,6 +165,7 @@
   inset: 0;
   pointer-events: none;
   clip-path: polygon(50% 12%, 12% 88%, 88% 88%);
+  z-index: 3;
 }
 
 .light{
@@ -194,13 +205,13 @@
 }
 
 .heart{
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   margin: 10px auto 22px;
   position: relative;
   transform: rotate(45deg);
   background: rgba(210, 34, 66, 0.88);
-  border-radius: 10px;
+  border-radius: 0px;
   box-shadow: 0 0 18px rgba(210, 34, 66, 0.35);
   animation: beat 1.35s infinite ease-in-out;
 }
@@ -208,8 +219,8 @@
 .heart::after{
   content: "";
   position: absolute;
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   border-radius: 999px;
   background: rgba(210, 34, 66, 0.88);
 }
