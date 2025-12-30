@@ -359,7 +359,24 @@
 
       </div>
       {% if user and (user["email"]|lower) == "tommaso.bossu@icloud.com" %}
-        <a class="btn-primary" href="/xmas-card">🎁 Il tuo biglietto</a>
+
+
+              <!-- UPDATE USERNAME -->
+        <div class="panel">
+          <h2 class="panel-title">Recognitions</h2>
+
+          <form method="POST" action="{{ url_for('profile') }}">
+            <input type="hidden" name="action" value="update_username">
+
+            <div class="field">
+              <label for="username">Natale 2025</label>
+            </div>
+
+            <button class="btn-primary" href="/xmas-card">
+              🎁 Il tuo biglietto
+            </button>
+          </form>
+        </div>
       {% endif %}
 
     </div>
