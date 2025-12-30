@@ -57,6 +57,16 @@ def init_db():
         ADD COLUMN IF NOT EXISTS reset_token_expires_at TIMESTAMP;
     """)
 
+    # Permessi (bitmask): 0 = nessuno. Esempi: PRO=1, XMAS=2, ADMIN=4...
+    cur.execute("""
+        ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS perms INTEGER;
+    """)
+    # Backfill + default + NOT NULL (safe anche se la colonna esiste già)
+    cur.execute("UPDATE users SET perms = 0 WHERE perms IS NULL;")
+    cur.execute("ALTER TABLE users ALTER COLUMN perms SET DEFAULT 0;")
+    cur.execute("ALTER TABLE users ALTER COLUMN perms SET NOT NULL;")
+
     # accounts: saldo per utente
     cur.execute("""
     CREATE TABLE IF NOT EXISTS accounts (

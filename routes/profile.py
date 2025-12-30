@@ -2,6 +2,7 @@ from flask import request, redirect, url_for, render_template, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_connection
 from app import app
+from permissions import PERM_XMAS, has_perm
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -122,10 +123,11 @@ def profile():
 
     # GET → carica dati utente
     cur.execute(
-        "SELECT username, email FROM users WHERE id = %s;",
+        "SELECT username, email, perms FROM users WHERE id = %s;",
         (user_id,)
     )
     user = cur.fetchone()
     conn.close()
 
-    return render_template("profile.html", user=user)
+    can_xmas = has_perm((user or {}).get("perms"), PERM_XMAS)
+    return render_template("profile.html", user=user, can_xmas=can_xmas)
