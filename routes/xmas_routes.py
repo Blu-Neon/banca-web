@@ -1,7 +1,7 @@
 from flask import Blueprint, abort, current_app, make_response, render_template, send_from_directory, session
 import os
 from db import get_connection
-from permissions import PERM_XMAS, has_perm
+from permissions import PERM_XMAS, has_perm, PERM_ADMIN
 
 xmas_bp = Blueprint("xmas", __name__)
 
