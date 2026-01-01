@@ -291,7 +291,7 @@
     color: var(--text-soft);
   }
 
-  /* default img (se mai usi png anche per i cliccabili) */
+  /* default img (per eventuali png anche sui cliccabili) */
   .badge-img{
     width: 30px;
     height: 30px;
@@ -316,9 +316,25 @@
     filter: none;
   }
 
-  /* static: non sembra cliccabile */
-  .is-static .circle-btn{ cursor: default; }
-  .is-static .circle-btn:hover{
+  /* ===== static badges become buttons ===== */
+  .circle-tile.is-static{
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .circle-tile.is-static:focus-visible{
+    outline: none;
+  }
+
+  .circle-tile.is-static:focus-visible .circle-btn{
+    border-color: var(--gold);
+    box-shadow: 0 0 0 2px rgba(244,201,122,.35), 0 16px 34px rgba(0,0,0,0.9);
+  }
+
+  /* per i badge statici: niente hover "link-like", ma lasciamo click */
+  .circle-tile.is-static .circle-btn:hover{
     transform:none;
     box-shadow: 0 10px 22px rgba(0,0,0,0.6);
     filter:none;
@@ -333,6 +349,71 @@
     color: var(--text-soft);
     font-size: 13px;
     text-align: center;
+  }
+
+  /* ===== Badge modal ===== */
+  .badge-modal{
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    background: rgba(0,0,0,.62);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 9999;
+  }
+
+  .badge-modal.is-open{ display:flex; }
+
+  .badge-modal-card{
+    width: min(380px, 92vw);
+    border-radius: 24px;
+    border: 1px solid rgba(148,163,184,0.55);
+    background: radial-gradient(circle at top left, rgba(244,201,122,0.06), rgba(5,8,22,0.98));
+    box-shadow: 0 26px 70px rgba(0,0,0,.85);
+    padding: 16px;
+    position: relative;
+  }
+
+  .badge-modal-close{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    border: 1px solid rgba(51,65,85,.8);
+    background: rgba(15,23,42,.8);
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .badge-modal-imgwrap{
+    width: 260px;
+    height: 260px;
+    margin: 12px auto 12px;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(244,201,122,.35);
+    box-shadow: 0 18px 44px rgba(0,0,0,.8);
+  }
+
+  .badge-modal-imgwrap img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* se non vuoi crop: contain */
+    display:block;
+  }
+
+  .badge-modal-title{
+    margin: 0;
+    text-align: center;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-size: 13px;
+    color: var(--text-soft);
   }
 
   @media (max-width: 380px){
@@ -489,13 +570,17 @@
                     <span class="tile-label">{{ r.label }}</span>
                   </a>
                 {% else %}
-                  <!-- DECORATIVO -->
-                  <div class="circle-tile is-static" title="{{ r.label }}">
+                  <!-- STATIC (clicca per ingrandire) -->
+                  <button class="circle-tile is-static badge-open"
+                          type="button"
+                          data-label="{{ r.label }}"
+                          data-img="{{ r.img }}"
+                          aria-label="Apri badge {{ r.label }}">
                     <span class="circle-btn circle-btn--static" aria-hidden="true">
                       <img class="badge-img badge-img--full" src="{{ r.img }}" alt="{{ r.label }}">
                     </span>
                     <span class="tile-label">{{ r.label }}</span>
-                  </div>
+                  </button>
                 {% endif %}
               {% endfor %}
             </div>
@@ -507,5 +592,58 @@
       </div>
     </div>
   </div>
+
+  <!-- Badge Modal -->
+  <div class="badge-modal" id="badgeModal" aria-hidden="true">
+    <div class="badge-modal-card" role="dialog" aria-modal="true" aria-labelledby="badgeModalTitle">
+      <button class="badge-modal-close" type="button" aria-label="Chiudi">✕</button>
+
+      <div class="badge-modal-imgwrap">
+        <img id="badgeModalImg" src="" alt="">
+      </div>
+
+      <h3 class="badge-modal-title" id="badgeModalTitle"></h3>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const modal = document.getElementById("badgeModal");
+      const imgEl = document.getElementById("badgeModalImg");
+      const titleEl = document.getElementById("badgeModalTitle");
+
+      function openBadge(label, img){
+        titleEl.textContent = label || "";
+        imgEl.src = img || "";
+        imgEl.alt = label || "Badge";
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeBadge(){
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        imgEl.src = "";
+        imgEl.alt = "";
+        document.body.style.overflow = "";
+      }
+
+      document.addEventListener("click", (e) => {
+        const btn = e.target.closest(".badge-open");
+        if (btn){
+          openBadge(btn.dataset.label, btn.dataset.img);
+          return;
+        }
+        if (e.target === modal || e.target.closest(".badge-modal-close")){
+          closeBadge();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.classList.contains("is-open")) closeBadge();
+      });
+    })();
+  </script>
 
 {% endblock %}
