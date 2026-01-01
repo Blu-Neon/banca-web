@@ -5,9 +5,11 @@ Così puoi combinarli in un unico intero (es: PRO|XMAS = 3).
 """
 
 # Permessi base
-PERM_PRO = 1
-PERM_XMAS = 2
-PERM_ADMIN = 4
+PERM_PRO = 1            # non ancora utilizzato 
+PERM_XMAS = 2           # biglietto di natale
+PERM_ADMIN = 4          # il mio 
+PERM_MEDIA = 8          # profilo social 
+PERM_PROGRAMMER = 16    # aiuto nello sviluppo 
 
 
 def has_perm(user_perms: int | None, perm: int) -> bool:

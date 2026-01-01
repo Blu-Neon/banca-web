@@ -290,6 +290,35 @@
     color: var(--text-soft);
   }
 
+  .badge-img{
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display:block;
+  user-select:none;
+  -webkit-user-drag:none;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,.45));
+}
+
+/* per i badge NON cliccabili: niente feeling da bottone */
+.is-static .circle-btn{ cursor: default; }
+.is-static .circle-btn:hover{
+  transform:none;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.6);
+  filter:none;
+}
+
+.empty-badges{
+  margin-top: 8px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(15,23,42,0.55);
+  border: 1px solid rgba(51,65,85,0.6);
+  color: var(--text-soft);
+  font-size: 13px;
+  text-align: center;
+}
+
   @media (max-width: 380px){
     .card{ padding: 18px 14px 14px; }
     .card-title{ font-size: 18px; }
@@ -418,27 +447,48 @@
           <p class="hint">Se hai dimenticato la password, usa “Password dimenticata?” dal login.</p>
         </div>
 
-        <!-- RECOGNITIONS (solo per Tommaso) -->
-        {% if can_xmas %}
-          <div class="panel">
-            <h2 class="panel-title">Recognitions</h2>
+        <!-- RECOGNITIONS -->
+<div class="panel">
+  <h2 class="panel-title">Recognitions</h2>
 
-            <div class="grid_2">
-              <a class="circle-tile" href="{{ url_for('xmas.xmas_card') }}" aria-label="Apri Xmas Card">
-                <span class="circle-btn" aria-hidden="true">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="3" y="8" width="18" height="4" rx="1"/>
-                    <path d="M12 8v13"/>
-                    <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/>
-                    <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>
-                  </svg>
-                </span>
-                <span class="tile-label">Xmas</span>
-              </a>
-            </div>
+  {% if recognitions and recognitions|length > 0 %}
+    <div class="grid_2">
+      {% for r in recognitions %}
+        {% if r.href %}
+          <!-- CLICCABILE -->
+          <a class="circle-tile" href="{{ r.href }}" aria-label="Apri {{ r.label }}">
+            <span class="circle-btn" aria-hidden="true">
+              {# Xmas: svg (come ora) #}
+              {% if r.type == "svg" %}
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="8" width="18" height="4" rx="1"/>
+                  <path d="M12 8v13"/>
+                  <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/>
+                  <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>
+                </svg>
+              {% elif r.img %}
+                <img class="badge-img" src="{{ r.img }}" alt="{{ r.label }}">
+              {% endif %}
+            </span>
+            <span class="tile-label">{{ r.label }}</span>
+          </a>
+        {% else %}
+          <!-- DECORATIVO -->
+          <div class="circle-tile is-static" title="{{ r.label }}">
+            <span class="circle-btn" aria-hidden="true">
+              <img class="badge-img" src="{{ r.img }}" alt="{{ r.label }}">
+            </span>
+            <span class="tile-label">{{ r.label }}</span>
           </div>
         {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-badges">Nessun badge disponibile per questo profilo</div>
+  {% endif %}
+</div>
+
 
       </div>
     </div>

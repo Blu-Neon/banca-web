@@ -2,7 +2,7 @@ from flask import request, redirect, url_for, render_template, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from db import get_connection
 from app import app
-from permissions import PERM_XMAS, has_perm
+from permissions import PERM_XMAS, has_perm, PERM_ADMIN, PERM_MEDIA, PERM_PROGRAMMER
 
 
 @app.route("/profile", methods=["GET", "POST"])
@@ -129,5 +129,32 @@ def profile():
     user = cur.fetchone()
     conn.close()
 
-    can_xmas = has_perm((user or {}).get("perms"), PERM_XMAS)
-    return render_template("profile.html", user=user, can_xmas=can_xmas)
+    # Permessi 
+    perms = int((user or {}).get("perms") or 0)
+    is_admin = has_perm(perms, PERM_ADMIN)
+
+    recognitions_all = [
+        {
+            "label": "Xmas",
+            "href": url_for("xmas.xmas_card"),  # cliccabile
+            "perm": PERM_XMAS,
+            "type": "svg",  # useremo l’svg già presente nel template
+        },
+        {
+            "label": "Media",
+            "img": url_for("static", filename="badges/media-manager.png"),
+            "perm": PERM_MEDIA_MANAGER,
+        },
+        {
+            "label": "Programmer",
+            "img": url_for("static", filename="badges/programmer.png"),
+            "perm": PERM_PROGRAMMER,
+        },
+    ]
+
+    recognitions = [
+        r for r in recognitions_all
+        if is_admin or has_perm(perms, r["perm"])
+    ]
+
+    return render_template("profile.html", user=user, recognitions=recognitions)
