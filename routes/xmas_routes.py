@@ -17,7 +17,7 @@ def _is_allowed():
     if not row:
         return False
     perms = row.get("perms")
-    return has_perm(perms, PERM_XMAS) or has_perms(perms, PERM_ADMIN)
+    return has_perm(perms, PERM_XMAS) or has_perm(perms, PERM_ADMIN)
 
 @xmas_bp.route("/xmas-card")
 def xmas_card():

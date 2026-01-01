@@ -300,6 +300,20 @@
   filter: drop-shadow(0 6px 10px rgba(0,0,0,.45));
 }
 
+.circle-btn--static{
+  padding: 0;
+  overflow: hidden;
+}
+
+
+.circle-btn--static .badge-img,
+.badge-img--full{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* riempie tutto il cerchio */
+  filter: none;        /* se vuoi il png “pulito” */
+}
+
 /* per i badge NON cliccabili: niente feeling da bottone */
 .is-static .circle-btn{ cursor: default; }
 .is-static .circle-btn:hover{
@@ -476,8 +490,8 @@
         {% else %}
           <!-- DECORATIVO -->
           <div class="circle-tile is-static" title="{{ r.label }}">
-            <span class="circle-btn" aria-hidden="true">
-              <img class="badge-img" src="{{ r.img }}" alt="{{ r.label }}">
+            <span class="circle-btn circle-btn--static" aria-hidden="true">
+              <img class="badge-img badge-img--full" src="{{ r.img }}" alt="{{ r.label }}">
             </span>
             <span class="tile-label">{{ r.label }}</span>
           </div>
