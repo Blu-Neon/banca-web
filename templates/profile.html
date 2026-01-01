@@ -116,10 +116,10 @@
   .grid_2{
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 10px;
+    gap: 14px;
     margin-top: 10px;
     margin-bottom: 0;
-    justify-items: center; /* centra le icone */
+    justify-items: center;
     align-items: start;
   }
 
@@ -239,10 +239,11 @@
     line-height: 1.35;
   }
 
-  /* ====== Recognitions (cerchi) ====== */
+  /* ====== Recognitions ====== */
+
   .circle-btn{
-    width: 54px;
-    height: 54px;
+    width: 70px;
+    height: 70px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
@@ -279,7 +280,7 @@
     display:flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     color: inherit;
   }
 
@@ -290,48 +291,49 @@
     color: var(--text-soft);
   }
 
+  /* default img (se mai usi png anche per i cliccabili) */
   .badge-img{
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
-  display:block;
-  user-select:none;
-  -webkit-user-drag:none;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,.45));
-}
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    display:block;
+    user-select:none;
+    -webkit-user-drag:none;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,.45));
+  }
 
-.circle-btn--static{
-  padding: 0;
-  overflow: hidden;
-}
+  /* static: full-bleed */
+  .circle-btn--static{
+    padding: 0;
+    overflow: hidden;
+  }
 
+  .circle-btn--static .badge-img,
+  .badge-img--full{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: none;
+  }
 
-.circle-btn--static .badge-img,
-.badge-img--full{
-  width: 100%;
-  height: 100%;
-  object-fit: cover;   /* riempie tutto il cerchio */
-  filter: none;        /* se vuoi il png “pulito” */
-}
+  /* static: non sembra cliccabile */
+  .is-static .circle-btn{ cursor: default; }
+  .is-static .circle-btn:hover{
+    transform:none;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.6);
+    filter:none;
+  }
 
-/* per i badge NON cliccabili: niente feeling da bottone */
-.is-static .circle-btn{ cursor: default; }
-.is-static .circle-btn:hover{
-  transform:none;
-  box-shadow: 0 10px 22px rgba(0,0,0,0.6);
-  filter:none;
-}
-
-.empty-badges{
-  margin-top: 8px;
-  padding: 10px 12px;
-  border-radius: 14px;
-  background: rgba(15,23,42,0.55);
-  border: 1px solid rgba(51,65,85,0.6);
-  color: var(--text-soft);
-  font-size: 13px;
-  text-align: center;
-}
+  .empty-badges{
+    margin-top: 8px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(15,23,42,0.55);
+    border: 1px solid rgba(51,65,85,0.6);
+    color: var(--text-soft);
+    font-size: 13px;
+    text-align: center;
+  }
 
   @media (max-width: 380px){
     .card{ padding: 18px 14px 14px; }
@@ -462,47 +464,45 @@
         </div>
 
         <!-- RECOGNITIONS -->
-<div class="panel">
-  <h2 class="panel-title">Recognitions</h2>
+        <div class="panel">
+          <h2 class="panel-title">Recognitions</h2>
 
-  {% if recognitions and recognitions|length > 0 %}
-    <div class="grid_2">
-      {% for r in recognitions %}
-        {% if r.href %}
-          <!-- CLICCABILE -->
-          <a class="circle-tile" href="{{ r.href }}" aria-label="Apri {{ r.label }}">
-            <span class="circle-btn" aria-hidden="true">
-              {# Xmas: svg (come ora) #}
-              {% if r.type == "svg" %}
-                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="8" width="18" height="4" rx="1"/>
-                  <path d="M12 8v13"/>
-                  <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/>
-                  <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>
-                </svg>
-              {% elif r.img %}
-                <img class="badge-img" src="{{ r.img }}" alt="{{ r.label }}">
-              {% endif %}
-            </span>
-            <span class="tile-label">{{ r.label }}</span>
-          </a>
-        {% else %}
-          <!-- DECORATIVO -->
-          <div class="circle-tile is-static" title="{{ r.label }}">
-            <span class="circle-btn circle-btn--static" aria-hidden="true">
-              <img class="badge-img badge-img--full" src="{{ r.img }}" alt="{{ r.label }}">
-            </span>
-            <span class="tile-label">{{ r.label }}</span>
-          </div>
-        {% endif %}
-      {% endfor %}
-    </div>
-  {% else %}
-    <div class="empty-badges">Nessun badge disponibile per questo profilo</div>
-  {% endif %}
-</div>
-
+          {% if recognitions and recognitions|length > 0 %}
+            <div class="grid_2">
+              {% for r in recognitions %}
+                {% if r.href %}
+                  <!-- CLICCABILE -->
+                  <a class="circle-tile" href="{{ r.href }}" aria-label="Apri {{ r.label }}">
+                    <span class="circle-btn" aria-hidden="true">
+                      {% if r.type == "svg" %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <rect x="3" y="8" width="18" height="4" rx="1"/>
+                          <path d="M12 8v13"/>
+                          <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/>
+                          <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/>
+                        </svg>
+                      {% elif r.img %}
+                        <img class="badge-img" src="{{ r.img }}" alt="{{ r.label }}">
+                      {% endif %}
+                    </span>
+                    <span class="tile-label">{{ r.label }}</span>
+                  </a>
+                {% else %}
+                  <!-- DECORATIVO -->
+                  <div class="circle-tile is-static" title="{{ r.label }}">
+                    <span class="circle-btn circle-btn--static" aria-hidden="true">
+                      <img class="badge-img badge-img--full" src="{{ r.img }}" alt="{{ r.label }}">
+                    </span>
+                    <span class="tile-label">{{ r.label }}</span>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="empty-badges">Nessun badge disponibile per questo profilo</div>
+          {% endif %}
+        </div>
 
       </div>
     </div>
