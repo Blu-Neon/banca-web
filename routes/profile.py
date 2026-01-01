@@ -143,7 +143,7 @@ def profile():
         {
             "label": "Media",
             "img": url_for("static", filename="badges/media-manager.png"),
-            "perm": PERM_MEDIA_MANAGER,
+            "perm": PERM_MEDIA,
         },
         {
             "label": "Programmer",
